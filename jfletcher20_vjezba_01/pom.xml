@@ -58,7 +58,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>							
-							<mainClass>edu.unizg.foi.nwtis.Vjezba_01</mainClass>
+							<mainClass>Vjezba_01</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
