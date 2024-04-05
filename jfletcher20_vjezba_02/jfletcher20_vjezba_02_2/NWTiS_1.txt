@@ -1,0 +1,5 @@
+#NWTiS 2024.
+#Mon Mar 25 10:33:27 CET 2024
+grad=Vara\u017Edin
+ime=Pero
+prezime=Pjetli\u0107
