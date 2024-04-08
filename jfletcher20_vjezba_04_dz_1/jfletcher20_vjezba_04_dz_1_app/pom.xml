@@ -64,7 +64,7 @@
 					<archive>
 						<manifest>
 							<mainClass>
-								edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.klijenti.SimulatorVozila</mainClass>
+								edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.posluzitelji.PosluziteljKazni</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -79,7 +79,7 @@
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>libs/</classpathPrefix>
 							<mainClass>
-								edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.klijenti.SimulatorVozila</mainClass>
+								edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.posluzitelji.PosluziteljKazni</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
