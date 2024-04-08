@@ -15,7 +15,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
   private int mreznaVrata;
   private CentralniSustav centralniSustav;
   private Pattern predlozakRegistracijeRadara = Pattern.compile(
-      "^RADAR (?<id>\\d+) (?<adresa>\\w+) (?<mreznaVrata>\\d+) (?<gpsSirina>\\d+[.]\\d+) (?<gpsDuzina>\\d+[.]\\d+) (?<maksUdaljenost>-?\\d+?) $");
+      "^RADAR (?<id>\\d+) (?<adresa>\\w+) (?<mreznaVrata>\\d+) (?<gpsSirina>\\d+[.]\\d+) (?<gpsDuzina>\\d+[.]\\d+) (?<maksUdaljenost>-?\\d+?)$");
 
   private Matcher poklapanjeRegistracijeRadara;
 

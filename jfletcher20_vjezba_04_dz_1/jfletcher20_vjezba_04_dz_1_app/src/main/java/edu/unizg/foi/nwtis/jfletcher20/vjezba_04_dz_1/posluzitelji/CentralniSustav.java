@@ -40,9 +40,8 @@ public class CentralniSustav {
   }
 
   public void pokreniPosluzitelja() {
-    var posluziteljZaRegistracijuRadara =
-        new PosluziteljZaRegistracijuRadara(this.mreznaVrataRadara, this);
-    var dretva = tvornicaDretvi.newThread(posluziteljZaRegistracijuRadara);
+    var server = new PosluziteljZaRegistracijuRadara(this.mreznaVrataRadara, this);
+    var dretva = tvornicaDretvi.newThread(server);
     dretva.start();
     try {
       dretva.join();

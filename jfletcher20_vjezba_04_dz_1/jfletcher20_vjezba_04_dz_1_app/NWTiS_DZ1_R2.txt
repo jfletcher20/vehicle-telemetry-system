@@ -9,6 +9,6 @@ mreznaVrataKazne=8020
 maksBrzina=24
 maksTrajanje=10
 maksUdaljenost=200
-adresaRadara=Zagrebacka 157, 42000 Varazdin
+postanskaAdresaRadara=Zagrebacka 157, 42000 Varazdin
 gpsSirina=46.28569
 gpsDuzina=16.34735
