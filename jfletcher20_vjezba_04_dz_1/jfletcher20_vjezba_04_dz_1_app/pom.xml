@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>jfletcher20_vjezba_04_dz_1</groupId>
+		<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
 		<artifactId>jfletcher20_vjezba_04_dz_1</artifactId>
 		<version>1.0.0</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
 	<artifactId>jfletcher20_vjezba_04_dz_1_app</artifactId>
 	<name>jfletcher20_vjezba_04_dz_1_app</name>
 
@@ -16,6 +16,14 @@
 		<maven.dependency>3.6.1</maven.dependency>
 		<maven.assembly>3.6.0</maven.assembly>
 	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
+			<artifactId>jfletcher20_vjezba_04_dz_1_lib</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -78,11 +86,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
-			<artifactId>jfletcher20_vjezba_04_dz_1_lib</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-	</dependencies>
 </project>
