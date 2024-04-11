@@ -18,7 +18,7 @@ import unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
 
 public class PosluziteljKazni {
   private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
-  private int mreznaVrata;
+  int mreznaVrata;
   private Pattern predlozakKazna = Pattern.compile(
       "^VOZILO (?<id>\\d+) (?<vrijemePocetak>\\d+) (?<vrijemeKraj>\\d+) (?<brzina>-?\\d+([.]\\d+)?) (?<gpsSirina>\\d+[.]\\d+) (?<gpsDuzina>\\d+[.]\\d+) (?<gpsSirinaRadar>\\d+[.]\\d+) (?<gpsDuzinaRadar>\\d+[.]\\d+)$");
 
