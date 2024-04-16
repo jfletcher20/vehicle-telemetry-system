@@ -60,6 +60,7 @@ public class RadnikZaVozila implements Runnable {
             citac.get();
             String r = new String(bb.array()).trim();
             var odgovor = obradaZahtjeva(r);
+            System.out.println(odgovor);
             if (!odgovor.contains("OK")) {
               bb.clear();
               bb.put(odgovor.getBytes()); // TODO: wtf is even happening here?
@@ -78,10 +79,14 @@ public class RadnikZaVozila implements Runnable {
   }
 
   public String obradaZahtjeva(String zahtjev) {
-    if (zahtjev == null)
+    zahtjev =
+        "VOZILO 1 101 1708073749078 0.02 0.8086 0.02 214.2 1.337297 19 93 40.43 7314 20 27.9 816.458 46.286644 16.35285";
+    if (zahtjev == null || zahtjev.length() == 0)
       return "ERROR 20 Neispravna sintaksa komande.\n";
+    zahtjev = zahtjev.trim();
     var odgovor = obradaZahtjevaVozila(zahtjev);
-    return odgovor != null ? odgovor : "ERROR 29 Nije moguće obraditi zahtjev.\n";
+    return odgovor != null ? odgovor
+        : "ERROR 29 Nije moguće obraditi zahtjev ( + " + zahtjev.length() + ": " + zahtjev + "\n";
   }
 
   private Double _d(String value) {

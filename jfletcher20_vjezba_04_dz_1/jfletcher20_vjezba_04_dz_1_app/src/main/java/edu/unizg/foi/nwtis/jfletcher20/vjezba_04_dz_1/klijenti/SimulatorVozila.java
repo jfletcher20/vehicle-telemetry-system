@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.nio.channels.AsynchronousServerSocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciVozila;
@@ -74,7 +73,7 @@ import unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
  * šalje komandu bez da čeka na odgovor.
  */
 
-public class SimulatorVozila implements Runnable {
+public class SimulatorVozila {
 
   /*
    * Pokretanje programa SimulacijaVozila sadrži tri argumenta: datoteka1.(txt | xml | bin | json)
@@ -111,30 +110,30 @@ public class SimulatorVozila implements Runnable {
       simulator.redPodaciVozila = new RedPodaciVozila(simulator.mreznaVrataVozila);
       simulator.preuzmiPostavkeVozila(args);
       simulator.spajanjeNaPosluzitelj();
-      simulator.run();
+      while (true) {
+        try {
+          Thread.sleep((long) (simulator.citajCSV() * simulator.korekcijaVremena()));
+          System.out.println("Poslano vozilo " + simulator.konstruirajZahtjev() + " na posluzitelj "
+              + simulator.adresaVozila + ":" + simulator.mreznaVrataVozila);
+          simulator.es.execute(() -> {
+            MrezneOperacije.posaljiZahtjevPosluzitelju(simulator.adresaVozila,
+                simulator.mreznaVrataVozila, simulator.konstruirajZahtjev());
+          });
+          Thread.sleep(simulator.trajanjePauze);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
     } catch (NumberFormatException | NeispravnaKonfiguracija | UnknownHostException e) {
       e.printStackTrace();
     }
   }
-
-  private AsynchronousServerSocketChannel ass = null;
 
   /**
    * Otvara utičnicu i priprema se za asinkrono izvršavanje zadataka
    */
   private void spajanjeNaPosluzitelj() {
     es = Executors.newVirtualThreadPerTaskExecutor();
-    try {
-      ass = AsynchronousServerSocketChannel.open();
-      ass.accept();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    try {
-      ass.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -153,23 +152,6 @@ public class SimulatorVozila implements Runnable {
     return trajanjeSek / 1000.0;
   }
 
-  @Override
-  public void run() {
-    while (true) {
-      try {
-        Thread.sleep((long) (citajCSV() * korekcijaVremena()));
-        System.out.println("Sending request: " + konstruirajZahtjev()); // TODO: remove this println
-        es.execute(() -> {
-          MrezneOperacije.posaljiZahtjevPosluzitelju(adresaVozila, mreznaVrataVozila,
-              konstruirajZahtjev());
-        });
-        Thread.sleep(trajanjePauze);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
   /**
    * Konstruiraj zahtjev prema podacima vozila.
    * 
@@ -180,6 +162,7 @@ public class SimulatorVozila implements Runnable {
         .toArray()[redPodaciVozila.dajBrojPodatakaVozila() - 1];
     return "VOZILO " //
         + p.id() + " " //
+        + p.broj() + " " //
         + p.vrijeme() + " " //
         + p.brzina() + " " //
         + p.snaga() + " " //
@@ -194,7 +177,7 @@ public class SimulatorVozila implements Runnable {
         + p.preostaloKm() + " " //
         + p.ukupnoKm() + " " //
         + p.gpsSirina() + " " //
-        + p.gpsDuzina() + "\n";
+        + p.gpsDuzina() + "";
   }
 
   private double _dp(String value) {
@@ -239,7 +222,8 @@ public class SimulatorVozila implements Runnable {
   public void preuzmiPostavkeVozila(String[] args)
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     podaciVozilaDatoteka = args[1];
-    idVozila = _ip(args[2]);
+    if (args.length == 3)
+      idVozila = _ip(args[2]);
   }
 
   public long citajCSV() {

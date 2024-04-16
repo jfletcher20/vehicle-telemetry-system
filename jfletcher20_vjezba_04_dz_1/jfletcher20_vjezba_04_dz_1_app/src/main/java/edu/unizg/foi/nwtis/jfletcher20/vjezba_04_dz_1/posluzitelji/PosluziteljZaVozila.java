@@ -54,7 +54,6 @@ public class PosluziteljZaVozila implements Runnable {
 
   private void pokreniPosluzitelja() {
     es = Executors.newVirtualThreadPerTaskExecutor();
-    // async server socket
     AsynchronousServerSocketChannel ass = null;
     try {
       ass = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(this.mreznaVrata));

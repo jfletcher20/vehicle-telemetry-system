@@ -71,6 +71,7 @@ public class PosluziteljKazni {
       System.out.println("Broj argumenata nije 1.");
       return;
     }
+    System.out.println("Pokretanje posluzitelja kazni...");
     PosluziteljKazni posluziteljKazni = new PosluziteljKazni();
     try {
       posluziteljKazni.preuzmiPostavke(args);
@@ -82,17 +83,19 @@ public class PosluziteljKazni {
   }
 
   public void pokreniPosluzitelja() {
-
     try (ServerSocket mreznaUticnicaPosluzitelja = new ServerSocket(mreznaVrata)) {
+      System.out.println("Posluzitelj kazni pokrenut na portu: " + mreznaVrata);
       while (true) {
         var mreznaUticnica = mreznaUticnicaPosluzitelja.accept();
         BufferedReader citac =
-            new BufferedReader(new InputStreamReader(mreznaUticnica.getInputStream(), "utf8"));
-        PrintWriter pisac =
-            new PrintWriter(new OutputStreamWriter(mreznaUticnica.getOutputStream(), "utf8"), true);
+            new BufferedReader(new InputStreamReader(mreznaUticnica.getInputStream(), "UTF-8"));
+        PrintWriter pisac = new PrintWriter(
+            new OutputStreamWriter(mreznaUticnica.getOutputStream(), "UTF-8"), true);
         var redak = citac.readLine();
 
         mreznaUticnica.shutdownInput();
+        var obrada = obradaZahtjeva(redak);
+        System.out.println(obrada);
         pisac.println(obradaZahtjeva(redak));
 
         pisac.flush();
@@ -105,6 +108,7 @@ public class PosluziteljKazni {
   }
 
   public String obradaZahtjeva(String zahtjev) {
+    System.out.println("Zahtjev: " + zahtjev);
     if (zahtjev == null)
       return "ERROR 40 Neispravna sintaksa naredbe.\n";
     else if (predlozakKazna.matcher(zahtjev).matches()) {
