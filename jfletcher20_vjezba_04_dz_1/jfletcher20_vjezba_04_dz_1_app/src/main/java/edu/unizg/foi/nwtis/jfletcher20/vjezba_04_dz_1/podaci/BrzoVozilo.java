@@ -14,6 +14,23 @@ package edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci;
 public record BrzoVozilo(int id, int broj, long vrijeme, double brzina, double gpsSirina,
     double gpsDuzina, boolean status) {
 
+  private static Integer _pi(String value) {
+    return Integer.parseInt(value);
+  }
+
+  private static Double _pd(String value) {
+    return Double.parseDouble(value);
+  }
+
+  private static Long _pl(String value) {
+    return Long.parseLong(value);
+  }
+
+  public BrzoVozilo(String group, int i, String group2, String group3, String group4, String group5,
+      boolean b) {
+    this(_pi(group), i, _pl(group2), _pd(group3), _pd(group4), _pd(group5), b);
+  }
+
   /**
    * Postavi status.
    *

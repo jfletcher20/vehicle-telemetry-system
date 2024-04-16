@@ -11,8 +11,8 @@ import unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
 
 public class CentralniSustav {
 
-  private int mreznaVrataRadara;
-  private int mreznaVrataVozila;
+  public int mreznaVrataRadara;
+  public int mreznaVrataVozila;
   private int mreznaVrataNadzora;
   private int maksVozila;
   private ThreadFactory tvornicaDretvi = Thread.ofVirtual().factory();
@@ -26,25 +26,30 @@ public class CentralniSustav {
       System.out.println("Broj argumenata nije 1.");
       return;
     }
-
     CentralniSustav centralniSustav = new CentralniSustav();
     try {
       centralniSustav.preuzmiPostavke(args);
-
-      centralniSustav.pokreniPosluzitelja();
-
+      centralniSustav.pokreniPosluzitelje();
     } catch (NeispravnaKonfiguracija | NumberFormatException | UnknownHostException e) {
       System.out.println(e.getMessage());
       return;
     }
   }
 
-  public void pokreniPosluzitelja() {
-    var server = new PosluziteljZaRegistracijuRadara(this.mreznaVrataRadara, this);
-    var dretva = tvornicaDretvi.newThread(server);
-    dretva.start();
+  private Integer _i(String value) {
+    return Integer.valueOf(value);
+  }
+
+  public void pokreniPosluzitelje() {
+    var srr = new PosluziteljZaRegistracijuRadara(mreznaVrataRadara, this);
+    var sv = new PosluziteljZaVozila(mreznaVrataVozila, this);
+    var dretva1 = tvornicaDretvi.newThread(srr);
+    var dretva2 = tvornicaDretvi.newThread(sv);
+    dretva1.start();
+    dretva2.start();
     try {
-      dretva.join();
+      dretva1.join();
+      dretva2.join();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
@@ -54,10 +59,10 @@ public class CentralniSustav {
   public void preuzmiPostavke(String[] args)
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     Konfiguracija konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
-
-    this.mreznaVrataRadara = Integer.valueOf(konfig.dajPostavku("mreznaVrataRadara"));
-    this.mreznaVrataVozila = Integer.valueOf(konfig.dajPostavku("mreznaVrataVozila"));
-    this.mreznaVrataNadzora = Integer.valueOf(konfig.dajPostavku("mreznaVrataNadzora"));
-    this.maksVozila = Integer.valueOf(konfig.dajPostavku("maksVozila"));
+    mreznaVrataRadara = _i(konfig.dajPostavku("mreznaVrataRadara"));
+    mreznaVrataVozila = _i(konfig.dajPostavku("mreznaVrataVozila"));
+    mreznaVrataNadzora = _i(konfig.dajPostavku("mreznaVrataNadzora"));
+    maksVozila = _i(konfig.dajPostavku("maksVozila"));
   }
+
 }

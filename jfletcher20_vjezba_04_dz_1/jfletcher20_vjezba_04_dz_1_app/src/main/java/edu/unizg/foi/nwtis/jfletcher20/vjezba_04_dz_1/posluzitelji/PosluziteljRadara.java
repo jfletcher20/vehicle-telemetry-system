@@ -10,10 +10,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.BrzoVozilo;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciKazne;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciRadara;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.posluzitelji.radnici.RadnikZaRadare;
+import unizg.foi.nwtis.konfiguracije.Konfiguracija;
+import unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
 
 public class PosluziteljRadara {
@@ -21,12 +24,21 @@ public class PosluziteljRadara {
   private ThreadFactory tf = Thread.ofVirtual().factory();
   private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
   private int mreznaVrata;
-  private Pattern predlozakKazna = Pattern.compile(
-      "^VOZILO (?<id>\\d+) (?<vrijemePocetak>\\d+) (?<vrijemeKraj>\\d+) (?<brzina>-?\\d+([.]\\d+)?) (?<gpsSirina>\\d+[.]\\d+) (?<gpsDuzina>\\d+[.]\\d+) (?<gpsSirinaRadar>\\d+[.]\\d+) (?<gpsDuzinaRadar>\\d+[.]\\d+)$");
+  private Pattern predlozakKazna = Pattern.compile( //
+      "^VOZILO " //
+          + "(?<id>\\d+) " //
+          + "(?<vrijemePocetak>\\d+) " //
+          + "(?<vrijemeKraj>\\d+) " //
+          + "(?<brzina>-?\\d+([.]\\d+)?) " //
+          + "(?<gpsSirina>\\d+[.]\\d+) " //
+          + "(?<gpsDuzina>\\d+[.]\\d+) " //
+          + "(?<gpsSirinaRadar>\\d+[.]\\d+) " //
+          + "(?<gpsDuzinaRadar>\\d+[.]\\d+)$");
 
   private Matcher poklapanjeKazna;
   private volatile Queue<PodaciKazne> sveKazne = new ConcurrentLinkedQueue<>();
-  private PodaciRadara podaciRadara;
+  private volatile Queue<BrzoVozilo> brzaVozila = new ConcurrentLinkedQueue<>();
+  private PodaciRadara r;
 
   public static void main(String[] args) {
     if (args.length != 1) {
@@ -46,47 +58,66 @@ public class PosluziteljRadara {
     }
   }
 
-  private int _pi(String arg) {
-    return Integer.parseInt(arg);
+  private int _ip(String value) {
+    return Integer.parseInt(value);
+  }
+
+  private double _dp(String value) {
+    return Double.parseDouble(value);
+  }
+
+  private Integer _i(String value) {
+    return Integer.valueOf(value);
+  }
+
+  private Double _d(String value) {
+    return Double.valueOf(value);
+  }
+
+  private Long _l(String value) {
+    return Long.valueOf(value);
   }
 
   public void preuzmiPostavke(String[] args)
-      throws unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija, NumberFormatException,
-      UnknownHostException {
-    unizg.foi.nwtis.konfiguracije.Konfiguracija konfig =
-        unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
+      throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
+    Konfiguracija konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
 
-    this.podaciRadara = new PodaciRadara(_pi(konfig.dajPostavku("id")),
-        InetAddress.getLocalHost().getHostName(), _pi(konfig.dajPostavku("mreznaVrataRadara")),
-        _pi(konfig.dajPostavku("maksBrzina")), _pi(konfig.dajPostavku("maksTrajanje")),
-        _pi(konfig.dajPostavku("maksUdaljenost")), konfig.dajPostavku("adresaRegistracije"),
-        _pi(konfig.dajPostavku("mreznaVrataRegistracije")), konfig.dajPostavku("adresaKazne"),
-        _pi(konfig.dajPostavku("mreznaVrataKazne")), konfig.dajPostavku("postanskaAdresaRadara"),
-        Double.parseDouble(konfig.dajPostavku("gpsSirina")),
-        Double.parseDouble(konfig.dajPostavku("gpsDuzina")));
+    r = new PodaciRadara(_ip(konfig.dajPostavku("id")), //
+        InetAddress.getLocalHost().getHostName(), //
+        _ip(konfig.dajPostavku("mreznaVrataRadara")), //
+        _ip(konfig.dajPostavku("maksBrzina")), //
+        _ip(konfig.dajPostavku("maksTrajanje")), //
+        _ip(konfig.dajPostavku("maksUdaljenost")), //
+        konfig.dajPostavku("adresaRegistracije"), //
+        _ip(konfig.dajPostavku("mreznaVrataRegistracije")), //
+        konfig.dajPostavku("adresaKazne"), //
+        _ip(konfig.dajPostavku("mreznaVrataKazne")), //
+        konfig.dajPostavku("postanskaAdresaRadara"), //
+        _dp(konfig.dajPostavku("gpsSirina")), //
+        _dp(konfig.dajPostavku("gpsDuzina")));
 
-    this.mreznaVrata = Integer.valueOf(konfig.dajPostavku("mreznaVrataKazne"));
+    mreznaVrata = _i(konfig.dajPostavku("mreznaVrataKazne"));
   }
 
   private boolean registrirajPosluzitelja() {
     var s = new StringBuilder();
-    s.append("RADAR").append(" ").append(this.podaciRadara.id()).append(" ")
-        .append(this.podaciRadara.adresaRadara()).append(" ")
-        .append(this.podaciRadara.mreznaVrataRadara()).append(" ")
-        .append(this.podaciRadara.gpsSirina()).append(" ").append(this.podaciRadara.gpsDuzina())
-        .append(" ").append(this.podaciRadara.maksUdaljenost());
-    return MrezneOperacije.posaljiZahtjevPosluzitelju(this.podaciRadara.adresaRegistracije(),
-        this.podaciRadara.mreznaVrataRegistracije(), s.toString()) != null;
+    s.append("RADAR").append(" ") //
+        .append(r.id()).append(" ") //
+        .append(r.adresaRadara()).append(" ") //
+        .append(r.mreznaVrataRadara()).append(" ") //
+        .append(r.gpsSirina()).append(" ") //
+        .append(r.gpsDuzina()).append(" ") //
+        .append(r.maksUdaljenost()).append("\n");
+    return MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRegistracije(),
+        r.mreznaVrataRegistracije(), s.toString()) != null;
   }
 
   public void pokreniPosluzitelja() {
     boolean kraj = false;
-
-    try (ServerSocket mreznaUticnicaPosluzitelja =
-        new ServerSocket(this.podaciRadara.mreznaVrataRadara())) {
+    try (ServerSocket mreznaUticnicaPosluzitelja = new ServerSocket(this.r.mreznaVrataRadara())) {
       while (!kraj) {
         var mreznaUticnica = mreznaUticnicaPosluzitelja.accept();
-        RadnikZaRadare rr = new RadnikZaRadare(mreznaUticnica, podaciRadara, this);
+        RadnikZaRadare rr = new RadnikZaRadare(mreznaUticnica, r, this);
         var dretva = tf.newThread(rr);
         dretva.start();
       }
@@ -95,39 +126,26 @@ public class PosluziteljRadara {
     }
   }
 
-  public String obradaZahtjeva(String zahtjev) {
-    if (zahtjev == null) {
-      return "ERROR 10 Neispravna sintaksa komande.";
-    }
-    var odgovor = obradaZahtjevaKazna(zahtjev);
-    if (odgovor != null) {
-      return odgovor;
-    }
-
-    return "ERROR 10 Neispravna sintaksa komande.";
-  }
-
-  public String obradaZahtjevaKazna(String zahtjev) {
-    this.poklapanjeKazna = this.predlozakKazna.matcher(zahtjev);
-    var statusKazna = poklapanjeKazna.matches();
-    if (statusKazna) {
-      var kazna = new edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciKazne(
-          Integer.valueOf(this.poklapanjeKazna.group("id")),
-          Long.valueOf(this.poklapanjeKazna.group("vrijemePocetak")),
-          Long.valueOf(this.poklapanjeKazna.group("vrijemeKraj")),
-          Double.valueOf(this.poklapanjeKazna.group("brzina")),
-          Double.valueOf(this.poklapanjeKazna.group("gpsSirina")),
-          Double.valueOf(this.poklapanjeKazna.group("gpsDuzina")),
-          Double.valueOf(this.poklapanjeKazna.group("gpsSirinaRadar")),
-          Double.valueOf(this.poklapanjeKazna.group("gpsDuzinaRadar")));
-
-      this.sveKazne.add(kazna);
-      System.out.println("Id: " + kazna.id() + " Vrijeme od: " + sdf.format(kazna.vrijemePocetak())
-          + "  Vrijeme do: " + sdf.format(kazna.vrijemeKraj()) + " Brzina: " + kazna.brzina()
-          + " GPS: " + kazna.gpsSirina() + ", " + kazna.gpsDuzina());
-
-      return "OK";
-    }
+  public BrzoVozilo prviZapisOVozilu(int id) {
+    for (BrzoVozilo vozilo : brzaVozila)
+      if (vozilo.id() == id)
+        return vozilo;
     return null;
   }
+
+  /**
+   * Izračunava razliku u vremenu između podataka vozila i najnovijeg podatka o tom vozilu iz reda.
+   * 
+   * @param podaci podaci vozila za koju se računa razlika od prethodnog vremena
+   * @return razlika u vremenu (pozitivna ako je vozilo najnovije, negativna ako nije)
+   */
+
+  public long vrijemeIzmeduPodataka(BrzoVozilo podaci) {
+    long najveceVrijeme = 0;
+    for (BrzoVozilo vozilo : brzaVozila)
+      if (vozilo.id() == podaci.id() && vozilo.vrijeme() > podaci.vrijeme())
+        najveceVrijeme = vozilo.vrijeme();
+    return podaci.vrijeme() - najveceVrijeme;
+  }
+
 }

@@ -17,6 +17,7 @@ public class RedPodaciVozila {
   /**
    * Instancira novi objekt.
    */
+  @SuppressWarnings("unused")
   private RedPodaciVozila() {}
 
   /**
