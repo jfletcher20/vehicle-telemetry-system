@@ -9,8 +9,6 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadFactory;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.BrzoVozilo;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciKazne;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciRadara;
@@ -20,28 +18,42 @@ import unizg.foi.nwtis.konfiguracije.Konfiguracija;
 import unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
 
+/**
+ * Poslužitelj radara.
+ */
 public class PosluziteljRadara {
 
+  /**
+   * Dretva za radnike.
+   */
   private ThreadFactory tf = Thread.ofVirtual().factory();
+  /**
+   * Format datuma.
+   */
   private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+  /**
+   * Mrežna vrata.
+   */
   private int mreznaVrata;
-  private Pattern predlozakKazna = Pattern.compile( //
-      "^VOZILO " //
-          + "(?<id>\\d+) " //
-          + "(?<vrijemePocetak>\\d+) " //
-          + "(?<vrijemeKraj>\\d+) " //
-          + "(?<brzina>-?\\d+([.]\\d+)?) " //
-          + "(?<gpsSirina>\\d+[.]\\d+) " //
-          + "(?<gpsDuzina>\\d+[.]\\d+) " //
-          + "(?<gpsSirinaRadar>\\d+[.]\\d+) " //
-          + "(?<gpsDuzinaRadar>\\d+[.]\\d+)$");
-
-  private Matcher poklapanjeKazna;
+  /**
+   * Red svih kazni.
+   */
   public volatile Queue<PodaciKazne> sveKazne = new ConcurrentLinkedQueue<>();
+  /**
+   * Red brzih vozila.
+   */
   public volatile ConcurrentHashMap<Integer, BrzoVozilo> brzaVozila =
       new ConcurrentHashMap<Integer, BrzoVozilo>();
+  /**
+   * Podaci radara.
+   */
   private PodaciRadara r;
 
+  /**
+   * Pokreće poslužitelj radara.
+   * 
+   * @param args argumenti naredbenog retka
+   */
   public static void main(String[] args) {
     if (args.length != 1) {
       System.out.println("Broj argumenata nije 1.");
@@ -60,26 +72,44 @@ public class PosluziteljRadara {
     }
   }
 
+  /**
+   * Pretvara string u integer.
+   * 
+   * @param value tekst
+   * @return parsirani integer
+   */
   private int _ip(String value) {
     return Integer.parseInt(value);
   }
 
+  /**
+   * Pretvara string u double.
+   * 
+   * @param value tekst
+   * @return parsirani double
+   */
   private double _dp(String value) {
     return Double.parseDouble(value);
   }
 
+  /**
+   * Dohvaca vrijednost integera iz stringa.
+   * 
+   * @param value tekst
+   * @return parsirani integer
+   */
   private Integer _i(String value) {
     return Integer.valueOf(value);
   }
 
-  private Double _d(String value) {
-    return Double.valueOf(value);
-  }
-
-  private Long _l(String value) {
-    return Long.valueOf(value);
-  }
-
+  /**
+   * Dohvaca vrijednosti postavki iz konfiguracije.
+   * 
+   * @param args argumenti naredbenog retka
+   * @throws NeispravnaKonfiguracija baca se ako je konfiguracija neispravna
+   * @throws NumberFormatException baca se ako je broj neispravan
+   * @throws UnknownHostException baca se ako je adresa nepoznata
+   */
   public void preuzmiPostavke(String[] args)
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     Konfiguracija konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
@@ -101,6 +131,11 @@ public class PosluziteljRadara {
     mreznaVrata = _i(konfig.dajPostavku("mreznaVrataKazne"));
   }
 
+  /**
+   * Registrira radara.
+   * 
+   * @return true ako je registracija uspješna, inače false
+   */
   private boolean registrirajPosluzitelja() {
     var s = new StringBuilder();
     s.append("RADAR").append(" ") //
@@ -114,6 +149,9 @@ public class PosluziteljRadara {
         r.mreznaVrataRegistracije(), s.toString()) != null;
   }
 
+  /**
+   * Pokreće poslužitelja.
+   */
   public void pokreniPosluzitelja() {
     boolean kraj = false;
     try (ServerSocket mreznaUticnicaPosluzitelja = new ServerSocket(this.r.mreznaVrataRadara())) {
@@ -126,17 +164,6 @@ public class PosluziteljRadara {
     } catch (NumberFormatException | IOException e) {
       e.printStackTrace();
     }
-  }
-
-  /**
-   * Izračunava razliku u vremenu između podataka vozila i najnovijeg podatka o tom vozilu iz reda.
-   * 
-   * @param podaci podaci vozila za koju se računa razlika od prethodnog vremena
-   * @return razlika u vremenu (pozitivna ako je vozilo najnovije, negativna ako nije)
-   */
-  public long vrijemeIzmeduPodataka(BrzoVozilo podaci) {
-    var poh = brzaVozila.get(podaci.id());
-    return Math.abs(podaci.vrijeme() - (poh == null ? podaci : poh).vrijeme());
   }
 
 }

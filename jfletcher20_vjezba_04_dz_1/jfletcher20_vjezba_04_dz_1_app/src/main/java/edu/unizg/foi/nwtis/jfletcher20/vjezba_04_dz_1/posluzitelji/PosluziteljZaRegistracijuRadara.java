@@ -3,31 +3,32 @@ package edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.posluzitelji;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciRadara;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.Parsiraj;
 
-/*
- * Klijent se spaja na PosluziteljZaRegistracijuRadara putem mrežne utičnice te šalje komandu
- * (završava s \n) poslužitelju na temelju postavki i traži izvršavanja određene akcije i vraća
- * odgovor (završava s \n) • RADAR id adresa mreznaVrata gpsSirina gpsDuzina maksUdaljenost o npr.
- * RADAR 1 localhost 8010 46.29950 16.33001 100 o Provjera da li ispravni podaci. Ako su ispravni
- * provjerava da li su podaci tog zahtjeva spremljeni u memoriji u kolekciji R. Ako nisu, upisuje ih
- * u kolekciju R (tj. registracija radara) i vraća OK. o Npr. OK • RADAR OBRIŠI id o npr. RADAR
- * OBRIŠI 1 o Provjera da li ispravni podaci. Ako su ispravni provjerava da li su podaci tog
- * zahtjeva spremljeni u memoriji u kolekciji R. Ako jesu, briše ih iz kolekcije R (tj.
- * deregistracija radara) i vraća OK. o Npr. OK • RADAR OBRIŠI SVE o npr. RADAR OBRIŠI SVE o
- * Provjera da li ispravni podaci. Ako su ispravni briše sve radare iz kolekcije R (tj.
- * deregistracija svih radara) i vraća OK. o Npr. OK
+/**
+ * Klasa PosluziteljZaRegistracijuRadara
  */
-
 public class PosluziteljZaRegistracijuRadara implements Runnable {
+
+  /**
+   * Mrežna vrata poslužitelja
+   */
   private int mreznaVrata;
+
+  /**
+   * Referenca na centralni sustav
+   */
   private CentralniSustav centralniSustav;
+
+  /**
+   * Predložak za registraciju radara
+   */
   private Pattern predlozakRegistracijeRadara = Pattern.compile(//
       "^RADAR " //
           + "(?<id>\\d+) " //
@@ -36,40 +37,50 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
           + "(?<gpsSirina>\\d+[.]\\d+) " //
           + "(?<gpsDuzina>\\d+[.]\\d+) " //
           + "(?<maksUdaljenost>-?\\d+?)$");
+
+  /**
+   * Predložak za brisanje radara
+   */
   private Pattern predlozakBrisanjaRadara = Pattern.compile("^RADAR OBRIŠI (?<id>\\d+)$");
+  /**
+   * Predložak za brisanje svih radara
+   */
   private Pattern predlozakBrisanjaSvihRadara = Pattern.compile("^RADAR OBRIŠI SVE$");
 
+  /**
+   * Matcher za poklapanje registracije radara
+   */
   private Matcher poklapanjeRegistracijeRadara;
 
+  /**
+   * Konstruktor klase PosluziteljZaRegistracijuRadara
+   * 
+   * @param mreznaVrata Mrežna vrata poslužitelja
+   * @param centralniSustav Referenca na centralni sustav
+   */
   public PosluziteljZaRegistracijuRadara(int mreznaVrata, CentralniSustav centralniSustav) {
     super();
     this.mreznaVrata = mreznaVrata;
     this.centralniSustav = centralniSustav;
   }
 
-  private Double _d(String value) {
-    return Double.valueOf(value);
-  }
 
-  private Integer _i(String value) {
-    return Integer.valueOf(value);
-  }
-
+  /**
+   * Pokreće poslužitelj za registraciju radara
+   */
   @Override
   public void run() {
-    boolean kraj = false;
 
     try (ServerSocket mreznaUticnicaPosluzitelja = new ServerSocket(this.mreznaVrata)) {
-      while (!kraj) {
+      while (true) {
         var mreznaUticnica = mreznaUticnicaPosluzitelja.accept();
-        BufferedReader citac =
-            new BufferedReader(new InputStreamReader(mreznaUticnica.getInputStream(), "utf8"));
-        OutputStream out = mreznaUticnica.getOutputStream();
-        PrintWriter pisac = new PrintWriter(new OutputStreamWriter(out, "utf8"), true);
-        var redak = citac.readLine();
+        BufferedReader bb =
+            new BufferedReader(new InputStreamReader(mreznaUticnica.getInputStream(), "UTF-8"));
+        PrintWriter pisac = new PrintWriter(
+            new OutputStreamWriter(mreznaUticnica.getOutputStream(), "UTF-8"), true);
+        var redak = bb.readLine();
         mreznaUticnica.shutdownInput();
-        pisac.println(obradaZahtjeva(redak)); // TODO: maybe remove this println? need to check if
-                                              // it's necessary
+        pisac.println(obradaZahtjeva(redak));
         pisac.flush();
         mreznaUticnica.shutdownOutput();
         mreznaUticnica.close();
@@ -80,6 +91,12 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
 
   }
 
+  /**
+   * Metoda za obradu zahtjeva poslužitelja.
+   * 
+   * @param zahtjev Zahtjev
+   * @return Odgovor na zahtjev
+   */
   public String obradaZahtjeva(String zahtjev) {
     if (zahtjev == null)
       return "ERROR 10 Neispravna sintaksa komande.\n";
@@ -87,6 +104,12 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
     return odgovor != null ? odgovor : "ERROR 10 Neispravna sintaksa komande.\n";
   }
 
+  /**
+   * Metoda za obradu zahtjeva nad radarom.
+   * 
+   * @param zahtjev Zahtjev
+   * @return Odgovor na zahtjev
+   */
   public String obradaZahtjevaRegistracijeRadara(String zahtjev) {
     poklapanjeRegistracijeRadara = predlozakRegistracijeRadara.matcher(zahtjev);
     if (poklapanjeRegistracijeRadara.matches())
@@ -100,13 +123,18 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
     return null;
   }
 
+  /**
+   * Metoda za registraciju novoga radara.
+   * 
+   * @return Odgovor na zahtjev
+   */
   public String registrirajRadar() {
-    var radar = new PodaciRadara(_i(poklapanjeRegistracijeRadara.group("id")),
+    var radar = new PodaciRadara(Parsiraj.pi(poklapanjeRegistracijeRadara.group("id")),
         poklapanjeRegistracijeRadara.group("adresa"),
-        _i(poklapanjeRegistracijeRadara.group("mreznaVrata")), -1, -1,
-        _i(poklapanjeRegistracijeRadara.group("maksUdaljenost")), null, -1, null, -1, null,
-        _d(poklapanjeRegistracijeRadara.group("gpsSirina")),
-        _d(poklapanjeRegistracijeRadara.group("gpsDuzina")));
+        Parsiraj.pi(poklapanjeRegistracijeRadara.group("mreznaVrata")), -1, -1,
+        Parsiraj.pi(poklapanjeRegistracijeRadara.group("maksUdaljenost")), null, -1, null, -1, null,
+        Parsiraj.pd(poklapanjeRegistracijeRadara.group("gpsSirina")),
+        Parsiraj.pd(poklapanjeRegistracijeRadara.group("gpsDuzina")));
     if (centralniSustav.sviRadari.containsKey(radar.id())) {
       return "ERROR 11 Radar s ID-em " + radar.id() + " već postoji.\n";
     } else
@@ -114,8 +142,13 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
     return "OK\n";
   }
 
+  /**
+   * Metoda za brisanje radara
+   * 
+   * @return Odgovor na zahtjev
+   */
   public String obrisiRadar() {
-    var id = _i(poklapanjeRegistracijeRadara.group("id"));
+    var id = Parsiraj.pi(poklapanjeRegistracijeRadara.group("id"));
     if (centralniSustav.sviRadari.containsKey(id)) {
       centralniSustav.sviRadari.remove(id);
       return "OK\n";
@@ -123,6 +156,11 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
       return "ERROR 12 Radar s ID-em " + id + " ne postoji.\n";
   }
 
+  /**
+   * Metoda za brisanje svih radara
+   * 
+   * @return Odgovor na zahtjev
+   */
   public String obrisiSveRadare() {
     centralniSustav.sviRadari.clear();
     return "OK\n";

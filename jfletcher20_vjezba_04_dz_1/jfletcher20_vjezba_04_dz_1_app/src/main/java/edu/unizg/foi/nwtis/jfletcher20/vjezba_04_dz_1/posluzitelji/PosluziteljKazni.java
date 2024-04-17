@@ -14,35 +14,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciKazne;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.Parsiraj;
 import unizg.foi.nwtis.konfiguracije.Konfiguracija;
 import unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
 
-/*
- * Pokretanje programa PosluziteljKazni sadrži jedan argument: datoteka.(txt | xml | bin | json)
- * Npr. NWTiS_DZ1_PK.txt Otvara se mrežna utičnica na zadanim mrežnim vratima te se čeka na
- * klijente. Klijent se spaja na PosluziteljKazni putem mrežne utičnice i šalje komandu (završava s
- * \n) poslužitelju na temelju postavki i traži izvršavanja određene akcije i vraća odgovor
- * (završava s \n): • VOZILO id vrijemePocetak vrijemeKraj brzina gpsSirina gpsDuzina gpsSi
- * rinaRadara gpsDuzinaRadara o npr. VOZILO 1 1711348009 1711368009 21.767 46.286608 16.353131
- * 46.286602 16.353136 o Provjera da li ispravni podaci. Ako su ispravni u evidenciju kazni upisuje
- * podatke za e-vozilo, ispisuje na ekran podatke o kazni i vraća OK. o Npr. OK • VOZILO id
- * vrijemeOd vrijemeDo o npr. VOZILO 1 1711348009 1711355209 o Provjera da li ispravni podaci. Ako
- * su ispravni u evidenciji kazni traži podatke o e-vozilu unutar zadanog vremena od-do. Ako postoje
- * kazne vraća zadnju (najsvježiju) kaznu OK vri jeme brzina gpsSirinaRadar gpsDuzinaRadar. o Npr.
- * OK 1711348009 21.767 46.286602 16.353136 • STATISTIKA vrijemeOd vrijemeDo o npr. STATISTIKA
- * 1711348009 1711355209 o Provjera da li ispravni podaci. Ako su ispravni u evidenciji prekršaja
- * traži podatke o broju kazni unutar zadanog vremena od-do. Ako postoje kazne vraća OK idVozilo
- * brojKazni; id Vozilo brojKazni; idVozilo brojKazni;… o Npr. OK 1 0; 2 7; 3 2; 4 5; Kodovi
- * pogrešaka su: o Kada format komande nije ispravan, vraća odgovor ERROR 40 tekst (tekst objašnjava
- * razlog pogreške) o Kada e-vozilo id nema kazne u zadanom vremenu, vraća odgovor ERROR 41 tekst
- * (tekst objašnjava razlog pogreške). o Kada nešto drugo nije u redu vraća odgovor ERROR 49 tekst
- * (tekst objašnjava razlog po greške).
- */
-
 public class PosluziteljKazni {
+  /**
+   * Format datuma.
+   */
   private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+  /**
+   * Mrežna vrata poslužitelja.
+   */
   int mreznaVrata;
+  /**
+   * Predložak za kaznu.
+   */
   private Pattern predlozakKazna = Pattern.compile( //
       "^VOZILO " //
           + "(?<id>\\d+) " //
@@ -53,19 +41,37 @@ public class PosluziteljKazni {
           + "(?<gpsDuzina>\\d+[.]\\d+) " //
           + "(?<gpsSirinaRadar>\\d+[.]\\d+) " //
           + "(?<gpsDuzinaRadar>\\d+[.]\\d+)$");
+  /**
+   * Predložak za dohvaćanje kazne.
+   */
   private Pattern predlozakDohvatiKaznu = Pattern.compile( //
       "^VOZILO " //
           + "(?<id>\\d+) " //
           + "(?<vrijemeOd>\\d+) " //
           + "(?<vrijemeDo>\\d+)$");
+  /**
+   * Predložak za statistiku.
+   */
   private Pattern predlozakStatistika = Pattern.compile( //
       "^STATISTIKA " //
           + "(?<vrijemeOd>\\d+) " //
           + "(?<vrijemeDo>\\d+)$");
 
+  /**
+   * Matcher za poklapanje uzorka.
+   */
   private Matcher poklapanjeKazna;
+
+  /**
+   * Sve kazne koje su zabilježene.
+   */
   private volatile Queue<PodaciKazne> sveKazne = new ConcurrentLinkedQueue<>();
 
+  /**
+   * Pokretanje poslužitelja.
+   * 
+   * @param args Argumenti komandne linije.
+   */
   public static void main(String[] args) {
     if (args.length != 1) {
       System.out.println("Broj argumenata nije 1.");
@@ -81,6 +87,9 @@ public class PosluziteljKazni {
     }
   }
 
+  /**
+   * Metoda za inicijalizaciju rada poslužitelja.
+   */
   public void pokreniPosluzitelja() {
     try (ServerSocket mreznaUticnicaPosluzitelja = new ServerSocket(mreznaVrata)) {
       while (true) {
@@ -103,6 +112,12 @@ public class PosluziteljKazni {
     }
   }
 
+  /**
+   * Obrada zahtjeva.
+   * 
+   * @param zahtjev Zahtjev koji se obrađuje.
+   * @return Odgovor na zahtjev.
+   */
   public String obradaZahtjeva(String zahtjev) {
     if (zahtjev == null)
       return "ERROR 40 Neispravna sintaksa naredbe.\n";
@@ -122,27 +137,24 @@ public class PosluziteljKazni {
     return "ERROR 49 Nešto je pošlo po zlu.\n";
   }
 
-  private Double _d(String value) {
-    return Double.valueOf(value);
-  }
-
-  private Long _l(String value) {
-    return Long.valueOf(value);
-  }
-
-  private Integer _i(String value) {
-    return Integer.valueOf(value);
-  }
-
+  /**
+   * Obrada zahtjeva za upisivanjem kazne.
+   * 
+   * @param zahtjev Zahtjev za kaznu.
+   * @return Odgovor na zahtjev za kaznu.
+   */
   public String obradaZahtjevaKazna(String zahtjev) {
     poklapanjeKazna = predlozakKazna.matcher(zahtjev);
     var statusKazna = poklapanjeKazna.matches();
     if (statusKazna) {
-      var kazna = new PodaciKazne(_i(poklapanjeKazna.group("id")),
-          _l(poklapanjeKazna.group("vrijemePocetak")), _l(poklapanjeKazna.group("vrijemeKraj")),
-          _d(poklapanjeKazna.group("brzina")), _d(poklapanjeKazna.group("gpsSirina")),
-          _d(poklapanjeKazna.group("gpsDuzina")), _d(poklapanjeKazna.group("gpsSirinaRadar")),
-          _d(poklapanjeKazna.group("gpsDuzinaRadar")));
+      var kazna = new PodaciKazne(Parsiraj.pi(poklapanjeKazna.group("id")),
+          Parsiraj.pl(poklapanjeKazna.group("vrijemePocetak")),
+          Parsiraj.pl(poklapanjeKazna.group("vrijemeKraj")),
+          Parsiraj.pd(poklapanjeKazna.group("brzina")),
+          Parsiraj.pd(poklapanjeKazna.group("gpsSirina")),
+          Parsiraj.pd(poklapanjeKazna.group("gpsDuzina")),
+          Parsiraj.pd(poklapanjeKazna.group("gpsSirinaRadar")),
+          Parsiraj.pd(poklapanjeKazna.group("gpsDuzinaRadar")));
       sveKazne.add(kazna);
       System.out.println("Id: " + kazna.id() + " Vrijeme od: " + sdf.format(kazna.vrijemePocetak())
           + "  Vrijeme do: " + sdf.format(kazna.vrijemeKraj()) + " Brzina: " + kazna.brzina()
@@ -152,13 +164,19 @@ public class PosluziteljKazni {
     return null;
   }
 
+  /**
+   * Obrada zahtjeva za dohvaćanje kazne.
+   * 
+   * @param zahtjev Zahtjev za dohvaćanje kazne.
+   * @return Odgovor na zahtjev za dohvaćanje kazne.
+   */
   public String obradaZahtjevaDohvatiKaznu(String zahtjev) {
     poklapanjeKazna = predlozakDohvatiKaznu.matcher(zahtjev);
     var statusKazna = poklapanjeKazna.matches();
     if (statusKazna) {
-      var id = _i(poklapanjeKazna.group("id"));
-      var vrijemeOd = _l(poklapanjeKazna.group("vrijemeOd"));
-      var vrijemeDo = _l(poklapanjeKazna.group("vrijemeDo"));
+      var id = Parsiraj.pi(poklapanjeKazna.group("id"));
+      var vrijemeOd = Parsiraj.pl(poklapanjeKazna.group("vrijemeOd"));
+      var vrijemeDo = Parsiraj.pl(poklapanjeKazna.group("vrijemeDo"));
       try {
         var kazna = sveKazne.stream().filter(
             k -> k.id() == id && k.vrijemePocetak() >= vrijemeOd && k.vrijemeKraj() <= vrijemeDo)
@@ -176,12 +194,18 @@ public class PosluziteljKazni {
     return null;
   }
 
+  /**
+   * Obrada zahtjeve za statistikom.
+   * 
+   * @param zahtjev Zahtjev za statistikom.
+   * @return Odgovor na zahtjev za statistikom.
+   */
   public String obradaZahtjevaStatistika(String zahtjev) {
     poklapanjeKazna = predlozakStatistika.matcher(zahtjev);
     var statusKazna = poklapanjeKazna.matches();
     if (statusKazna) {
-      var vrijemeOd = _l(poklapanjeKazna.group("vrijemeOd"));
-      var vrijemeDo = _l(poklapanjeKazna.group("vrijemeDo"));
+      var vrijemeOd = Parsiraj.pl(poklapanjeKazna.group("vrijemeOd"));
+      var vrijemeDo = Parsiraj.pl(poklapanjeKazna.group("vrijemeDo"));
       Stream<PodaciKazne> kazne = sveKazne.stream()
           .filter(k -> k.vrijemePocetak() >= vrijemeOd && k.vrijemeKraj() <= vrijemeDo);
       int[] uniqueIds = kazne.mapToInt(k -> k.id()).distinct().toArray();
@@ -197,9 +221,17 @@ public class PosluziteljKazni {
     return null;
   }
 
+  /**
+   * Preuzimanje postavki iz konfiguracije.
+   * 
+   * @param args Argumenti komandne linije.
+   * @throws NeispravnaKonfiguracija U slučaju neispravne konfiguracije.
+   * @throws NumberFormatException U slučaju neispravnog formata broja.
+   * @throws UnknownHostException U slučaju nepostojeće adrese.
+   */
   public void preuzmiPostavke(String[] args)
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     Konfiguracija konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
-    mreznaVrata = _i(konfig.dajPostavku("mreznaVrataKazne"));
+    mreznaVrata = Parsiraj.pi(konfig.dajPostavku("mreznaVrataKazne"));
   }
 }

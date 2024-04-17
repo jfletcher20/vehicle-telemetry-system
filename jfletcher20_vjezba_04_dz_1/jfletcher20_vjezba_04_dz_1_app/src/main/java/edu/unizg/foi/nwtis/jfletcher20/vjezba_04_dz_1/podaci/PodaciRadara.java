@@ -23,6 +23,12 @@ public record PodaciRadara(int id, String adresaRadara, int mreznaVrataRadara, i
     int maksTrajanje, int maksUdaljenost, String adresaRegistracije, int mreznaVrataRegistracije,
     String adresaKazne, int mreznaVrataKazne, String postanskaAdresaRadara, double gpsSirina,
     double gpsDuzina) {
+  /**
+   * Provjerava je li vozilo unutar dosega radara.
+   * 
+   * @param vozilo vozilo
+   * @return je li vozilo unutar dosega radara
+   */
   public boolean jeUnutarDosega(PodaciVozila vozilo) {
     return GpsUdaljenostBrzina.udaljenostKm(gpsSirina(), gpsDuzina(), vozilo.gpsSirina(),
         vozilo.gpsDuzina()) * 1000 < maksUdaljenost();

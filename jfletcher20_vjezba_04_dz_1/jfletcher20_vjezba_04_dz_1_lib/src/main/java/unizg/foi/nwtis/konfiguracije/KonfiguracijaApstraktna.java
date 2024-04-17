@@ -15,10 +15,10 @@ public abstract sealed class KonfiguracijaApstraktna implements Konfiguracija
   protected final static String verzija = "NWTiS 2024.";
 
   /** naziv datoteke konfiguracije. */
-  protected String nazivDatoteke;
+  public String nazivDatoteke;
 
   /** kolekcija postavki. */
-  protected Properties postavke;
+  public Properties postavke;
 
   /**
    * Konstruktor klase.

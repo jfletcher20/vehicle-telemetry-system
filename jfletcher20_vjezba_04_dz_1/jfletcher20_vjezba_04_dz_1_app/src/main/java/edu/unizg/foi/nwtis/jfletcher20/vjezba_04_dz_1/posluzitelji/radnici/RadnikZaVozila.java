@@ -8,23 +8,48 @@ import java.util.regex.Pattern;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciRadara;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciVozila;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.MrezneOperacije;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.Parsiraj;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.posluzitelji.CentralniSustav;
 
+/**
+ * Radnik za vozila.
+ */
 public class RadnikZaVozila implements Runnable {
 
+  /**
+   * Uticnica klijenta.
+   */
   private AsynchronousSocketChannel kanalKlijenta;
+  /**
+   * Referenca na centralni sustav.
+   */
   private CentralniSustav cs;
 
+  /**
+   * Predložak za naredbu s podacima o vozilu.
+   */
   private Pattern predlozakVozilo = Pattern.compile(
       "^VOZILO (?<id>-?\\d+) (?<broj>-?\\d+) (?<vrijeme>-?\\d+) (?<brzina>-?\\d+(?:\\.\\d+)?) (?<snaga>-?\\d+(?:\\.\\d+)?) (?<struja>-?\\d+(?:\\.\\d+)?) (?<visina>-?\\d+(?:\\.\\d+)?) (?<gpsBrzina>-?\\d+(?:\\.\\d+)?) (?<tempVozila>-?\\d+) (?<postotakBaterija>-?\\d+(?:\\.\\d+)?) (?<naponBaterija>-?\\d+(?:\\.\\d+)?) (?<kapacitetBaterija>-?\\d+(?:\\.\\d+)?) (?<tempBaterija>-?\\d+(?:\\.\\d+)?) (?<preostaloKm>-?\\d+(?:\\.\\d+)?) (?<ukupnoKm>-?\\d+(?:\\.\\d+)?) (?<gpsSirina>-?\\d+(?:\\.\\d+)?) (?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$");
 
+  /**
+   * Matcher za provjeru poklapanja naredbi vozila.
+   */
   private Matcher poklapanjeVozila;
 
+  /**
+   * Konstruktor za radnika vozila.
+   * 
+   * @param klijent utičnica klijenta
+   * @param cs referenca na centralni sustav
+   */
   public RadnikZaVozila(AsynchronousSocketChannel klijent, CentralniSustav cs) {
     this.kanalKlijenta = klijent;
     this.cs = cs;
   }
 
+  /**
+   * Metoda koja pokreće radnika.
+   */
   @Override
   public void run() {
     try {
@@ -36,10 +61,8 @@ public class RadnikZaVozila implements Runnable {
             citac.get();
             String r = new String(bb.array()).trim();
             if (r.length() > 0)
-              /* var odgovor = */obradaZahtjeva(r);
+              obradaZahtjeva(r);
             bb.clear();
-            // bb.put(odgovor.getBytes()); // TODO: no response is needed from RadnikZaVozila
-            // bb.flip();
           } else
             break;
         }
@@ -51,6 +74,12 @@ public class RadnikZaVozila implements Runnable {
     }
   }
 
+  /**
+   * Metoda za obradu zahtjeva.
+   * 
+   * @param zahtjev Zahtjev za obradu
+   * @return Odgovor na zahtjev
+   */
   public String obradaZahtjeva(String zahtjev) {
     if (zahtjev == null || zahtjev.length() == 0)
       return "ERROR 20 Neispravna sintaksa komande " + zahtjev + "";
@@ -60,42 +89,35 @@ public class RadnikZaVozila implements Runnable {
         : "ERROR 29 Nije moguće obraditi zahtjev ( + " + zahtjev.length() + ": " + zahtjev + "";
   }
 
-  private Double _d(String value) {
-    return Double.valueOf(value);
-  }
-
-  private Long _l(String value) {
-    return Long.valueOf(value);
-  }
-
-  private Integer _i(String value) {
-    return Integer.valueOf(value);
-  }
-
+  /**
+   * Metoda za obradu zahtjeva vozila.
+   * 
+   * @param zahtjev Zahtjev za obradu
+   * @return Odgovor na zahtjev
+   */
   public String obradaZahtjevaVozila(String zahtjev) {
     try {
       poklapanjeVozila = predlozakVozilo.matcher(zahtjev);
       if (poklapanjeVozila.matches()) {
-        var vozilo = new PodaciVozila(_i(poklapanjeVozila.group("id")), //
-            _i(poklapanjeVozila.group("broj")), //
-            _l(poklapanjeVozila.group("vrijeme")), //
-            _d(poklapanjeVozila.group("brzina")), //
-            _d(poklapanjeVozila.group("snaga")), //
-            _d(poklapanjeVozila.group("struja")), //
-            _d(poklapanjeVozila.group("visina")), //
-            _d(poklapanjeVozila.group("gpsBrzina")), //
-            _i(poklapanjeVozila.group("tempVozila")), //
-            _i(poklapanjeVozila.group("postotakBaterija")), //
-            _d(poklapanjeVozila.group("naponBaterija")), //
-            _i(poklapanjeVozila.group("kapacitetBaterija")), //
-            _i(poklapanjeVozila.group("tempBaterija")), //
-            _d(poklapanjeVozila.group("preostaloKm")), //
-            _d(poklapanjeVozila.group("ukupnoKm")), //
-            _d(poklapanjeVozila.group("gpsSirina")), //
-            _d(poklapanjeVozila.group("gpsDuzina")));
-        for (PodaciRadara r : cs.sviRadari.values()) {
+        var vozilo = new PodaciVozila(Parsiraj.pi(poklapanjeVozila.group("id")),
+            Parsiraj.pi(poklapanjeVozila.group("broj")),
+            Parsiraj.pl(poklapanjeVozila.group("vrijeme")),
+            Parsiraj.pd(poklapanjeVozila.group("brzina")),
+            Parsiraj.pd(poklapanjeVozila.group("snaga")),
+            Parsiraj.pd(poklapanjeVozila.group("struja")),
+            Parsiraj.pd(poklapanjeVozila.group("visina")),
+            Parsiraj.pd(poklapanjeVozila.group("gpsBrzina")),
+            Parsiraj.pi(poklapanjeVozila.group("tempVozila")),
+            Parsiraj.pi(poklapanjeVozila.group("postotakBaterija")),
+            Parsiraj.pd(poklapanjeVozila.group("naponBaterija")),
+            Parsiraj.pi(poklapanjeVozila.group("kapacitetBaterija")),
+            Parsiraj.pi(poklapanjeVozila.group("tempBaterija")),
+            Parsiraj.pd(poklapanjeVozila.group("preostaloKm")),
+            Parsiraj.pd(poklapanjeVozila.group("ukupnoKm")),
+            Parsiraj.pd(poklapanjeVozila.group("gpsSirina")),
+            Parsiraj.pd(poklapanjeVozila.group("gpsDuzina")));
+        for (PodaciRadara r : cs.sviRadari.values())
           provjeriVoziloUOkoliniRadara(vozilo, r);
-        }
         return "OK";
       }
       return null;
@@ -105,6 +127,12 @@ public class RadnikZaVozila implements Runnable {
     }
   }
 
+  /**
+   * Metoda za provjeru vozila u okolini radara.
+   * 
+   * @param vozilo Vozilo za provjeru
+   * @param r Radar za provjeru
+   */
   private void provjeriVoziloUOkoliniRadara(PodaciVozila vozilo, PodaciRadara r) {
     if (r.jeUnutarDosega(vozilo)) {
       String cmd = "VOZILO " + vozilo.id() + " " + vozilo.vrijeme() + " " + vozilo.brzina() + " "

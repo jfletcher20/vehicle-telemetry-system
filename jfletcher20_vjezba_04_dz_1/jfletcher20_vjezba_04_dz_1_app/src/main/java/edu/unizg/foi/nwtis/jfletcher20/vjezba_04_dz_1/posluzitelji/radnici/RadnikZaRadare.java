@@ -13,12 +13,31 @@ import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciRadara;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.posluzitelji.PosluziteljRadara;
 
+/**
+ * Radnik za radare.
+ */
 public class RadnikZaRadare implements Runnable {
 
+  /**
+   * Mrežna utičnica.
+   */
   private Socket s;
+  /**
+   * Podaci o radaru.
+   */
   private PodaciRadara r;
+  /**
+   * Poslužitelj radara.
+   */
   private PosluziteljRadara p;
 
+  /**
+   * Konstruktor za radnika radara.
+   * 
+   * @param mreznaUticnica
+   * @param podaciRadara
+   * @param posluziteljRadara
+   */
   public RadnikZaRadare(Socket mreznaUticnica, PodaciRadara podaciRadara,
       PosluziteljRadara posluziteljRadara) {
     super();
@@ -27,6 +46,9 @@ public class RadnikZaRadare implements Runnable {
     this.p = posluziteljRadara;
   }
 
+  /**
+   * Predložak za naredbu s podacima o vozilu i brzini.
+   */
   private Pattern predlozakBrzine = Pattern.compile("^VOZILO " //
       + "(?<id>-?\\d+) " //
       + "(?<vrijeme>-?\\d+) " //
@@ -34,6 +56,9 @@ public class RadnikZaRadare implements Runnable {
       + "(?<gpsSirina>-?\\d+(?:\\.\\d+)?) " //
       + "(?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$"); //
 
+  /**
+   * Pokreće radnika.
+   */
   @Override
   public void run() {
 
@@ -44,9 +69,7 @@ public class RadnikZaRadare implements Runnable {
       var redak = citac.readLine();
       s.shutdownInput();
       var odgovor = obradaZahtjeva(redak);
-      pisac.println(odgovor); // TODO: maybe remove this println? need to check if
-                              // it's necessary
-      System.out.println(odgovor);
+      pisac.println(odgovor);
       pisac.flush();
       s.shutdownOutput();
       s.close();
@@ -56,6 +79,11 @@ public class RadnikZaRadare implements Runnable {
 
   }
 
+  /**
+   * Obrada zahtjeva posluzitelja.
+   * 
+   * @param zahtjev zahtjev
+   */
   private String obradaZahtjeva(String zahtjev) {
     if (zahtjev == null)
       return "ERROR 30 Neispravna sintaksa naredbe.\n";
@@ -63,16 +91,11 @@ public class RadnikZaRadare implements Runnable {
     return r != null ? r : "ERROR 39 Nešto je pošlo po zlu.\n";
   }
 
-  private boolean nemojPratit(BrzoVozilo vozilo) {
-    if (r.maksBrzina() < vozilo.brzina())
-      return false;
-    if (p.brzaVozila.get(vozilo.id()) != null) {
-      var poh = p.brzaVozila.get(vozilo.id()).postaviStatus(false);
-      p.brzaVozila.put(vozilo.id(), poh);
-    }
-    return true;
-  }
-
+  /**
+   * Obrada zahtjeva za potencijalno kaznjavanje brzine vozila.
+   * 
+   * @param zahtjev zahtjev s brzinom vozila
+   */
   private String obradaZahtjevaBrzine(String zahtjev) {
     var podaciVozila = predlozakBrzine.matcher(zahtjev);
     if (!podaciVozila.matches())
@@ -104,34 +127,27 @@ public class RadnikZaRadare implements Runnable {
     }
   }
 
+  /**
+   * Provjerava je li vrijeme između dva brza vozila kaznjivo.
+   * 
+   * @param a
+   * @param b
+   * @return razlika vremena je kaznjiva ili ne
+   */
   private boolean kaznjivoVrijeme(BrzoVozilo a, BrzoVozilo b) {
     var maks = r.maksTrajanje() * 1000;
     return razlikaVremena(a, b) > maks && razlikaVremena(a, b) < maks * 2;
   }
 
+  /**
+   * Računa razliku u vremenu između dva brza vozila.
+   * 
+   * @param a
+   * @param b
+   * @return razlika u vremenu
+   */
   private long razlikaVremena(BrzoVozilo a, BrzoVozilo b) {
     return Math.abs(a.vrijeme() - b.vrijeme());
   }
 
 }
-
-/*
- * private String obradaZahtjevaBrzine(String zahtjev) { var podaciVozila =
- * predlozakBrzine.matcher(zahtjev); if (!podaciVozila.matches()) return null;
- * 
- * var vozilo = new BrzoVozilo(podaciVozila.group("id"), -1, podaciVozila.group("vrijeme"),
- * podaciVozila.group("brzina"), podaciVozila.group("gpsSirina"), podaciVozila.group("gpsDuzina"),
- * false);
- * 
- * if (jeBrzaVoznja(vozilo) && p.vrijemeIzmeduPodataka(vozilo) > r.maksTrajanje() * 1000) { var prvi
- * = p.brzaVozila.get(vozilo.id()); String cmd = "VOZILO " + vozilo.id() + " " + (prvi == null ?
- * vozilo : prvi).vrijeme() + " " + vozilo.vrijeme() + " " + vozilo.brzina() + " " +
- * vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + " " + r.gpsSirina() + " " + r.gpsDuzina() + "\n";
- * MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaKazne(), r.mreznaVrataKazne(), cmd); if
- * (p.brzaVozila.get(vozilo.id()) == null) { p.brzaVozila.put(vozilo.id(), vozilo); } else {
- * p.brzaVozila.put(vozilo.id(), p.brzaVozila.get(vozilo.id()).postaviStatus(true)); } } else {
- * p.brzaVozila.put(vozilo.id(), vozilo.postaviStatus(false)); } if (p.vrijemeIzmeduPodataka(vozilo)
- * > r.maksTrajanje() * 1000 * 2) { p.brzaVozila.put(vozilo.id(), vozilo.postaviStatus(false));
- * return "ERROR 39 Došlo je do pogreške u radu radara.\n"; } return "OK - status: " +
- * p.brzaVozila.get(vozilo.id()).status() + "\n"; }
- */
