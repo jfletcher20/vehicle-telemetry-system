@@ -25,14 +25,6 @@ public class RadnikZaVozila implements Runnable {
     this.cs = cs;
   }
 
-  private Pattern predlozakBrzine = Pattern.compile( //
-      "^VOZILO " // VOZILO
-          + "(?<id>\\d+) " // int id vozila
-          + "(?<vrijeme>\\d+) " // long vrijeme
-          + "(?<brzina>-?\\d+([.]\\d+)?) " // double brzina
-          + "(?<gpsSirina>\\d+[.]\\d+) " // double gpsSirina
-          + "(?<gpsDuzina>\\d+[.]\\d+)$"); // double gpsDuzina
-
   @Override
   public void run() {
     try {
@@ -43,14 +35,11 @@ public class RadnikZaVozila implements Runnable {
             Future<Integer> citac = kanalKlijenta.read(bb);
             citac.get();
             String r = new String(bb.array()).trim();
-            System.out.println(r);
-            var odgovor = obradaZahtjeva(r);
-            if (!odgovor.contains("OK")) {
-              bb.clear();
-              bb.put(odgovor.getBytes()); // TODO: wtf is even happening here?
-              bb.flip();
-              kanalKlijenta.write(bb);
-            }
+            if (r.length() > 0)
+              /* var odgovor = */obradaZahtjeva(r);
+            bb.clear();
+            // bb.put(odgovor.getBytes()); // TODO: no response is needed from RadnikZaVozila
+            // bb.flip();
           } else
             break;
         }
@@ -105,20 +94,22 @@ public class RadnikZaVozila implements Runnable {
             _d(poklapanjeVozila.group("gpsSirina")), //
             _d(poklapanjeVozila.group("gpsDuzina")));
         for (PodaciRadara r : cs.sviRadari.values()) {
-          if (r.jeUnutarDosega(vozilo)) {
-            String cmd = "VOZILO " + vozilo.id() + " " + vozilo.vrijeme() + " " + vozilo.brzina()
-                + " " + vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + "";
-            MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRadara(), r.mreznaVrataRadara(),
-                cmd);
-          }
+          provjeriVoziloUOkoliniRadara(vozilo, r);
         }
         return "OK";
       }
       return null;
     } catch (Exception e) {
-      System.out.println("Couldn't match zahtjev: " + zahtjev);
       e.printStackTrace();
       return "ERROR 29 Nije moguće obraditi zahtjev ( + " + zahtjev.length() + ": " + zahtjev + "";
+    }
+  }
+
+  private void provjeriVoziloUOkoliniRadara(PodaciVozila vozilo, PodaciRadara r) {
+    if (r.jeUnutarDosega(vozilo)) {
+      String cmd = "VOZILO " + vozilo.id() + " " + vozilo.vrijeme() + " " + vozilo.brzina() + " "
+          + vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + "";
+      MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRadara(), r.mreznaVrataRadara(), cmd);
     }
   }
 

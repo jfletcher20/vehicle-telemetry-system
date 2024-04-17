@@ -36,8 +36,8 @@ public class PosluziteljRadara {
           + "(?<gpsDuzinaRadar>\\d+[.]\\d+)$");
 
   private Matcher poklapanjeKazna;
-  private volatile Queue<PodaciKazne> sveKazne = new ConcurrentLinkedQueue<>();
-  private volatile Queue<BrzoVozilo> brzaVozila = new ConcurrentLinkedQueue<>();
+  public volatile Queue<PodaciKazne> sveKazne = new ConcurrentLinkedQueue<>();
+  public volatile Queue<BrzoVozilo> brzaVozila = new ConcurrentLinkedQueue<>();
   private PodaciRadara r;
 
   public static void main(String[] args) {

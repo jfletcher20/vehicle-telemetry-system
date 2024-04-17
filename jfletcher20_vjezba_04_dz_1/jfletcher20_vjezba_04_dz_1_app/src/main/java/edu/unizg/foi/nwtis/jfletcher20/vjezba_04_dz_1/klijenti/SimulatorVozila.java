@@ -3,12 +3,16 @@ package edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.klijenti;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciVozila;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.RedPodaciVozila;
-import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.MrezneOperacije;
 import unizg.foi.nwtis.konfiguracije.Konfiguracija;
 import unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
@@ -113,34 +117,41 @@ public class SimulatorVozila {
       simulator.preuzmiPostavke(args);
       simulator.redPodaciVozila = new RedPodaciVozila(simulator.mreznaVrataVozila);
       simulator.preuzmiPostavkeVozila(args);
-      simulator.spajanjeNaPosluzitelj();
+      simulator.es = Executors.newVirtualThreadPerTaskExecutor();
+
+      AsynchronousSocketChannel kanalKlijenta = AsynchronousSocketChannel.open();
+      var adresa = new InetSocketAddress(simulator.adresaVozila, simulator.mreznaVrataVozila);
+      Future<Void> result = kanalKlijenta.connect(adresa);
       while (true) {
         try {
           Thread.sleep((long) (simulator.citajCSV() * simulator.korekcijaVremena()));
-          var zahtjev = simulator.konstruirajZahtjev();
-          if (zahtjev.trim().length() > 0) {
-            simulator.es.execute(() -> {
-              MrezneOperacije.posaljiZahtjevPosluzitelju(simulator.adresaVozila,
-                  simulator.mreznaVrataVozila, zahtjev);
-            });
-            System.out.println(zahtjev);
-          }
+          result.get();
+
+          simulator.es.submit(() -> {
+            try {
+              var zahtjev = simulator.konstruirajZahtjev();
+
+              byte[] sadrzaj = new String(zahtjev).getBytes();
+              ByteBuffer bb = ByteBuffer.wrap(sadrzaj);
+              Future<Integer> pisac = kanalKlijenta.write(bb);
+              pisac.get();
+              System.out.println(zahtjev);
+              bb.clear();
+
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          });
           Thread.sleep(simulator.trajanjePauze);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
           e.printStackTrace();
         }
       }
-    } catch (NumberFormatException | NeispravnaKonfiguracija | UnknownHostException e) {
+    } catch (NumberFormatException | NeispravnaKonfiguracija | IOException e) {
       e.printStackTrace();
     }
   }
 
-  /**
-   * Otvara utičnicu i priprema se za asinkrono izvršavanje zadataka
-   */
-  private void spajanjeNaPosluzitelj() {
-    es = Executors.newVirtualThreadPerTaskExecutor();
-  }
 
   /**
    * Razlika izmedu vremena zadanog vozila i posljednjeg vozila dodanog u red.
@@ -164,26 +175,30 @@ public class SimulatorVozila {
    * @return zahtjev u obliku VOZILO podatak podatak podatak ...
    */
   private String konstruirajZahtjev() {
-    PodaciVozila p = (PodaciVozila) redPodaciVozila.dajSvePodatkeVozila()
-        .toArray()[redPodaciVozila.dajBrojPodatakaVozila() - 1];
-    return "VOZILO " //
-        + p.id() + " " //
-        + p.broj() + " " //
-        + p.vrijeme() + " " //
-        + p.brzina() + " " //
-        + p.snaga() + " " //
-        + p.struja() + " " //
-        + p.visina() + " " //
-        + p.gpsBrzina() + " " //
-        + p.tempVozila() + " " //
-        + p.postotakBaterija() + " " //
-        + p.naponBaterija() + " " //
-        + p.kapacitetBaterija() + " " //
-        + p.tempBaterija() + " " //
-        + p.preostaloKm() + " " //
-        + p.ukupnoKm() + " " //
-        + p.gpsSirina() + " " //
-        + p.gpsDuzina() + "";
+    try {
+      PodaciVozila p = (PodaciVozila) redPodaciVozila.dajSvePodatkeVozila()
+          .toArray()[redPodaciVozila.dajBrojPodatakaVozila() - 1];
+      return "VOZILO " //
+          + p.id() + " " //
+          + p.broj() + " " //
+          + p.vrijeme() + " " //
+          + p.brzina() + " " //
+          + p.snaga() + " " //
+          + p.struja() + " " //
+          + p.visina() + " " //
+          + p.gpsBrzina() + " " //
+          + p.tempVozila() + " " //
+          + p.postotakBaterija() + " " //
+          + p.naponBaterija() + " " //
+          + p.kapacitetBaterija() + " " //
+          + p.tempBaterija() + " " //
+          + p.preostaloKm() + " " //
+          + p.ukupnoKm() + " " //
+          + p.gpsSirina() + " " //
+          + p.gpsDuzina() + "";
+    } catch (Exception e) {
+      return "NO DATA";
+    }
   }
 
   private double _dp(String value) {
@@ -236,8 +251,9 @@ public class SimulatorVozila {
       for (int i = 0; i < brojRetka; i++)
         reader.readLine();
       String row = reader.readLine();
-      if (row == null)
-        return 0;
+      if (row == null) {
+        System.exit(0); // završi program ako nema više redaka
+      }
       String[] data = row.split(",");
       var p = new PodaciVozila(idVozila, brojRetka++, //
           _lp(data[0]), //

@@ -25,6 +25,6 @@ public record PodaciRadara(int id, String adresaRadara, int mreznaVrataRadara, i
     double gpsDuzina) {
   public boolean jeUnutarDosega(PodaciVozila vozilo) {
     return GpsUdaljenostBrzina.udaljenostKm(gpsSirina(), gpsDuzina(), vozilo.gpsSirina(),
-        vozilo.gpsDuzina()) * 1000 > maksUdaljenost();
+        vozilo.gpsDuzina()) * 1000 < maksUdaljenost();
   }
 }

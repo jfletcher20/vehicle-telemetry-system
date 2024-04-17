@@ -29,11 +29,11 @@ public class RadnikZaRadare implements Runnable {
   }
 
   private Pattern predlozakBrzine = Pattern.compile("^VOZILO " //
-      + "(?<id>\\d+)" //
-      + "(?<vrijeme>\\d+)" //
-      + "(?<brzina>-?\\d+([.]\\d+)?) " //
-      + "(?<gpsSirina>\\d+[.]\\d+) " //
-      + "(?<gpsDuzina>\\d+[.]\\d+)$");
+      + "(?<id>-?\\d+) " //
+      + "(?<vrijeme>-?\\d+) " //
+      + "(?<brzina>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<gpsSirina>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$"); //
 
   @Override
   public void run() {
@@ -43,9 +43,12 @@ public class RadnikZaRadare implements Runnable {
       OutputStream out = s.getOutputStream();
       PrintWriter pisac = new PrintWriter(new OutputStreamWriter(out, "utf8"), true);
       var redak = citac.readLine();
+      System.out.println("Primljena naredba: " + redak);
       s.shutdownInput();
-      pisac.println(obradaZahtjeva(redak)); // TODO: maybe remove this println? need to check if
-                                            // it's necessary
+      var odgovor = obradaZahtjeva(redak);
+      pisac.println(odgovor); // TODO: maybe remove this println? need to check if
+                              // it's necessary
+      System.out.println(odgovor);
       pisac.flush();
       s.shutdownOutput();
       s.close();
@@ -72,6 +75,7 @@ public class RadnikZaRadare implements Runnable {
     if (!podaciVozila.matches())
       return null;
     // parsiranje zahtjeva u objekt
+    System.out.println("Radnik radi na zahtjevu: " + zahtjev);
     var vozilo = new BrzoVozilo(//
         podaciVozila.group("id"), //
         -1, //
@@ -81,25 +85,28 @@ public class RadnikZaRadare implements Runnable {
         podaciVozila.group("gpsDuzina"), //
         false);
     // provjera udaljenosti
+    var udaljenost = GpsUdaljenostBrzina.udaljenostKm(r.gpsSirina(), r.gpsDuzina(),
+        vozilo.gpsSirina(), vozilo.gpsDuzina());
+    System.out
+        .println("Udaljenost: " + udaljenost + ", a maks udaljenost je " + r.maksUdaljenost());
     if (GpsUdaljenostBrzina.udaljenostKm(r.gpsSirina(), r.gpsDuzina(), vozilo.gpsSirina(),
         vozilo.gpsDuzina()) * 1000 > r.maksUdaljenost()) {
       // provjera brzine i trajanja brze vožnje
+      System.out.println("Vozilo " + vozilo.id() + " je u dosegu radara.");
       if (jeBrzaVoznja(vozilo)) {
-        String cmd = "VOZILO " + vozilo.id() //
-            + " " + p.prviZapisOVozilu(vozilo.id()).vrijeme() //
-            + " " + vozilo.vrijeme() //
-            + " " + vozilo.brzina() //
-            + " " + vozilo.gpsSirina() //
-            + " " + vozilo.gpsDuzina() //
-            + " " + r.gpsSirina() //
-            + " " + r.gpsDuzina() + "\n";
+        String cmd = "VOZILO " + vozilo.id() + " " + p.prviZapisOVozilu(vozilo.id()).vrijeme() + " "
+            + vozilo.vrijeme() + " " + vozilo.brzina() + " " + vozilo.gpsSirina() + " "
+            + vozilo.gpsDuzina() + " " + r.gpsSirina() + " " + r.gpsDuzina() + "\n";
         MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaKazne(), r.mreznaVrataKazne(), cmd);
         // TODO: test, but also ensure that this is what's actually expected of this method
+        System.out.print("is indeed a brza voznja -- ");
+        System.out.println(p.brzaVozila.size());
         return "OK\n";
       } else if (p.vrijemeIzmeduPodataka(vozilo) < r.maksTrajanje() * 2) {
         return "ERROR 39 Došlo je do pogreške u radu radara.\n";
       }
     }
+    System.out.println(p.brzaVozila.size());
     return "OK\n";
   }
 
