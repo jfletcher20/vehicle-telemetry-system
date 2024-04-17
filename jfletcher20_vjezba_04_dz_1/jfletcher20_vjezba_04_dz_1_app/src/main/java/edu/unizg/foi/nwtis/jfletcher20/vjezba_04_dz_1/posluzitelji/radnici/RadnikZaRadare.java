@@ -76,10 +76,7 @@ public class RadnikZaRadare implements Runnable {
       return null;
     // parsiranje zahtjeva u objekt
     System.out.println("Radnik radi na zahtjevu: " + zahtjev);
-    var vozilo = new BrzoVozilo(//
-        podaciVozila.group("id"), //
-        -1, //
-        podaciVozila.group("vrijeme"), //
+    var vozilo = new BrzoVozilo(podaciVozila.group("id"), -1, podaciVozila.group("vrijeme"),
         podaciVozila.group("brzina"), //
         podaciVozila.group("gpsSirina"), //
         podaciVozila.group("gpsDuzina"), //
@@ -87,10 +84,8 @@ public class RadnikZaRadare implements Runnable {
     // provjera udaljenosti
     var udaljenost = GpsUdaljenostBrzina.udaljenostKm(r.gpsSirina(), r.gpsDuzina(),
         vozilo.gpsSirina(), vozilo.gpsDuzina());
-    System.out
-        .println("Udaljenost: " + udaljenost + ", a maks udaljenost je " + r.maksUdaljenost());
     if (GpsUdaljenostBrzina.udaljenostKm(r.gpsSirina(), r.gpsDuzina(), vozilo.gpsSirina(),
-        vozilo.gpsDuzina()) * 1000 > r.maksUdaljenost()) {
+        vozilo.gpsDuzina()) * 1000 < r.maksUdaljenost()) {
       // provjera brzine i trajanja brze vožnje
       System.out.println("Vozilo " + vozilo.id() + " je u dosegu radara.");
       if (jeBrzaVoznja(vozilo)) {

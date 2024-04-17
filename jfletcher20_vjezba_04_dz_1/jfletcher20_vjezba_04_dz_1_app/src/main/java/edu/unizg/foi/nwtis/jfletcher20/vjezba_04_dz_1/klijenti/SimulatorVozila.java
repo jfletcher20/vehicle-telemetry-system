@@ -107,6 +107,14 @@ public class SimulatorVozila {
     this.trajanjePauze = trajanjePauze;
   }
 
+  private void inicijalizirajSimulator(String[] args)
+      throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
+    preuzmiPostavke(args);
+    redPodaciVozila = new RedPodaciVozila(mreznaVrataVozila);
+    preuzmiPostavkeVozila(args);
+    es = Executors.newVirtualThreadPerTaskExecutor();
+  }
+
   public static void main(String[] args) {
     if (args.length != 3) {
       System.out.println("Broj argumenata nije 3.");
@@ -114,11 +122,7 @@ public class SimulatorVozila {
     }
     SimulatorVozila simulator = new SimulatorVozila();
     try {
-      simulator.preuzmiPostavke(args);
-      simulator.redPodaciVozila = new RedPodaciVozila(simulator.mreznaVrataVozila);
-      simulator.preuzmiPostavkeVozila(args);
-      simulator.es = Executors.newVirtualThreadPerTaskExecutor();
-
+      simulator.inicijalizirajSimulator(args);
       AsynchronousSocketChannel kanalKlijenta = AsynchronousSocketChannel.open();
       var adresa = new InetSocketAddress(simulator.adresaVozila, simulator.mreznaVrataVozila);
       Future<Void> result = kanalKlijenta.connect(adresa);
@@ -126,22 +130,7 @@ public class SimulatorVozila {
         try {
           Thread.sleep((long) (simulator.citajCSV() * simulator.korekcijaVremena()));
           result.get();
-
-          simulator.es.submit(() -> {
-            try {
-              var zahtjev = simulator.konstruirajZahtjev();
-
-              byte[] sadrzaj = new String(zahtjev).getBytes();
-              ByteBuffer bb = ByteBuffer.wrap(sadrzaj);
-              Future<Integer> pisac = kanalKlijenta.write(bb);
-              pisac.get();
-              System.out.println(zahtjev);
-              bb.clear();
-
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          });
+          simulator.simulirajVoznju(kanalKlijenta);
           Thread.sleep(simulator.trajanjePauze);
         } catch (InterruptedException | ExecutionException e) {
           e.printStackTrace();
@@ -150,6 +139,22 @@ public class SimulatorVozila {
     } catch (NumberFormatException | NeispravnaKonfiguracija | IOException e) {
       e.printStackTrace();
     }
+  }
+
+  private void simulirajVoznju(AsynchronousSocketChannel kanalKlijenta) {
+    es.submit(() -> {
+      try {
+        var zahtjev = konstruirajZahtjev();
+        byte[] sadrzaj = new String(zahtjev).getBytes();
+        ByteBuffer bb = ByteBuffer.wrap(sadrzaj);
+        Future<Integer> pisac = kanalKlijenta.write(bb);
+        pisac.get();
+        System.out.println(zahtjev);
+        bb.clear();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    });
   }
 
 
@@ -251,26 +256,12 @@ public class SimulatorVozila {
       for (int i = 0; i < brojRetka; i++)
         reader.readLine();
       String row = reader.readLine();
-      if (row == null) {
-        System.exit(0); // završi program ako nema više redaka
-      }
+      if (row == null)
+        System.exit(0); // prekida program ako nema više redaka
       String[] data = row.split(",");
-      var p = new PodaciVozila(idVozila, brojRetka++, //
-          _lp(data[0]), //
-          _dp(data[1]), //
-          _dp(data[2]), //
-          _dp(data[3]), //
-          _dp(data[4]), //
-          _dp(data[5]), //
-          _ip(data[6]), //
-          _ip(data[7]), //
-          _dp(data[8]), //
-          _ip(data[9]), //
-          _ip(data[10]), //
-          _dp(data[11]), //
-          _dp(data[12]), //
-          _dp(data[13]), //
-          _dp(data[14]));
+      var p = new PodaciVozila(idVozila, brojRetka++, _lp(data[0]), _dp(data[1]), _dp(data[2]),
+          _dp(data[3]), _dp(data[4]), _dp(data[5]), _ip(data[6]), _ip(data[7]), _dp(data[8]),
+          _ip(data[9]), _ip(data[10]), _dp(data[11]), _dp(data[12]), _dp(data[13]), _dp(data[14]));
       long razlika = 0;
       if (redPodaciVozila.dajBrojPodatakaVozila() > 0)
         razlika = razlikaVremena(p);
