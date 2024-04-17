@@ -65,7 +65,7 @@ public class PosluziteljKazni {
   /**
    * Sve kazne koje su zabilježene.
    */
-  private volatile Queue<PodaciKazne> sveKazne = new ConcurrentLinkedQueue<>();
+  public volatile Queue<PodaciKazne> sveKazne = new ConcurrentLinkedQueue<>();
 
   /**
    * Pokretanje poslužitelja.
@@ -101,7 +101,6 @@ public class PosluziteljKazni {
         var redak = citac.readLine();
         mreznaUticnica.shutdownInput();
         var obrada = obradaZahtjeva(redak);
-        System.out.println(obrada);
         pisac.println(obradaZahtjeva(redak));
         pisac.flush();
         mreznaUticnica.shutdownOutput();
@@ -184,7 +183,7 @@ public class PosluziteljKazni {
         if (kazna.isPresent()) {
           var k = kazna.get();
           return "OK " + k.vrijemePocetak() + " " + k.brzina() + " " + k.gpsSirinaRadar() + " "
-              + k.gpsDuzinaRadar() + "\n"; // TODO: verify extra information is allowed/necessary
+              + k.gpsDuzinaRadar() + "\n";
         }
       } catch (Exception e) {
         return "ERROR 41 Nema kazne za vozilo " + id + " u zadanom vremenu.\n";

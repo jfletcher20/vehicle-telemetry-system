@@ -139,7 +139,6 @@ public class SimulatorVozila {
         ByteBuffer bb = ByteBuffer.wrap(sadrzaj);
         Future<Integer> pisac = kanalKlijenta.write(bb);
         pisac.get();
-        System.out.println(zahtjev);
         bb.clear();
       } catch (Exception e) {
         e.printStackTrace();

@@ -67,7 +67,7 @@ public class PosluziteljRadara {
       posluziteljRadara.pokreniPosluzitelja();
 
     } catch (NeispravnaKonfiguracija | NumberFormatException | UnknownHostException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
       return;
     }
   }
@@ -114,19 +114,13 @@ public class PosluziteljRadara {
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     Konfiguracija konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
 
-    r = new PodaciRadara(_ip(konfig.dajPostavku("id")), //
-        InetAddress.getLocalHost().getHostName(), //
-        _ip(konfig.dajPostavku("mreznaVrataRadara")), //
-        _ip(konfig.dajPostavku("maksBrzina")), //
-        _ip(konfig.dajPostavku("maksTrajanje")), //
-        _ip(konfig.dajPostavku("maksUdaljenost")), //
-        konfig.dajPostavku("adresaRegistracije"), //
-        _ip(konfig.dajPostavku("mreznaVrataRegistracije")), //
-        konfig.dajPostavku("adresaKazne"), //
-        _ip(konfig.dajPostavku("mreznaVrataKazne")), //
-        konfig.dajPostavku("postanskaAdresaRadara"), //
-        _dp(konfig.dajPostavku("gpsSirina")), //
-        _dp(konfig.dajPostavku("gpsDuzina")));
+    r = new PodaciRadara(_ip(konfig.dajPostavku("id")), InetAddress.getLocalHost().getHostName(),
+        _ip(konfig.dajPostavku("mreznaVrataRadara")), _ip(konfig.dajPostavku("maksBrzina")),
+        _ip(konfig.dajPostavku("maksTrajanje")), _ip(konfig.dajPostavku("maksUdaljenost")),
+        konfig.dajPostavku("adresaRegistracije"),
+        _ip(konfig.dajPostavku("mreznaVrataRegistracije")), konfig.dajPostavku("adresaKazne"),
+        _ip(konfig.dajPostavku("mreznaVrataKazne")), konfig.dajPostavku("postanskaAdresaRadara"),
+        _dp(konfig.dajPostavku("gpsSirina")), _dp(konfig.dajPostavku("gpsDuzina")));
 
     mreznaVrata = _i(konfig.dajPostavku("mreznaVrataKazne"));
   }
@@ -138,13 +132,9 @@ public class PosluziteljRadara {
    */
   private boolean registrirajPosluzitelja() {
     var s = new StringBuilder();
-    s.append("RADAR").append(" ") //
-        .append(r.id()).append(" ") //
-        .append(r.adresaRadara()).append(" ") //
-        .append(r.mreznaVrataRadara()).append(" ") //
-        .append(r.gpsSirina()).append(" ") //
-        .append(r.gpsDuzina()).append(" ") //
-        .append(r.maksUdaljenost()).append("\n");
+    s.append("RADAR").append(" ").append(r.id()).append(" ").append(r.adresaRadara()).append(" ")
+        .append(r.mreznaVrataRadara()).append(" ").append(r.gpsSirina()).append(" ")
+        .append(r.gpsDuzina()).append(" ").append(r.maksUdaljenost()).append("\n");
     return MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRegistracije(),
         r.mreznaVrataRegistracije(), s.toString()) != null;
   }

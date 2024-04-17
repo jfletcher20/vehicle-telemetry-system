@@ -82,11 +82,11 @@ public class RadnikZaVozila implements Runnable {
    */
   public String obradaZahtjeva(String zahtjev) {
     if (zahtjev == null || zahtjev.length() == 0)
-      return "ERROR 20 Neispravna sintaksa komande " + zahtjev + "";
+      return "ERROR 20 Neispravna sintaksa komande " + zahtjev + "\n";
     zahtjev = zahtjev.trim();
     var odgovor = obradaZahtjevaVozila(zahtjev);
     return odgovor != null ? odgovor
-        : "ERROR 29 Nije moguće obraditi zahtjev ( + " + zahtjev.length() + ": " + zahtjev + "";
+        : "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
   }
 
   /**
@@ -118,12 +118,12 @@ public class RadnikZaVozila implements Runnable {
             Parsiraj.pd(poklapanjeVozila.group("gpsDuzina")));
         for (PodaciRadara r : cs.sviRadari.values())
           provjeriVoziloUOkoliniRadara(vozilo, r);
-        return "OK";
+        return "OK\n";
       }
       return null;
     } catch (Exception e) {
       e.printStackTrace();
-      return "ERROR 29 Nije moguće obraditi zahtjev ( + " + zahtjev.length() + ": " + zahtjev + "";
+      return "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
     }
   }
 
@@ -136,7 +136,7 @@ public class RadnikZaVozila implements Runnable {
   private void provjeriVoziloUOkoliniRadara(PodaciVozila vozilo, PodaciRadara r) {
     if (r.jeUnutarDosega(vozilo)) {
       String cmd = "VOZILO " + vozilo.id() + " " + vozilo.vrijeme() + " " + vozilo.brzina() + " "
-          + vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + "";
+          + vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + "\n";
       MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRadara(), r.mreznaVrataRadara(), cmd);
     }
   }
