@@ -71,20 +71,18 @@ public class PosluziteljKazni {
       System.out.println("Broj argumenata nije 1.");
       return;
     }
-    System.out.println("Pokretanje posluzitelja kazni...");
     PosluziteljKazni posluziteljKazni = new PosluziteljKazni();
     try {
       posluziteljKazni.preuzmiPostavke(args);
       posluziteljKazni.pokreniPosluzitelja();
     } catch (NeispravnaKonfiguracija | NumberFormatException | UnknownHostException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
       return;
     }
   }
 
   public void pokreniPosluzitelja() {
     try (ServerSocket mreznaUticnicaPosluzitelja = new ServerSocket(mreznaVrata)) {
-      System.out.println("Posluzitelj kazni pokrenut na portu: " + mreznaVrata);
       while (true) {
         var mreznaUticnica = mreznaUticnicaPosluzitelja.accept();
         BufferedReader citac =
@@ -92,12 +90,10 @@ public class PosluziteljKazni {
         PrintWriter pisac = new PrintWriter(
             new OutputStreamWriter(mreznaUticnica.getOutputStream(), "UTF-8"), true);
         var redak = citac.readLine();
-
         mreznaUticnica.shutdownInput();
         var obrada = obradaZahtjeva(redak);
         System.out.println(obrada);
         pisac.println(obradaZahtjeva(redak));
-
         pisac.flush();
         mreznaUticnica.shutdownOutput();
         mreznaUticnica.close();
@@ -108,7 +104,6 @@ public class PosluziteljKazni {
   }
 
   public String obradaZahtjeva(String zahtjev) {
-    System.out.println("Zahtjev: " + zahtjev);
     if (zahtjev == null)
       return "ERROR 40 Neispravna sintaksa naredbe.\n";
     else if (predlozakKazna.matcher(zahtjev).matches()) {
@@ -143,13 +138,11 @@ public class PosluziteljKazni {
     poklapanjeKazna = predlozakKazna.matcher(zahtjev);
     var statusKazna = poklapanjeKazna.matches();
     if (statusKazna) {
-      var kazna = new PodaciKazne(_i(poklapanjeKazna.group("id")), //
-          _l(poklapanjeKazna.group("vrijemePocetak")), //
-          _l(poklapanjeKazna.group("vrijemeKraj")), //
-          _d(poklapanjeKazna.group("brzina")), //
-          _d(poklapanjeKazna.group("gpsSirina")), //
-          _d(poklapanjeKazna.group("gpsDuzina")), //
-          _d(poklapanjeKazna.group("gpsSirinaRadar")), _d(poklapanjeKazna.group("gpsDuzinaRadar")));
+      var kazna = new PodaciKazne(_i(poklapanjeKazna.group("id")),
+          _l(poklapanjeKazna.group("vrijemePocetak")), _l(poklapanjeKazna.group("vrijemeKraj")),
+          _d(poklapanjeKazna.group("brzina")), _d(poklapanjeKazna.group("gpsSirina")),
+          _d(poklapanjeKazna.group("gpsDuzina")), _d(poklapanjeKazna.group("gpsSirinaRadar")),
+          _d(poklapanjeKazna.group("gpsDuzinaRadar")));
       sveKazne.add(kazna);
       System.out.println("Id: " + kazna.id() + " Vrijeme od: " + sdf.format(kazna.vrijemePocetak())
           + "  Vrijeme do: " + sdf.format(kazna.vrijemeKraj()) + " Brzina: " + kazna.brzina()

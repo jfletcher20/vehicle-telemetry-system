@@ -10,7 +10,6 @@ import java.net.Socket;
 import java.util.regex.Pattern;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.BrzoVozilo;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciRadara;
-import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.GpsUdaljenostBrzina;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.posluzitelji.PosluziteljRadara;
 
@@ -64,8 +63,14 @@ public class RadnikZaRadare implements Runnable {
     return r != null ? r : "ERROR 39 Nešto je pošlo po zlu.\n";
   }
 
-  private boolean jeBrzaVoznja(BrzoVozilo vozilo) {
-    return vozilo.brzina() > r.maksBrzina();
+  private boolean nemojPratit(BrzoVozilo vozilo) {
+    if (r.maksBrzina() < vozilo.brzina())
+      return false;
+    if (p.brzaVozila.get(vozilo.id()) != null) {
+      var poh = p.brzaVozila.get(vozilo.id()).postaviStatus(false);
+      p.brzaVozila.put(vozilo.id(), poh);
+    }
+    return true;
   }
 
   private String obradaZahtjevaBrzine(String zahtjev) {
@@ -74,32 +79,59 @@ public class RadnikZaRadare implements Runnable {
       return null;
     var vozilo = new BrzoVozilo(podaciVozila.group("id"), -1, podaciVozila.group("vrijeme"),
         podaciVozila.group("brzina"), podaciVozila.group("gpsSirina"),
-        podaciVozila.group("gpsDuzina"), false);
-    // provjera udaljenosti
-    var udaljenost = GpsUdaljenostBrzina.udaljenostKm(r.gpsSirina(), r.gpsDuzina(),
-        vozilo.gpsSirina(), vozilo.gpsDuzina());
-    if (GpsUdaljenostBrzina.udaljenostKm(r.gpsSirina(), r.gpsDuzina(), vozilo.gpsSirina(),
-        vozilo.gpsDuzina()) * 1000 < r.maksUdaljenost()) {
-      // provjera brzine i trajanja brze vožnje
-      if (jeBrzaVoznja(vozilo)) {
-        var prvi = p.brzaVozila.get(vozilo.id());
-        String cmd = "VOZILO " + vozilo.id() + " " + (prvi == null ? vozilo : prvi).vrijeme() + " "
-            + vozilo.vrijeme() + " " + vozilo.brzina() + " " + vozilo.gpsSirina() + " "
-            + vozilo.gpsDuzina() + " " + r.gpsSirina() + " " + r.gpsDuzina() + "\n";
-        MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaKazne(), r.mreznaVrataKazne(), cmd);
-        if (p.brzaVozila.get(vozilo.id()) == null) {
-          p.brzaVozila.put(vozilo.id(), vozilo);
-        } else {
-          p.brzaVozila.put(vozilo.id(), p.brzaVozila.get(vozilo.id()).postaviStatus(true));
-        }
+        podaciVozila.group("gpsDuzina"), true);
+    var poh = p.brzaVozila.get(vozilo.id());
+    if (poh != null && !(r.maksBrzina() < vozilo.brzina())) {
+      p.brzaVozila.put(vozilo.id(), poh.postaviStatus(false));
+      return "OK\n";
+    } else {
+      if (poh != null && poh.status() == true) {
+        if (kaznjivoVrijeme(vozilo, poh)) {
+          String cmd = "VOZILO " + vozilo.id() + " " + poh.vrijeme() + " " + vozilo.vrijeme() + " "
+              + vozilo.brzina() + " " + vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + " "
+              + r.gpsSirina() + " " + r.gpsDuzina() + "\n";
+          var resp = MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaKazne(),
+              r.mreznaVrataKazne(), cmd);
+          if (resp == null)
+            return "ERROR 31 Posluzitelj nije dostupan.\n";
+          p.brzaVozila.put(vozilo.id(), vozilo.postaviStatus(false));
+        } else if (r.maksTrajanje() * 1000 + 1 > razlikaVremena(vozilo, poh))
+          return "OK\n";
+        return "OK\n";
       }
-      if (p.vrijemeIzmeduPodataka(vozilo) / 1000 > r.maksTrajanje() * 2) {
-        p.brzaVozila.put(vozilo.id(), vozilo.postaviStatus(false));
-        return "ERROR 39 Došlo je do pogreške u radu radara. status: "
-            + p.brzaVozila.get(vozilo.id()).status() + "\n";
-      }
+      p.brzaVozila.put(vozilo.id(), vozilo);
+      return "OK\n";
     }
-    return "OK\n";
+  }
+
+  private boolean kaznjivoVrijeme(BrzoVozilo a, BrzoVozilo b) {
+    var maks = r.maksTrajanje() * 1000;
+    return razlikaVremena(a, b) > maks && razlikaVremena(a, b) < maks * 2;
+  }
+
+  private long razlikaVremena(BrzoVozilo a, BrzoVozilo b) {
+    return Math.abs(a.vrijeme() - b.vrijeme());
   }
 
 }
+
+/*
+ * private String obradaZahtjevaBrzine(String zahtjev) { var podaciVozila =
+ * predlozakBrzine.matcher(zahtjev); if (!podaciVozila.matches()) return null;
+ * 
+ * var vozilo = new BrzoVozilo(podaciVozila.group("id"), -1, podaciVozila.group("vrijeme"),
+ * podaciVozila.group("brzina"), podaciVozila.group("gpsSirina"), podaciVozila.group("gpsDuzina"),
+ * false);
+ * 
+ * if (jeBrzaVoznja(vozilo) && p.vrijemeIzmeduPodataka(vozilo) > r.maksTrajanje() * 1000) { var prvi
+ * = p.brzaVozila.get(vozilo.id()); String cmd = "VOZILO " + vozilo.id() + " " + (prvi == null ?
+ * vozilo : prvi).vrijeme() + " " + vozilo.vrijeme() + " " + vozilo.brzina() + " " +
+ * vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + " " + r.gpsSirina() + " " + r.gpsDuzina() + "\n";
+ * MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaKazne(), r.mreznaVrataKazne(), cmd); if
+ * (p.brzaVozila.get(vozilo.id()) == null) { p.brzaVozila.put(vozilo.id(), vozilo); } else {
+ * p.brzaVozila.put(vozilo.id(), p.brzaVozila.get(vozilo.id()).postaviStatus(true)); } } else {
+ * p.brzaVozila.put(vozilo.id(), vozilo.postaviStatus(false)); } if (p.vrijemeIzmeduPodataka(vozilo)
+ * > r.maksTrajanje() * 1000 * 2) { p.brzaVozila.put(vozilo.id(), vozilo.postaviStatus(false));
+ * return "ERROR 39 Došlo je do pogreške u radu radara.\n"; } return "OK - status: " +
+ * p.brzaVozila.get(vozilo.id()).status() + "\n"; }
+ */

@@ -135,7 +135,8 @@ public class PosluziteljRadara {
    * @return razlika u vremenu (pozitivna ako je vozilo najnovije, negativna ako nije)
    */
   public long vrijemeIzmeduPodataka(BrzoVozilo podaci) {
-    return brzaVozila.get(podaci.id()).vrijeme() - podaci.vrijeme();
+    var poh = brzaVozila.get(podaci.id());
+    return Math.abs(podaci.vrijeme() - (poh == null ? podaci : poh).vrijeme());
   }
 
 }
