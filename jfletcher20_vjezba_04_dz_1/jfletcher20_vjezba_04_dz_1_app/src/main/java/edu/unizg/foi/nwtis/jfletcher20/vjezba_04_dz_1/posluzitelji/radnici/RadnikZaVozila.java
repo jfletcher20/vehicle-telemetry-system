@@ -2,6 +2,7 @@ package edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.posluzitelji.radnici;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_04_dz_1.podaci.PodaciRadara;
@@ -14,25 +15,8 @@ public class RadnikZaVozila implements Runnable {
   private AsynchronousSocketChannel kanalKlijenta;
   private CentralniSustav cs;
 
-  private Pattern predlozakVozilo = Pattern.compile( //
-      "^VOZILO " // VOZILO
-          + "(?<id>\\d+) " // int id vozila
-          + "(?<broj>\\d+) " // int broj
-          + "(?<vrijeme>\\d+) " // long vrijeme
-          + "(?<brzina>\\d+(?:\\.\\d+)?) " // double brzina
-          + "(?<snaga>\\d+(?:\\.\\d+)?) " // double snaga
-          + "(?<struja>\\d+(?:\\.\\d+)?) " // double struja
-          + "(?<visina>\\d+(?:\\.\\d+)?) " // double visina
-          + "(?<gpsBrzina>\\d+(?:\\.\\d+)?) " // double gpsBrzina
-          + "(?<tempVozila>\\d+) " // int tempVozila
-          + "(?<postotakBaterija>\\d+(?:\\.\\d+)?) " // double postotakBaterija
-          + "(?<naponBaterija>\\d+(?:\\.\\d+)?) " // double naponBaterija
-          + "(?<kapacitetBaterija>\\d+(?:\\.\\d+)?) " // double kapacitetBaterija
-          + "(?<tempBaterija>\\d+(?:\\.\\d+)?) " // double tempBaterija
-          + "(?<preostaloKm>\\d+(?:\\.\\d+)?) " // double preostaloKm
-          + "(?<ukupnoKm>\\d+(?:\\.\\d+)?) " // double ukupnoKm
-          + "(?<gpsSirina>\\d+(?:\\.\\d+)?) " // double gpsSirina
-          + "(?<gpsDuzina>\\d+(?:\\.\\d+)?)$"); // double gpsDuzina
+  private Pattern predlozakVozilo = Pattern.compile(
+      "^VOZILO (?<id>-?\\d+) (?<broj>-?\\d+) (?<vrijeme>-?\\d+) (?<brzina>-?\\d+(?:\\.\\d+)?) (?<snaga>-?\\d+(?:\\.\\d+)?) (?<struja>-?\\d+(?:\\.\\d+)?) (?<visina>-?\\d+(?:\\.\\d+)?) (?<gpsBrzina>-?\\d+(?:\\.\\d+)?) (?<tempVozila>-?\\d+) (?<postotakBaterija>-?\\d+(?:\\.\\d+)?) (?<naponBaterija>-?\\d+(?:\\.\\d+)?) (?<kapacitetBaterija>-?\\d+(?:\\.\\d+)?) (?<tempBaterija>-?\\d+(?:\\.\\d+)?) (?<preostaloKm>-?\\d+(?:\\.\\d+)?) (?<ukupnoKm>-?\\d+(?:\\.\\d+)?) (?<gpsSirina>-?\\d+(?:\\.\\d+)?) (?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$");
 
   private Matcher poklapanjeVozila;
 
@@ -43,8 +27,8 @@ public class RadnikZaVozila implements Runnable {
 
   private Pattern predlozakBrzine = Pattern.compile( //
       "^VOZILO " // VOZILO
-          + "(?<id>\\d+)" // int id vozila
-          + "(?<vrijeme>\\d+)" // long vrijeme
+          + "(?<id>\\d+) " // int id vozila
+          + "(?<vrijeme>\\d+) " // long vrijeme
           + "(?<brzina>-?\\d+([.]\\d+)?) " // double brzina
           + "(?<gpsSirina>\\d+[.]\\d+) " // double gpsSirina
           + "(?<gpsDuzina>\\d+[.]\\d+)$"); // double gpsDuzina
@@ -56,11 +40,11 @@ public class RadnikZaVozila implements Runnable {
         while (true) {
           if (kanalKlijenta != null && kanalKlijenta.isOpen()) {
             ByteBuffer bb = ByteBuffer.allocate(2048);
-            var citac = kanalKlijenta.read(bb);
+            Future<Integer> citac = kanalKlijenta.read(bb);
             citac.get();
             String r = new String(bb.array()).trim();
+            System.out.println(r);
             var odgovor = obradaZahtjeva(r);
-            System.out.println(odgovor);
             if (!odgovor.contains("OK")) {
               bb.clear();
               bb.put(odgovor.getBytes()); // TODO: wtf is even happening here?
@@ -79,14 +63,12 @@ public class RadnikZaVozila implements Runnable {
   }
 
   public String obradaZahtjeva(String zahtjev) {
-    zahtjev =
-        "VOZILO 1 101 1708073749078 0.02 0.8086 0.02 214.2 1.337297 19 93 40.43 7314 20 27.9 816.458 46.286644 16.35285";
     if (zahtjev == null || zahtjev.length() == 0)
-      return "ERROR 20 Neispravna sintaksa komande.\n";
+      return "ERROR 20 Neispravna sintaksa komande " + zahtjev + "";
     zahtjev = zahtjev.trim();
     var odgovor = obradaZahtjevaVozila(zahtjev);
     return odgovor != null ? odgovor
-        : "ERROR 29 Nije moguće obraditi zahtjev ( + " + zahtjev.length() + ": " + zahtjev + "\n";
+        : "ERROR 29 Nije moguće obraditi zahtjev ( + " + zahtjev.length() + ": " + zahtjev + "";
   }
 
   private Double _d(String value) {
@@ -102,35 +84,42 @@ public class RadnikZaVozila implements Runnable {
   }
 
   public String obradaZahtjevaVozila(String zahtjev) {
-    poklapanjeVozila = predlozakVozilo.matcher(zahtjev);
-    if (poklapanjeVozila.matches()) {
-      var vozilo = new PodaciVozila(_i(poklapanjeVozila.group("id")), //
-          _i(poklapanjeVozila.group("broj")), //
-          _l(poklapanjeVozila.group("vrijeme")), //
-          _d(poklapanjeVozila.group("brzina")), //
-          _d(poklapanjeVozila.group("snaga")), //
-          _d(poklapanjeVozila.group("struja")), //
-          _d(poklapanjeVozila.group("visina")), //
-          _d(poklapanjeVozila.group("gpsBrzina")), //
-          _i(poklapanjeVozila.group("tempVozila")), //
-          _i(poklapanjeVozila.group("postotakBaterija")), //
-          _d(poklapanjeVozila.group("naponBaterija")), //
-          _i(poklapanjeVozila.group("kapacitetBaterija")), //
-          _i(poklapanjeVozila.group("tempBaterija")), //
-          _d(poklapanjeVozila.group("preostaloKm")), //
-          _d(poklapanjeVozila.group("ukupnoKm")), //
-          _d(poklapanjeVozila.group("gpsSirina")), //
-          _d(poklapanjeVozila.group("gpsDuzina")));
-      for (PodaciRadara r : cs.sviRadari.values()) {
-        if (r.jeUnutarDosega(vozilo)) {
-          String cmd = "VOZILO " + vozilo.id() + " " + vozilo.vrijeme() + " " + vozilo.brzina()
-              + " " + vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + "\n";
-          MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRadara(), r.mreznaVrataRadara(), cmd);
+    try {
+      poklapanjeVozila = predlozakVozilo.matcher(zahtjev);
+      if (poklapanjeVozila.matches()) {
+        var vozilo = new PodaciVozila(_i(poklapanjeVozila.group("id")), //
+            _i(poklapanjeVozila.group("broj")), //
+            _l(poklapanjeVozila.group("vrijeme")), //
+            _d(poklapanjeVozila.group("brzina")), //
+            _d(poklapanjeVozila.group("snaga")), //
+            _d(poklapanjeVozila.group("struja")), //
+            _d(poklapanjeVozila.group("visina")), //
+            _d(poklapanjeVozila.group("gpsBrzina")), //
+            _i(poklapanjeVozila.group("tempVozila")), //
+            _i(poklapanjeVozila.group("postotakBaterija")), //
+            _d(poklapanjeVozila.group("naponBaterija")), //
+            _i(poklapanjeVozila.group("kapacitetBaterija")), //
+            _i(poklapanjeVozila.group("tempBaterija")), //
+            _d(poklapanjeVozila.group("preostaloKm")), //
+            _d(poklapanjeVozila.group("ukupnoKm")), //
+            _d(poklapanjeVozila.group("gpsSirina")), //
+            _d(poklapanjeVozila.group("gpsDuzina")));
+        for (PodaciRadara r : cs.sviRadari.values()) {
+          if (r.jeUnutarDosega(vozilo)) {
+            String cmd = "VOZILO " + vozilo.id() + " " + vozilo.vrijeme() + " " + vozilo.brzina()
+                + " " + vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + "";
+            MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRadara(), r.mreznaVrataRadara(),
+                cmd);
+          }
         }
+        return "OK";
       }
-      return "OK\n";
+      return null;
+    } catch (Exception e) {
+      System.out.println("Couldn't match zahtjev: " + zahtjev);
+      e.printStackTrace();
+      return "ERROR 29 Nije moguće obraditi zahtjev ( + " + zahtjev.length() + ": " + zahtjev + "";
     }
-    return null;
   }
 
 }

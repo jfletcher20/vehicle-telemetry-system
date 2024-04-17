@@ -49,10 +49,6 @@ public class PosluziteljZaVozila implements Runnable {
 
   @Override
   public void run() {
-    pokreniPosluzitelja();
-  }
-
-  private void pokreniPosluzitelja() {
     es = Executors.newVirtualThreadPerTaskExecutor();
     AsynchronousServerSocketChannel ass = null;
     try {

@@ -104,6 +104,10 @@ public class SimulatorVozila {
   }
 
   public static void main(String[] args) {
+    if (args.length != 3) {
+      System.out.println("Broj argumenata nije 3.");
+      return;
+    }
     SimulatorVozila simulator = new SimulatorVozila();
     try {
       simulator.preuzmiPostavke(args);
@@ -113,12 +117,14 @@ public class SimulatorVozila {
       while (true) {
         try {
           Thread.sleep((long) (simulator.citajCSV() * simulator.korekcijaVremena()));
-          System.out.println("Poslano vozilo " + simulator.konstruirajZahtjev() + " na posluzitelj "
-              + simulator.adresaVozila + ":" + simulator.mreznaVrataVozila);
-          simulator.es.execute(() -> {
-            MrezneOperacije.posaljiZahtjevPosluzitelju(simulator.adresaVozila,
-                simulator.mreznaVrataVozila, simulator.konstruirajZahtjev());
-          });
+          var zahtjev = simulator.konstruirajZahtjev();
+          if (zahtjev.trim().length() > 0) {
+            simulator.es.execute(() -> {
+              MrezneOperacije.posaljiZahtjevPosluzitelju(simulator.adresaVozila,
+                  simulator.mreznaVrataVozila, zahtjev);
+            });
+            System.out.println(zahtjev);
+          }
           Thread.sleep(simulator.trajanjePauze);
         } catch (InterruptedException e) {
           e.printStackTrace();
@@ -222,8 +228,7 @@ public class SimulatorVozila {
   public void preuzmiPostavkeVozila(String[] args)
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     podaciVozilaDatoteka = args[1];
-    if (args.length == 3)
-      idVozila = _ip(args[2]);
+    idVozila = _ip(args[2]);
   }
 
   public long citajCSV() {
