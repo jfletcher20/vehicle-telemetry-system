@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Matcher;
@@ -37,7 +38,8 @@ public class PosluziteljRadara {
 
   private Matcher poklapanjeKazna;
   public volatile Queue<PodaciKazne> sveKazne = new ConcurrentLinkedQueue<>();
-  public volatile Queue<BrzoVozilo> brzaVozila = new ConcurrentLinkedQueue<>();
+  public volatile ConcurrentHashMap<Integer, BrzoVozilo> brzaVozila =
+      new ConcurrentHashMap<Integer, BrzoVozilo>();
   private PodaciRadara r;
 
   public static void main(String[] args) {
@@ -126,26 +128,14 @@ public class PosluziteljRadara {
     }
   }
 
-  public BrzoVozilo prviZapisOVozilu(int id) {
-    for (BrzoVozilo vozilo : brzaVozila)
-      if (vozilo.id() == id)
-        return vozilo;
-    return null;
-  }
-
   /**
    * Izračunava razliku u vremenu između podataka vozila i najnovijeg podatka o tom vozilu iz reda.
    * 
    * @param podaci podaci vozila za koju se računa razlika od prethodnog vremena
    * @return razlika u vremenu (pozitivna ako je vozilo najnovije, negativna ako nije)
    */
-
   public long vrijemeIzmeduPodataka(BrzoVozilo podaci) {
-    long najveceVrijeme = 0;
-    for (BrzoVozilo vozilo : brzaVozila)
-      if (vozilo.id() == podaci.id() && vozilo.vrijeme() > podaci.vrijeme())
-        najveceVrijeme = vozilo.vrijeme();
-    return podaci.vrijeme() - najveceVrijeme;
+    return brzaVozila.get(podaci.id()).vrijeme() - podaci.vrijeme();
   }
 
 }
