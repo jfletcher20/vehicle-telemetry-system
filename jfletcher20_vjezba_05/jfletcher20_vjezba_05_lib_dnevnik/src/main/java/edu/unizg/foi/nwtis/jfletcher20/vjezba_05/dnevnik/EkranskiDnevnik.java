@@ -1,10 +1,10 @@
-package edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik;
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik.podaci.DnevnikRada;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik.podaci.DnevnikRada;
 
 public class EkranskiDnevnik implements ZapisivacRada {
   private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");

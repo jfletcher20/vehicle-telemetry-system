@@ -1,10 +1,10 @@
-package edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik;
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik.podaci.DnevnikRada;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik.podaci.DnevnikRada;
 
 public class DatotecniDnevnik implements ZapisivacRada {
 

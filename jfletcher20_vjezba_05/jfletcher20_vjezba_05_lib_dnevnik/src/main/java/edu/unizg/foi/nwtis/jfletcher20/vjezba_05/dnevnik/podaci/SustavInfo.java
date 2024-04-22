@@ -1,4 +1,4 @@
-package edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik.podaci;
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik.podaci;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

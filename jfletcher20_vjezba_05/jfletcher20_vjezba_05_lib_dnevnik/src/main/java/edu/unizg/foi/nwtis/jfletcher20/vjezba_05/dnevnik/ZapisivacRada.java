@@ -1,7 +1,7 @@
-package edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik;
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik;
 
 import java.util.List;
-import edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik.podaci.DnevnikRada;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik.podaci.DnevnikRada;
 
 public interface ZapisivacRada {
   boolean pripremiResurs() throws Exception;

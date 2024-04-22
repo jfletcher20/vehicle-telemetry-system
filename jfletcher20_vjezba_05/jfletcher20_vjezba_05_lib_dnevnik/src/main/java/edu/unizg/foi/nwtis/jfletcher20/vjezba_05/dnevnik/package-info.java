@@ -1,1 +1,1 @@
-package edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik;
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik;

@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>edu.unizg.foi.nwtis.matnovak</groupId>
-		<artifactId>matnovak_vjezba_05</artifactId>
+		<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
+		<artifactId>jfletcher20_vjezba_05</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>matnovak_vjezba_05_app</artifactId>
-	<name>matnovak_vjezba_05_app</name>
+	<artifactId>jfletcher20_vjezba_05_app</artifactId>
+	<name>jfletcher20_vjezba_05_app</name>
 	<packaging>jlink</packaging>
 
 	<properties>
@@ -71,7 +71,7 @@
 					<archive>
 						<manifest>
 							<mainClass>
-								edu.unizg.foi.nwtis.matnovak.vjezba_05.IzvrsiteljZadatka
+								edu.unizg.foi.nwtis.jfletcher20.vjezba_05.IzvrsiteljZadatka
 							</mainClass>
 						</manifest>
 					</archive>
@@ -87,7 +87,7 @@
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>libs/</classpathPrefix>
 							<mainClass>
-								edu.unizg.foi.nwtis.matnovak.vjezba_05.IzvrsiteljZadatka
+								edu.unizg.foi.nwtis.jfletcher20.vjezba_05.IzvrsiteljZadatka
 							</mainClass>
 						</manifest>
 					</archive>
@@ -108,13 +108,13 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>edu.unizg.foi.nwtis.matnovak</groupId>
-			<artifactId>matnovak_vjezba_05_lib_dnevnik</artifactId>
+			<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
+			<artifactId>jfletcher20_vjezba_05_lib_dnevnik</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>edu.unizg.foi.nwtis.matnovak</groupId>
-			<artifactId>matnovak_vjezba_05_lib_konfig</artifactId>
+			<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
+			<artifactId>jfletcher20_vjezba_05_lib_konfig</artifactId>
 			<version>1.2.0</version>
 		</dependency>
 		<dependency>

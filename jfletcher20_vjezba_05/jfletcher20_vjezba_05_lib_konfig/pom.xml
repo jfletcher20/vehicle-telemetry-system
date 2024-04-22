@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>edu.unizg.foi.nwtis.matnovak</groupId>
-		<artifactId>matnovak_vjezba_05</artifactId>
+		<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
+		<artifactId>jfletcher20_vjezba_05</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>matnovak_vjezba_05_lib_konfig</artifactId>
+	<artifactId>jfletcher20_vjezba_05_lib_konfig</artifactId>
 	<version>1.2.0</version>
-	<name>matnovak_vjezba_05_lib_konfig</name>
+	<name>jfletcher20_vjezba_05_lib_konfig</name>
 
 	<dependencies>
 		<dependency>

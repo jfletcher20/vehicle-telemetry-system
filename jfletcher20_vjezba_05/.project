@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>matnovak_vjezba_05</name>
+	<name>jfletcher20_vjezba_05</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -13,5 +13,17 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
+		<nature>org.jkiss.dbeaver.DBeaverNature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1713793676685</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.core.resources.regexFilterMatcher</id>
+				<arguments>node_modules|\.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

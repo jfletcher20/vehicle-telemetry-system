@@ -1,4 +1,4 @@
-package edu.unizg.foi.nwtis.matnovak.vjezba_05;
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_05;
 
 import java.lang.reflect.Constructor;
 import java.net.UnknownHostException;
@@ -7,10 +7,10 @@ import java.util.Scanner;
 import edu.unizg.foi.nwtis.konfiguracije.Konfiguracija;
 import edu.unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import edu.unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
-import edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik.ZapisivacRada;
-import edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik.podaci.DnevnikRada;
-import edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik.podaci.KorisnikInfo;
-import edu.unizg.foi.nwtis.matnovak.vjezba_05.dnevnik.podaci.SustavInfo;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik.ZapisivacRada;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik.podaci.DnevnikRada;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik.podaci.KorisnikInfo;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_05.dnevnik.podaci.SustavInfo;
 
 public class IzvrsiteljZadatka {
   private String klasaDnevnika;
