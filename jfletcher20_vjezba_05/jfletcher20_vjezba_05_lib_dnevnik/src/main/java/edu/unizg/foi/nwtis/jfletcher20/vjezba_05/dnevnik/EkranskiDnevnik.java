@@ -33,7 +33,8 @@ public class EkranskiDnevnik implements ZapisivacRada {
 
   @Override
   public boolean pripremiResurs() throws Exception {
-    this.sveZapisiDnevnikaRada = new ArrayList<>();
+    if (this.sveZapisiDnevnikaRada == null)
+      this.sveZapisiDnevnikaRada = new ArrayList<>();
     return true;
   }
 

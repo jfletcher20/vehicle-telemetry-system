@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>jfletcher20_vjezba_05_app</artifactId>
 	<name>jfletcher20_vjezba_05_app</name>
-	<packaging>jlink</packaging>
+	<packaging>jar</packaging>
 
 	<properties>
 		<maven.dependency>3.6.1</maven.dependency>

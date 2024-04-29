@@ -32,6 +32,38 @@
 				"closeIdleConnection": true,
 				"auth-model": "native"
 			}
+		},
+		"h2_server-18f065ef5b7-7407b28999d4fddb": {
+			"provider": "h2",
+			"driver": "h2_server",
+			"name": "admin",
+			"save-password": true,
+			"configuration": {
+				"host": "localhost",
+				"port": "9092",
+				"database": "nwtis_2",
+				"url": "jdbc:h2:tcp://localhost:9092/nwtis_2",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native"
+			}
+		},
+		"h2_server-18f066435b9-7333104631731b4f": {
+			"provider": "h2",
+			"driver": "h2_server",
+			"name": "nwtis_2",
+			"save-password": true,
+			"configuration": {
+				"host": "localhost",
+				"port": "9092",
+				"database": "nwtis_2",
+				"url": "jdbc:h2:tcp://localhost:9092/nwtis_2",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native"
+			}
 		}
 	},
 	"connection-types": {
