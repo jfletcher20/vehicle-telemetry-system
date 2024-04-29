@@ -1,0 +1,10 @@
+FROM ubuntu:latest
+
+COPY ./target/maven-jlink/default/ /usr/app/
+COPY ./NWTiS_DZ1_PK.txt /usr/app/
+
+WORKDIR /usr/app
+
+EXPOSE 8020
+
+CMD bin/java -m jfletcher20_vjezba_06_app/edu.unizg.foi.nwtis.jfletcher20.vjezba_06.posluzitelji.PosluziteljKazni NWTiS_DZ1_PK.txt

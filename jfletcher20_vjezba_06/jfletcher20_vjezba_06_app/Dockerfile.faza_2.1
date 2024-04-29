@@ -1,0 +1,11 @@
+FROM eclipse-temurin:21-jre
+
+COPY ./target/jfletcher20_vjezba_06_app-1.1.0.jar /usr/app/
+COPY ./target/libs /usr/app/libs
+COPY ./NWTiS_DZ1_PK.txt /usr/app/
+
+WORKDIR /usr/app
+
+EXPOSE 8020
+
+CMD java -jar jfletcher20_vjezba_06_app-1.1.0.jar NWTiS_DZ1_PK.txt
