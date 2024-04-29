@@ -11,13 +11,15 @@
 
 	<artifactId>jfletcher20_vjezba_06_app</artifactId>
 	<name>jfletcher20_vjezba_06_app</name>
+	<packaging>jlink</packaging>
 	<version>1.1.0</version>
 
 	<properties>
 		<maven.dependency>3.6.1</maven.dependency>
 		<maven.assembly>3.6.0</maven.assembly>
+		<maven.jlink>3.2.0</maven.jlink>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
@@ -111,6 +113,19 @@
 								edu.unizg.foi.nwtis.jfletcher20.vjezba_06.posluzitelji.PosluziteljKazni</mainClass>
 						</manifest>
 					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jlink-plugin</artifactId>
+				<version>${maven.jlink}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<modulePaths>
+						<modulePath>
+							${env.JAVA_HOME}/jmods/
+</modulePath>
+					</modulePaths>
 				</configuration>
 			</plugin>
 		</plugins>

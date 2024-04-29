@@ -1,0 +1,13 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1714402153992,30,Ispravna komanda za dodavanje kazne 1,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,30
+1714402154025,0,Ispravna komanda za dodavanje kazne 1,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,0
+1714402154026,1,Ispravna komanda za dodavanje kazne 1,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,1
+1714402154028,1,Ispravna komanda za dodavanje kazne 2,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,1
+1714402154030,0,Neispravna komanda za dodavanje kazne 1,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,0
+1714402154031,0,Neispravna komanda za dodavanje kazne 3,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,0
+1714402224651,17,Ispravna komanda za dodavanje kazne 1,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,17
+1714402224680,1,Ispravna komanda za dodavanje kazne 1,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,1
+1714402224682,1,Ispravna komanda za dodavanje kazne 1,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,1
+1714402224684,0,Ispravna komanda za dodavanje kazne 2,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,0
+1714402224685,1,Neispravna komanda za dodavanje kazne 1,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,1
+1714402224686,1,Neispravna komanda za dodavanje kazne 3,500,java.net.ConnectException: Connection refused,Grupa dretvi za dodavanje kazne 1-1,,false,Response was null,0,0,1,1,null,0,0,1

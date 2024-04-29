@@ -5,6 +5,7 @@ edu/unizg/foi/nwtis/jfletcher20/vjezba_06/podaci/PodaciKazne.class
 edu/unizg/foi/nwtis/jfletcher20/vjezba_06/posluzitelji/PosluziteljRadara.class
 edu/unizg/foi/nwtis/jfletcher20/vjezba_06/posluzitelji/PosluziteljKazni.class
 edu/unizg/foi/nwtis/jfletcher20/vjezba_06/pomocnici/MrezneOperacije.class
+module-info.class
 edu/unizg/foi/nwtis/jfletcher20/vjezba_06/podaci/PodaciRadara.class
 edu/unizg/foi/nwtis/jfletcher20/vjezba_06/pomocnici/GpsUdaljenostBrzina.class
 edu/unizg/foi/nwtis/jfletcher20/vjezba_06/posluzitelji/radnici/RadnikZaRadare.class
