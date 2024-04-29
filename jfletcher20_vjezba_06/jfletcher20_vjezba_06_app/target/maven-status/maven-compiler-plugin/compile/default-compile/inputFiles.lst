@@ -1,0 +1,17 @@
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/klijenti/Klijent.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/klijenti/SimulatorVozila.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/podaci/BrzoVozilo.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/podaci/PodaciKazne.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/podaci/PodaciRadara.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/podaci/PodaciVozila.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/podaci/RedPodaciVozila.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/pomocnici/GpsUdaljenostBrzina.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/pomocnici/MrezneOperacije.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/pomocnici/Parsiraj.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/posluzitelji/CentralniSustav.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/posluzitelji/PosluziteljKazni.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/posluzitelji/PosluziteljRadara.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/posluzitelji/PosluziteljZaRegistracijuRadara.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/posluzitelji/PosluziteljZaVozila.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/posluzitelji/radnici/RadnikZaRadare.java
+/home/NWTiS_1/jfletcher20/jfletcher20_vjezba_06/jfletcher20_vjezba_06_app/src/main/java/edu/unizg/foi/nwtis/jfletcher20/vjezba_04_dz_1/posluzitelji/radnici/RadnikZaVozila.java
