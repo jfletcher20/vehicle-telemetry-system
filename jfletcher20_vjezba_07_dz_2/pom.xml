@@ -57,6 +57,7 @@
 		<module>jfletcher20_vjezba_07_dz_2_lib</module>
 		<module>jfletcher20_vjezba_07_dz_2_app</module>
 		<module>jfletcher20_vjezba_07_dz_2_lib_rest</module>
+		<module>jfletcher20_vjezba_07_dz_2_servisi</module>
 	</modules>
 	
 </project>
