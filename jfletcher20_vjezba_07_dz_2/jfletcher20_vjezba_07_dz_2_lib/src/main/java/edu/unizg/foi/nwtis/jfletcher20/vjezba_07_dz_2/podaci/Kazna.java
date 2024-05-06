@@ -7,6 +7,9 @@ public class Kazna {
   private double brzina, gpsSirina, gpsDuzina;
   private double gpsSirinaRadar, gpsDuzinaRadar;
   
+  public Kazna() {
+    
+  }
   public Kazna(int id, long vrijemePocetak, long vrijemeKraj, double brzina, double gpsSirina,
       double gpsDuzina, double gpsSirinaRadar, double gpsDuzinaRadar) {
     this.id = id;
