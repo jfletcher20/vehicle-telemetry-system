@@ -53,5 +53,39 @@ public class Kazna {
   public double getGpsDuzinaRadar() {
     return gpsDuzinaRadar;
   }
+  
+  // create all setters
+  
+  public void setId(int id) {
+    this.id = id;
+  }
+  
+  public void setVrijemePocetak(long vrijemePocetak) {
+    this.vrijemePocetak = vrijemePocetak;
+  }
+  
+  public void setVrijemeKraj(long vrijemeKraj) {
+    this.vrijemeKraj = vrijemeKraj;
+  }
+  
+  public void setBrzina(double brzina) {
+    this.brzina = brzina;
+  }
+  
+  public void setGpsSirina(double gpsSirina) {
+    this.gpsSirina = gpsSirina;
+  }
+  
+  public void setGpsDuzina(double gpsDuzina) {
+    this.gpsDuzina = gpsDuzina;
+  }
+  
+  public void setGpsSirinaRadar(double gpsSirinaRadar) {
+    this.gpsSirinaRadar = gpsSirinaRadar;
+  }
+  
+  public void setGpsDuzinaRadar(double gpsDuzinaRadar) {
+    this.gpsDuzinaRadar = gpsDuzinaRadar;
+  }
 
 }

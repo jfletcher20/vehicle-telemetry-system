@@ -14,7 +14,7 @@ public class Main extends Application {
   public static void main(String[] args) throws Exception {
     Application app = new Main();
     SeBootstrap.Configuration config =
-        SeBootstrap.Configuration.builder().rootPath("").port(8080).build();
+        SeBootstrap.Configuration.builder().rootPath("").port(9080).build();
 
     SeBootstrap.start(app, config).thenAccept(instance -> {
       instance.stopOnShutdown(stopResult -> stopResult.unwrap(Object.class));

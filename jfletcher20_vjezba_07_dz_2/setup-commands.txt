@@ -1,0 +1,47 @@
+# list of docker commands used to setup the environment
+
+docker network create --subnet=20.24.5.0/24 nwtis_dz_2n
+docker network inspect nwtis_dz_2n
+docker volume create nwtis_hsql_dz_2v
+docker volume inspect nwtis_hsql_dz_2v
+sudo ls -al /var/lib/docker/volumes/nwtis_hsql_dz_2v/_data
+sudo cp -R /opt/hsqldb-2.7.2/hsqldb/data/* \
+/var/lib/docker/volumes/nwtis_hsql_dz_2v/_data/
+
+
+docker build -t nwtis_hsql_dz_2i -f Dockerfile.hsql .
+
+
+# -p 9001:9001 - port mapping like this is not allowed in the assignment
+
+docker run -it -d --network=nwtis_dz_2n --ip 20.24.5.3 \
+-p 9001:9001 \
+--name=nwtis_hsql_dz_2c --hostname=nwtis_hsql_dz_2c \
+--mount source=nwtis_hsql_dz_2v,target=/opt/data \
+nwtis_hsql_dz_2i:latest
+
+docker ps
+docker stop nwtis_hsql_dz_2c
+docker rm nwtis_hsql_dz_2c
+
+java -jar target/jfletcher20_vjezba_07_dz_2_servisi-1.0.0-jar-with-dependencies.jar
+
+
+
+# H2 database setup
+
+docker volume create nwtis_h2_dz_2v
+docker volume inspect nwtis_h2_dz_2v
+sudo ls -al /var/lib/docker/volumes/nwtis_h2_dz_2v/_data
+sudo cp -R /opt/database/* /var/lib/docker/volumes/nwtis_h2_dz_2v/_data/
+docker build -t nwtis_h2_dz_2i -f Dockerfile.h2 .
+
+docker run -it -d --network=nwtis_dz_2n --ip 20.24.5.4 \
+-p 9092:9092 \
+--name=nwtis_h2_dz_2c --hostname=nwtis_h2_dz_2c \
+--mount source=nwtis_h2_dz_2v,target=/opt/database \
+nwtis_h2_dz_2i:latest
+
+docker ps
+docker stop nwtis_h2_dz_2c
+docker rm nwtis_h2_dz_2c
