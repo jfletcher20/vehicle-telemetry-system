@@ -88,9 +88,13 @@ public class KazneResurs extends SviResursi {
   @GET
   @Produces({MediaType.APPLICATION_JSON})
   public Response getJsonKaznaVozilo(@HeaderParam("Accept") String tipOdgovora,
-      @PathParam("id") int id) {
-
-    return Response.status(Response.Status.OK).entity(kaznaDAO.dohvatiKazneVozila(id)).build();
+      @PathParam("id") int id, @QueryParam("od") long odVremena, @QueryParam("do") long doVremena) {
+    if (odVremena <= 0 || doVremena <= 0)
+      return Response.status(Response.Status.OK).entity(kaznaDAO.dohvatiKazneVozila(id)).build();
+    else
+      return Response.status(Response.Status.OK)
+          .entity(kaznaDAO.dohvatiKazneVozila(id, odVremena, doVremena)).build();
+    // TODO: testirati
   }
 
   /**
@@ -102,13 +106,11 @@ public class KazneResurs extends SviResursi {
   @HEAD
   @Produces({MediaType.APPLICATION_JSON})
   public Response head(@HeaderParam("Accept") String tipOdgovora) {
-
-    if (provjeriPosluzitelja()) {
+    if (provjeriPosluzitelja())
       return Response.status(Response.Status.OK).build();
-    } else {
+    else
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
           .entity("Neuspješni upis kazne u bazu podataka.").build();
-    }
   }
 
   /**
@@ -121,22 +123,19 @@ public class KazneResurs extends SviResursi {
   @POST
   @Produces({MediaType.APPLICATION_JSON})
   public Response postJsonDodajKaznu(@HeaderParam("Accept") String tipOdgovora, Kazna novaKazna) {
-
     var odgovor = kaznaDAO.dodajKaznu(novaKazna);
-    if (odgovor) {
+    if (odgovor)
       return Response.status(Response.Status.OK).build();
-    } else {
+    else
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
           .entity("Neuspješni upis kazne u bazu podataka.").build();
-    }
   }
 
   private boolean provjeriPosluzitelja() {
     var poruka = new StringBuilder();
     poruka.append("TEST").append("\n");
 
-    var odgovor =
-        MrezneOperacije.posaljiZahtjevPosluzitelju("localhost", 8020, poruka.toString());
+    var odgovor = MrezneOperacije.posaljiZahtjevPosluzitelju("localhost", 8020, poruka.toString());
 
     if (odgovor != null) {
       return true;

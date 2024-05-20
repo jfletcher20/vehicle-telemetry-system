@@ -47,7 +47,7 @@ public class Klijent {
     Klijent klijent = new Klijent();
     try {
       klijent.preuzmiPostavke(args);
-      var r = klijent.posaljiZahtjev();
+      klijent.posaljiZahtjev();
     } catch (NeispravnaKonfiguracija | NumberFormatException | UnknownHostException e) {
       System.out.println(e.getMessage());
       return;
