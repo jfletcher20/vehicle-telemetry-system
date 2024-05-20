@@ -54,14 +54,23 @@ public class RadnikZaRadare implements Runnable {
       + "(?<vrijeme>-?\\d+) " //
       + "(?<brzina>-?\\d+(?:\\.\\d+)?) " //
       + "(?<gpsSirina>-?\\d+(?:\\.\\d+)?) " //
-      + "(?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$"); //
+      + "(?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$"); // npr. VOZILO 1 1711348009 21.767 46.286608 16.353131
+  /**
+   * Predložak za naredbu za resetiranje radara.
+   */
+  private Pattern predlozakReset = Pattern.compile("^RADAR RESET$");
+
+  /**
+   * Predložak za naredbu za provjeru radara.
+   */
+  private Pattern predlozakProvjera = Pattern.compile("^RADAR (?<id>\\d+)$");
+
 
   /**
    * Pokreće radnika.
    */
   @Override
   public void run() {
-
     try {
       BufferedReader citac = new BufferedReader(new InputStreamReader(s.getInputStream(), "utf8"));
       OutputStream out = s.getOutputStream();
@@ -76,7 +85,6 @@ public class RadnikZaRadare implements Runnable {
     } catch (NumberFormatException | IOException e) {
       e.printStackTrace();
     }
-
   }
 
   /**
@@ -85,16 +93,77 @@ public class RadnikZaRadare implements Runnable {
    * @param zahtjev zahtjev
    */
   private String obradaZahtjeva(String zahtjev) {
+    var odgovor = "";
     if (zahtjev == null)
+      odgovor = "ERROR 30 Neispravna sintaksa naredbe.\n";
+    if (predlozakReset.matcher(zahtjev).matches())
+      odgovor = obradaZahtjevaReset();
+    else if (predlozakProvjera.matcher(zahtjev).matches())
+      odgovor = obradaZahtjevaProvjera(zahtjev);
+    else if (predlozakBrzine.matcher(zahtjev).matches())
+      odgovor = obradaZahtjevaBrzine(zahtjev);
+    return odgovor != null ? odgovor : "ERROR 30 Neispravna sintaksa naredbe.\n";
+  }
+
+  /**
+   * Obrada zahtjeva za resetiranje radara.
+   * 
+   * @return odgovor na zahtjev
+   */
+  private String obradaZahtjevaReset() {
+    try {
+
+      var provjeraSveOk = MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRegistracije(),
+          r.mreznaVrataRegistracije(), "RADAR " + r.id() + "\n");
+      if (provjeraSveOk.contains("OK"))
+        return "OK\n";
+      else if (provjeraSveOk.contains("ERROR 12")) {
+        if (MrezneOperacije
+            .posaljiZahtjevPosluzitelju(r.adresaRegistracije(), r.mreznaVrataRegistracije(),
+                "RADAR " + r.id() + " " + r.adresaRadara() + " " + r.mreznaVrataRadara() + " "
+                    + r.gpsSirina() + " " + r.gpsDuzina() + " " + r.maksUdaljenost() + "\n")
+            .contains("OK"))
+          return "OK\n";
+      }
+    } catch (Exception e) {
+      return "ERROR 32 Posluzitelj PosluziteljZaRegistracijuRadara nije dostupan.\n";
+    }
+    return null;
+  }
+
+  /**
+   * Obrada zahtjeva za provjeru radara.
+   * 
+   * @param zahtjev zahtjev
+   * @return odgovor na zahtjev
+   */
+  private String obradaZahtjevaProvjera(String zahtjev) {
+    var poklapanje = predlozakProvjera.matcher(zahtjev);
+    if (!poklapanje.matches())
+      return null;
+    try {
+      Integer.parseInt(poklapanje.group("id"));
+    } catch (NumberFormatException e) {
       return "ERROR 30 Neispravna sintaksa naredbe.\n";
-    var r = obradaZahtjevaBrzine(zahtjev);
-    return r != null ? r : "ERROR 39 Nešto je pošlo po zlu.\n";
+    }
+    if (Integer.parseInt(poklapanje.group("id")) != r.id())
+      return "ERROR 33 Identifikator radara ne odgovara.\n";
+    try {
+      var provjeraOk = MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaKazne(),
+          r.mreznaVrataKazne(), "TEST\n");
+      if (provjeraOk.contains("OK"))
+        return "OK\n";
+    } catch (Exception e) {
+      return "ERROR 34 Posluzitelj kazni nije dostupan.\n";
+    }
+    return null;
   }
 
   /**
    * Obrada zahtjeva za potencijalno kaznjavanje brzine vozila.
    * 
    * @param zahtjev zahtjev s brzinom vozila
+   * @return odgovor na zahtjev
    */
   private String obradaZahtjevaBrzine(String zahtjev) {
     var podaciVozila = predlozakBrzine.matcher(zahtjev);

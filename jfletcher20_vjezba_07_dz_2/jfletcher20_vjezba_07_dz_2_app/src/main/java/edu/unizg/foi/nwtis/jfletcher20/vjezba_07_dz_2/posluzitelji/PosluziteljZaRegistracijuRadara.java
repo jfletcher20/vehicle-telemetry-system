@@ -12,40 +12,6 @@ import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciRadara;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 
-/*
- * 
- * 
- * PosluziteljZaRegistracijuRadara ima dodatne komande:
-● RADAR id
-o npr. RADAR 1
-o Provjera da li su ispravni podaci. Ako su ispravni, provjerava da li su postoji radar sa zadanim
-id u kolekciji R. Ako postoji vraća OK.
-o Npr. OK
-● RADAR RESET
-o npr. RADAR RESET
-o Provjera da li ispravni podaci. Ako su ispravni, provjerava za svaki radar u kolekciji R da li je
-aktivan slanjem komande RADAR id tom radaru, gdje je id identifikator radara. Ako Radar nije
-aktivan, briše ga iz kolekcije R (deregistracija radara). Vraća OK n m. Broj n označava ukupan
-broj radara u trenutku primanja zahtjeva, a broj m označava broj radara koji nisu bili aktivni i
-obrisani su iz kolekcija R.
-o Npr. OK 0 0
-o Npr. OK 3 1
-● RADAR SVI
-o npr. RADAR SVI
-o Provjera da li ispravni podaci. Ako su ispravni, prolazi po kolekciji R i za svaki radar priprema
-podatke. Vraća OK {[id1 adresa1 mreznaVrata1 gpsSirina1 gpsDuzina1
-maksUdaljenost1], [id2 adresa2 mreznaVrata2 gpsSirina2
-gpsDuzina2 maksUdaljenost2]...}
-o Npr. OK {}
-o Npr. OK {[1 localhost 8010 46.29950 16.33001 100]}
-o Npr. OK {[1 localhost 8010 46.29950 16.33001 100], [2 localhost
-8011 46.28750 16.34201 123], [3 localhost 8012 46.29250
-16.322201 300]}
-
- * 
- * 
- */
-
 /**
  * Klasa PosluziteljZaRegistracijuRadara
  */
@@ -71,7 +37,6 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
           + "(?<gpsSirina>\\d+[.]\\d+) " //
           + "(?<gpsDuzina>\\d+[.]\\d+) " //
           + "(?<maksUdaljenost>-?\\d+?)$");
-  
   /**
    * Predložak za resetiranje radara
    */

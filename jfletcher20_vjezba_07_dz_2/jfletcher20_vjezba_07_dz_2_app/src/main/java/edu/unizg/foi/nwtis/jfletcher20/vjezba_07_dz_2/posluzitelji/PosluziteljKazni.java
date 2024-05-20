@@ -20,26 +20,6 @@ import edu.unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import edu.unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
 
 /**
- * PosluziteljKazni ima dodatne komande:
-● TEST
-o npr. TEST
-o Provjera da li ispravni podaci. Ako su ispravni, vraća OK.
-o Npr. OK
-PosluziteljKazni ima dopunu komande:
-● VOZILO id vrijemePocetak vrijemeKraj brzina gpsSirina gpsDuzina
-gpsSirinaRadara gpsDuzinaRadara
-o npr. VOZILO 1 1711348009 1711368009 21.767 46.286608 16.353131
-46.286602 16.353136
-o Provjera da li ispravni podaci. Ako su ispravni, u evidenciju kazni upisuje podatke za e-vozilo,
-ispisuje na ekran podatke o kazni, podaci o kazni šalju se POST metodom na RESTful web
-servis za evidenciju kazni e-vozila i vraća OK.
-o Npr. OK
-Dodatni kodovi pogrešaka su:
-o Kada POST metoda na RESTful web servis za evidenciju kazni e-vozila nije uspješno
-obavljena, vraća odgovor ERROR 42 tekst (tekst objašnjava razlog pogreške).
- */
-
-/**
  * Klasa poslužitelj kazni.
  */
 public class PosluziteljKazni {
