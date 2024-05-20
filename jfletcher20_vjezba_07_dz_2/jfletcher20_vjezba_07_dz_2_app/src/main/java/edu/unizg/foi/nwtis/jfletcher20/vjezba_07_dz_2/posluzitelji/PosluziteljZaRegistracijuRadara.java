@@ -9,7 +9,42 @@ import java.net.ServerSocket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciRadara;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
+
+/*
+ * 
+ * 
+ * PosluziteljZaRegistracijuRadara ima dodatne komande:
+● RADAR id
+o npr. RADAR 1
+o Provjera da li su ispravni podaci. Ako su ispravni, provjerava da li su postoji radar sa zadanim
+id u kolekciji R. Ako postoji vraća OK.
+o Npr. OK
+● RADAR RESET
+o npr. RADAR RESET
+o Provjera da li ispravni podaci. Ako su ispravni, provjerava za svaki radar u kolekciji R da li je
+aktivan slanjem komande RADAR id tom radaru, gdje je id identifikator radara. Ako Radar nije
+aktivan, briše ga iz kolekcije R (deregistracija radara). Vraća OK n m. Broj n označava ukupan
+broj radara u trenutku primanja zahtjeva, a broj m označava broj radara koji nisu bili aktivni i
+obrisani su iz kolekcija R.
+o Npr. OK 0 0
+o Npr. OK 3 1
+● RADAR SVI
+o npr. RADAR SVI
+o Provjera da li ispravni podaci. Ako su ispravni, prolazi po kolekciji R i za svaki radar priprema
+podatke. Vraća OK {[id1 adresa1 mreznaVrata1 gpsSirina1 gpsDuzina1
+maksUdaljenost1], [id2 adresa2 mreznaVrata2 gpsSirina2
+gpsDuzina2 maksUdaljenost2]...}
+o Npr. OK {}
+o Npr. OK {[1 localhost 8010 46.29950 16.33001 100]}
+o Npr. OK {[1 localhost 8010 46.29950 16.33001 100], [2 localhost
+8011 46.28750 16.34201 123], [3 localhost 8012 46.29250
+16.322201 300]}
+
+ * 
+ * 
+ */
 
 /**
  * Klasa PosluziteljZaRegistracijuRadara
@@ -20,7 +55,6 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
    * Mrežna vrata poslužitelja
    */
   private int mreznaVrata;
-
   /**
    * Referenca na centralni sustav
    */
@@ -37,7 +71,19 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
           + "(?<gpsSirina>\\d+[.]\\d+) " //
           + "(?<gpsDuzina>\\d+[.]\\d+) " //
           + "(?<maksUdaljenost>-?\\d+?)$");
-
+  
+  /**
+   * Predložak za resetiranje radara
+   */
+  private Pattern predlozakResetiranjaRadara = Pattern.compile("^RADAR RESET$");
+  /**
+   * Predložak za dohvaćanje svih radara
+   */
+  private Pattern predlozakDohvacanjaSvihRadara = Pattern.compile("^RADAR SVI$");
+  /**
+   * Predložak za provjeru postojanja radara
+   */
+  private Pattern predlozakPostojiRadar = Pattern.compile("^RADAR (?<id>\\d+)$");
   /**
    * Predložak za brisanje radara
    */
@@ -120,6 +166,15 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
     poklapanjeRegistracijeRadara = predlozakBrisanjaSvihRadara.matcher(zahtjev);
     if (poklapanjeRegistracijeRadara.matches())
       return obrisiSveRadare();
+    poklapanjeRegistracijeRadara = predlozakPostojiRadar.matcher(zahtjev);
+    if (poklapanjeRegistracijeRadara.matches())
+      return provjeriPostojanjeRadar();
+    poklapanjeRegistracijeRadara = predlozakResetiranjaRadara.matcher(zahtjev);
+    if (poklapanjeRegistracijeRadara.matches())
+      return resetirajRadare();
+    poklapanjeRegistracijeRadara = predlozakDohvacanjaSvihRadara.matcher(zahtjev);
+    if (poklapanjeRegistracijeRadara.matches())
+      return dohvatiSveRadare();
     return null;
   }
 
@@ -164,6 +219,49 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
   public String obrisiSveRadare() {
     centralniSustav.sviRadari.clear();
     return "OK\n";
+  }
+  
+  /**
+   * Metoda za provjeru postojanja radara
+   * 
+   * @return Odgovor na zahtjev
+   */
+  public String provjeriPostojanjeRadar() {
+    var id = Parsiraj.pi(poklapanjeRegistracijeRadara.group("id"));
+    if (centralniSustav.sviRadari.containsKey(id))
+      return "OK\n";
+    else // TODO: provjeriti je li ovo potrebno (u zadatku nije navedeno)
+      return "ERROR 19 Radar s ID-em " + id + " ne postoji.\n"; 
+  }
+  
+  /**
+   * Metoda za dohvaćanje svih radara
+   * 
+   * @return Odgovor na zahtjev
+   */
+  public String dohvatiSveRadare() {
+    var odgovor = "OK {";
+    for (var radar : centralniSustav.sviRadari.values())
+      odgovor += "[" + radar.id() + " " + radar.adresaRadara() + " " + radar.mreznaVrataRadara() + " "
+          + radar.gpsSirina() + " " + radar.gpsDuzina() + " " + radar.maksUdaljenost() + "], ";
+    return odgovor.contains("]") ? odgovor.substring(0, odgovor.length() - 2) + "}\n" :
+        odgovor + "}\n";
+  }
+  
+  /**
+   * Metoda za resetiranje radara
+   * 
+   * @return Odgovor na zahtjev
+   */
+  public String resetirajRadare() {
+    var brojRadara = centralniSustav.sviRadari.size();
+    var brojObrisanihRadara = 0;
+    for (var radar : centralniSustav.sviRadari.values()) {
+      if (!MrezneOperacije.posaljiZahtjevPosluzitelju(radar.adresaRadara(), radar.mreznaVrataRadara(), "RADAR " + radar.id()).equals("OK"))
+        centralniSustav.sviRadari.remove(radar.id());
+      brojObrisanihRadara++;
+    }
+    return "OK " + brojRadara + " " + brojObrisanihRadara + "\n";
   }
 
 }

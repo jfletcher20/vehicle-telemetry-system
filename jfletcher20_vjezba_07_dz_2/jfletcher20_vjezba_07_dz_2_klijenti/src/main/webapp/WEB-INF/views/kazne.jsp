@@ -19,12 +19,10 @@
 			List<Kazna> kazne = (List<Kazna>) request.getAttribute("kazne");
 			String mult = kazne.size() != 1 ? "a" : "";
 			for(Kazna k: kazne) {
-			  i++;
-			  Date vrijeme = new Date(k.getVrijemeKraj() * 1000);
-			  
-			%>
-			<tr><td class="desno"><%= i %></td><td><%= k.getId() %></td><td><%=  sdf.format(vrijeme) %></td><td><%= k.getBrzina() %></td><td><%= k.getGpsSirina() %></td><td><%= k.getGpsDuzinaRadar() %></td></tr>	  
-			<%
+				i++;
+				Date vrijeme = new Date(k.getVrijemeKraj() * 1000);%>
+				<tr><td class="desno"><%= i %></td><td><%= k.getId() %></td><td><%=  sdf.format(vrijeme) %></td><td><%= k.getBrzina() %></td><td><%= k.getGpsSirina() %></td><td><%= k.getGpsDuzinaRadar() %></td></tr>	  
+				<%
 			}
 			%>
 			<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= kazne.size() %> rezultat<%= mult %></td></tfoot>
