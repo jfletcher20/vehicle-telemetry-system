@@ -19,6 +19,29 @@ import edu.unizg.foi.nwtis.konfiguracije.Konfiguracija;
 import edu.unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import edu.unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
 
+/**
+ * PosluziteljKazni ima dodatne komande:
+● TEST
+o npr. TEST
+o Provjera da li ispravni podaci. Ako su ispravni, vraća OK.
+o Npr. OK
+PosluziteljKazni ima dopunu komande:
+● VOZILO id vrijemePocetak vrijemeKraj brzina gpsSirina gpsDuzina
+gpsSirinaRadara gpsDuzinaRadara
+o npr. VOZILO 1 1711348009 1711368009 21.767 46.286608 16.353131
+46.286602 16.353136
+o Provjera da li ispravni podaci. Ako su ispravni, u evidenciju kazni upisuje podatke za e-vozilo,
+ispisuje na ekran podatke o kazni, podaci o kazni šalju se POST metodom na RESTful web
+servis za evidenciju kazni e-vozila i vraća OK.
+o Npr. OK
+Dodatni kodovi pogrešaka su:
+o Kada POST metoda na RESTful web servis za evidenciju kazni e-vozila nije uspješno
+obavljena, vraća odgovor ERROR 42 tekst (tekst objašnjava razlog pogreške).
+ */
+
+/**
+ * Klasa poslužitelj kazni.
+ */
 public class PosluziteljKazni {
   /**
    * Format datuma.
@@ -39,8 +62,8 @@ public class PosluziteljKazni {
           + "(?<brzina>-?\\d+([.]\\d+)?) " //
           + "(?<gpsSirina>\\d+[.]\\d+) " //
           + "(?<gpsDuzina>\\d+[.]\\d+) " //
-          + "(?<gpsSirinaRadar>\\d+[.]\\d+) " //
-          + "(?<gpsDuzinaRadar>\\d+[.]\\d+)$");
+          + "(?<gpsSirinaRadara>\\d+[.]\\d+) " //
+          + "(?<gpsDuzinaRadara>\\d+[.]\\d+)$");
   /**
    * Predložak za dohvaćanje kazne.
    */
@@ -56,7 +79,11 @@ public class PosluziteljKazni {
       "^STATISTIKA " //
           + "(?<vrijemeOd>\\d+) " //
           + "(?<vrijemeDo>\\d+)$");
-
+  /**
+   * Predložak za TEST naredbu.
+   */
+  private Pattern predlozakTest = Pattern.compile("^TEST$");
+  
   /**
    * Matcher za poklapanje uzorka.
    */
@@ -118,22 +145,18 @@ public class PosluziteljKazni {
    * @return Odgovor na zahtjev.
    */
   public String obradaZahtjeva(String zahtjev) {
+    var odgovor = "";
     if (zahtjev == null)
-      return "ERROR 40 Neispravna sintaksa naredbe.\n";
-    else if (predlozakKazna.matcher(zahtjev).matches()) {
-      var odgovor = obradaZahtjevaKazna(zahtjev);
-      if (odgovor != null)
-        return odgovor;
-    } else if (predlozakDohvatiKaznu.matcher(zahtjev).matches()) {
-      var odgovor = obradaZahtjevaDohvatiKaznu(zahtjev);
-      if (odgovor != null)
-        return odgovor;
-    } else if (predlozakStatistika.matcher(zahtjev).matches()) {
-      var odgovor = obradaZahtjevaStatistika(zahtjev);
-      if (odgovor != null)
-        return odgovor;
-    }
-    return "ERROR 49 Nešto je pošlo po zlu.\n";
+      odgovor = "ERROR 40 Neispravna sintaksa naredbe.\n";
+    else if (predlozakKazna.matcher(zahtjev).matches())
+      odgovor = obradaZahtjevaKazna(zahtjev);
+    else if (predlozakDohvatiKaznu.matcher(zahtjev).matches())
+      odgovor = obradaZahtjevaDohvatiKaznu(zahtjev);
+    else if (predlozakStatistika.matcher(zahtjev).matches())
+      odgovor = obradaZahtjevaStatistika(zahtjev);
+    else if (predlozakTest.matcher(zahtjev).matches())
+      return "OK\n";
+    return odgovor != null ? odgovor : "ERROR 40 Neispravna sintaksa naredbe.\n";
   }
 
   /**
@@ -152,12 +175,15 @@ public class PosluziteljKazni {
           Parsiraj.pd(poklapanjeKazna.group("brzina")),
           Parsiraj.pd(poklapanjeKazna.group("gpsSirina")),
           Parsiraj.pd(poklapanjeKazna.group("gpsDuzina")),
-          Parsiraj.pd(poklapanjeKazna.group("gpsSirinaRadar")),
-          Parsiraj.pd(poklapanjeKazna.group("gpsDuzinaRadar")));
+          Parsiraj.pd(poklapanjeKazna.group("gpsSirinaRadara")),
+          Parsiraj.pd(poklapanjeKazna.group("gpsDuzinaRadara")));
       sveKazne.add(kazna);
       System.out.println("Id: " + kazna.id() + " Vrijeme od: " + sdf.format(kazna.vrijemePocetak())
           + "  Vrijeme do: " + sdf.format(kazna.vrijemeKraj()) + " Brzina: " + kazna.brzina()
           + " GPS: " + kazna.gpsSirina() + ", " + kazna.gpsDuzina());
+      
+      // TODO: poslati POST zahtjev RESTful web servisu za evidenciju kazni e-vozila
+      
       return "OK\n";
     }
     return null;
