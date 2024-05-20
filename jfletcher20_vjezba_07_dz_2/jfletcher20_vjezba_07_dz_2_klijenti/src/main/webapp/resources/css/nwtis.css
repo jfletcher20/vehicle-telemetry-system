@@ -17,6 +17,12 @@ table {
 	border-top-right-radius: 1rem;
 }
 
+.row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
 .current-tab {
 	color: black;
 	background-color: #f9f9f9 !important;

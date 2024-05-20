@@ -233,7 +233,7 @@ public class RestKlijentKazne {
 
       resource = resource.path(java.text.MessageFormat.format("vozilo/{0}", new Object[] {id}));
       resource = resource.queryParam("od", odVremena);
-      resource = resource.queryParam("od", doVremena);
+      resource = resource.queryParam("do", doVremena);
       Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
       Response restOdgovor = resource.request().get();
       if (restOdgovor.getStatus() == 200) {

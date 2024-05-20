@@ -94,7 +94,6 @@ public class KazneResurs extends SviResursi {
     else
       return Response.status(Response.Status.OK)
           .entity(kaznaDAO.dohvatiKazneVozila(id, odVremena, doVremena)).build();
-    // TODO: testirati
   }
 
   /**

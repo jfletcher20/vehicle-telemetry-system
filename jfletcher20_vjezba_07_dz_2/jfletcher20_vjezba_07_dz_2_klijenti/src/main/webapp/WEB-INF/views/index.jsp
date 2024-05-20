@@ -7,6 +7,7 @@
 		<title>REST MVC</title>
 		<link rel="stylesheet"
 			href="${pageContext.servletContext.contextPath}/resources/css/nwtis.css">
+		<script src="${pageContext.servletContext.contextPath}/resources/scripts/disable-form-inputs.js"></script>
 	</head>
 	<body>
 		<div class="card">
@@ -17,8 +18,10 @@
 					svih kazni</a>
 			</nav>
 			<h1>Početna</h1>
-			<h2>Pretraživanje kazni u intervalu</h2>
-			<form method="post"
+			<h2>Pretraživanje kazni</h2>
+			<p>Unosom rednog broja, ostale će se vrijednosti ignorirati.<br>
+			Unosom ID-a vozila, rezultat će biti samo kazne za zadano vozilo.</p>
+			<form id="forma" method="post"
 				action="${pageContext.servletContext.contextPath}/mvc/kazne/pretrazivanjeKazni"
 				class="fixed-form">
 				<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
@@ -28,13 +31,22 @@
 				kazne.sort((a, b) -> a.getVrijemeKraj() > b.getVrijemeKraj() ? 1 : a.getVrijemeKraj() == b.getVrijemeKraj() ? 0 : -1);
 				long odVremena = kazne.size() > 0 ? kazne.get(0).getVrijemeKraj() : 0;
 				long doVremena = kazne.size() > 0 ? kazne.get(kazne.size() - 1).getVrijemeKraj() : 0;
+				int redniBrojMax = kazne.size() - 1;
 				%>
-				<div style="display: flex; flex-direction: row;">
+				<div class="row">
+					<label for="rb">Indeks kazne
+						<input name="rb" id="rb" min=0 max=<%= redniBrojMax %> type="number" pattern="[0-9]">
+					</label>
+					<label for="idVozila">ID Vozila
+						<input name="idVozila" id="idVozila" type="number" pattern="[0-9]">
+					</label>
+				</div>
+				<div class="row">
 					<label for="odVremena">Od vremena
-						<input name="odVremena"	min=0 type="number" value="<%= odVremena %>">
+						<input name="odVremena"	id="odVremena" min=0 type="number" value=<%= odVremena %> pattern="[0-9]">
 					</label>
 					<label for="doVremena">Do vremena
-						<input name="doVremena" min=0 type="number" value="<%= doVremena %>">
+						<input name="doVremena" id="doVremena"  min=0 type="number" value=<%= doVremena %> pattern="[0-9]">
 					</label>
 				</div>
 				</fieldset>
