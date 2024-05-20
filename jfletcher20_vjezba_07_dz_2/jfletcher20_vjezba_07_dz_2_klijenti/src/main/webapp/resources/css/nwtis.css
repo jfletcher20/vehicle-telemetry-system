@@ -2,14 +2,80 @@
 	font-family: Arial, sans-serif;
 }
 
-tr {
-	/* border: 1px solid black; */
+table {
+	border-collapse: separate;
+	border-radius: 1rem;
+	width: 100%;
 }
 
-table {
- 	border-collapse: separate;
- 	border-radius: 1rem;
- 	width: 100%;
+/* nav should be in a pleasant lighter blue */
+/* nav should be positioned at the top of the page as tabs */
+.card nav {
+	display: flex;
+	margin-top: -3.5rem;
+	border-top-left-radius: 1rem;
+	border-top-right-radius: 1rem;
+}
+
+.current-tab {
+	color: black;
+	background-color: #f9f9f9 !important;
+	border: 1px solid #ccc !important;
+	border-bottom: 1px solid #f9f9f9 !important;
+	cursor: default !important;
+	&:hover {
+		background-color: white !important;
+	}
+	&:active {
+		background-color: #deddda!important;
+	}
+	&:visited {
+		background-color: #f9f9f9 !important;
+	}
+	&:visited:hover {
+		background-color: white !important;
+	}
+	&:visited:active {
+		background-color: #deddda !important;
+	}
+}
+
+nav a {
+	text-decoration: none;
+	color: white;
+	padding: 10px;
+    background-color: #3584e4;
+	display: flex;
+}
+
+/* first child of nav which is a */
+nav a:first-child {
+	border-top-left-radius: 1rem;
+}
+
+/* last child of nav which is a */
+nav a:last-child {
+	border-top-right-radius: 1rem;
+}
+
+nav a:hover {
+    background-color: #62a0ea;
+}
+
+nav a:active {
+	background-color: #1a5fb4;
+}
+
+nav a:visited {
+	background-color: #3584e4;
+}
+
+nav a:visited:hover {
+	background-color: #62a0ea;
+}
+
+nav a:visited:active {
+	background-color: #1a5fb4;
 }
 
 td, th {
@@ -21,7 +87,8 @@ th {
 	text-align: center;
 	font-weight: bold;
 	color: indigo;
-} 
+}
+
 .desno {
 	text-align: right;
 }
@@ -36,8 +103,8 @@ tr:first-child {
 }
 
 tr:nth-last-child(2) {
-    border-bottom-left-radius: 1rem;
-    border-bottom-right-radius: 1rem;
+	border-bottom-left-radius: 1rem;
+	border-bottom-right-radius: 1rem;
 }
 
 table {
@@ -67,7 +134,7 @@ body {
 
 .card {
 	margin: auto;
-	margin-top: 2rem;
+	margin-top: 4rem;
 	margin-bottom: 2rem;
 	width: 40rem;
 	padding: 1rem;
@@ -87,6 +154,14 @@ form button, input[type="submit"] {
 	margin-left: auto;
 	margin-right: 0;
 	display: flex;
+}
+
+form button:hover, input[type="submit"]:hover {
+	background-color: #1a1a1a;
+}
+
+form button:active, input[type="submit"]:active {
+	background-color: #2a2a2a;
 }
 
 fieldset {

@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, java.util.Date, java.text.SimpleDateFormat,edu.unizg.foi.nwtis.jfletcher20.vjezba_08_dz_3.podaci.Kazna" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,14 +22,21 @@
 			class="fixed-form">
 			<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
 			<fieldset>
+			<%
+			List<Kazna> kazne = (List<Kazna>) request.getAttribute("kazne");
+			kazne.sort((a, b) -> a.getVrijemeKraj() > b.getVrijemeKraj() ? 1 : a.getVrijemeKraj() == b.getVrijemeKraj() ? 0 : -1);
+			var odVremena = kazne.size() > 0 ? kazne.get(0).getVrijemeKraj() : 0;
+			var doVremena = kazne.size() > 0 ? kazne.get(kazne.size() - 1).getVrijemeKraj() : 0;
+			%>
+			<p>stufaskldfjsadfsadlkj</p>
 			<label for="odVremena">Od vremena
-				<input name="odVremena"	min=0 type="number">
+				<input name="odVremena"	min=0 type="number" value="<%= odVremena %>">
 			</label>
 			<label for="doVremena">Do vremena
-				<input name="doVremena" min=0 type="number">
+				<input name="doVremena" min=0 type="number" value="<%= doVremena %>">
 			</label>
 			</fieldset>
-			<input type="submit" value=" Dohvati kazne ">
+			<input type="submit" value="Dohvati kazne">
 		</form>
 	</div>
 </body>
