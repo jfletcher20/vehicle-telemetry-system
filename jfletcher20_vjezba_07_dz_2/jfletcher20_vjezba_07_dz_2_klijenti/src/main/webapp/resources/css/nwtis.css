@@ -2,19 +2,38 @@
 	font-family: Arial, sans-serif;
 }
 
+p {
+	margin: 5px;
+}
+
 table {
 	border-collapse: separate;
 	border-radius: 1rem;
 	width: 100%;
 }
 
+input:disabled {
+	background-color: aliceblue;
+	cursor: not-allowed;
+}
+
 /* nav should be in a pleasant lighter blue */
 /* nav should be positioned at the top of the page as tabs */
-.card nav {
+.card #page-nav {
 	display: flex;
 	margin-top: -3.5rem;
 	border-top-left-radius: 1rem;
 	border-top-right-radius: 1rem;
+}
+
+.card #tab-nav {
+	display: flex;
+	padding-bottom: 2rem;
+	margin-bottom: -5.5rem;
+	margin-top: 1.5rem;
+	border-bottom-left-radius: 1rem;
+	border-bottom-right-radius: 1rem;
+	justify-content: flex-end;
 }
 
 .row {
@@ -24,7 +43,7 @@ table {
 }
 
 .current-tab {
-	color: black;
+	color: black !important;
 	background-color: #f9f9f9 !important;
 	border: 1px solid #ccc !important;
 	border-bottom: 1px solid #f9f9f9 !important;
@@ -46,7 +65,12 @@ table {
 	}
 }
 
-nav a {
+.tab-nav.current-tab {
+	border-top: 1px solid #f9f9f9 !important;
+	border-bottom: 1px solid #ccc !important;
+}
+
+#page-nav a {
 	text-decoration: none;
 	color: white;
 	padding: 10px;
@@ -55,33 +79,71 @@ nav a {
 }
 
 /* first child of nav which is a */
-nav a:first-child {
+#page-nav a:first-child {
 	border-top-left-radius: 1rem;
 }
 
 /* last child of nav which is a */
-nav a:last-child {
+#page-nav a:last-child {
 	border-top-right-radius: 1rem;
 }
 
-nav a:hover {
+#page-nav a:hover {
     background-color: #62a0ea;
 }
 
-nav a:active {
+#page-nav a:active {
 	background-color: #1a5fb4;
 }
 
-nav a:visited {
+#page-nav a:visited {
 	background-color: #3584e4;
 }
 
-nav a:visited:hover {
+#page-nav a:visited:hover {
 	background-color: #62a0ea;
 }
 
-nav a:visited:active {
+#page-nav a:visited:active {
 	background-color: #1a5fb4;
+}
+
+#tab-nav a {
+	text-decoration: none;
+	color: white;
+	padding: 10px;
+    background-color: #9141ac;
+	display: flex;
+}
+
+/* first child of nav which is a */
+#tab-nav a:first-child {
+	border-bottom-left-radius: 1rem;
+}
+
+/* last child of nav which is a */
+#tab-nav a:last-child {
+	border-bottom-right-radius: 1rem;
+}
+
+#tab-nav a:hover {
+    background-color: #c061cb;
+}
+
+#tab-nav a:active {
+	background-color: #613583;
+}
+
+#tab-nav a:visited {
+	background-color: #9141ac;
+}
+
+#tab-nav a:visited:hover {
+	background-color: #c061cb;
+}
+
+#tab-nav a:visited:active {
+	background-color: #613583;
 }
 
 td, th {

@@ -9,7 +9,7 @@
     </head>
     <body>
     	<div class="card">
-			<nav>
+			<nav id="page-nav">
 				<a href="${pageContext.servletContext.contextPath}/mvc/kazne/pocetak">Početna
 					stranica</a>
 				<a class="current-tab" href="${pageContext.servletContext.contextPath}/mvc/kazne/ispisKazni">Ispis
@@ -32,7 +32,6 @@
 				%>
 				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= kazne.size() %> rezultat<%= mult %></td></tfoot>
 				<p>Values 'values': <%= (String) request.getAttribute("values") %></p>
-				
 	        </table>
         </div>
     </body>
