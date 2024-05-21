@@ -114,6 +114,7 @@ input:disabled {
 	padding: 10px;
     background-color: #9141ac;
 	display: flex;
+	cursor: pointer;
 }
 
 /* first child of nav which is a */
@@ -215,7 +216,7 @@ body {
 form button, input[type="submit"] {
 	padding: 10px;
 	color: white;
-	background-color: #0a0a0a;
+	background-color: #3d3846;
 	border: none;
 	border-radius: 0.5rem;
 	cursor: pointer;
@@ -225,11 +226,11 @@ form button, input[type="submit"] {
 }
 
 form button:hover, input[type="submit"]:hover {
-	background-color: #1a1a1a;
+	background-color: #77767b;
 }
 
 form button:active, input[type="submit"]:active {
-	background-color: #2a2a2a;
+	background-color: #000;
 }
 
 fieldset {

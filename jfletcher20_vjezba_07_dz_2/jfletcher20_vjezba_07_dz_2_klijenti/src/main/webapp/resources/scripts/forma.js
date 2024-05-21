@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 	const idVozila = document.getElementById("idVozila");
 	const odVremena = document.getElementById("odVremena");
 	const doVremena = document.getElementById("doVremena");
-	const form = document.getElementById("forma-kazne");
+	const forma = document.getElementById("forma-kazne");
 	
 	forma.reset();
 	idVozila.placeholder = rb.placeholder = odVremena.placeholder = doVremena.placeholder = "";
