@@ -25,30 +25,6 @@ public class RestKlijentSimulacije {
   public RestKlijentSimulacije() {}
 
   /**
-   * Vraća sve voznje
-   *
-   * @return voznje
-   */
-  public List<Voznja> getVoznjeJSON() {
-    RestVoznje rk = new RestVoznje();
-    List<Voznja> voznje = rk.getJSON();
-
-    return voznje;
-  }
-
-  /**
-   * Vraća kaznu.
-   *
-   * @param rb redni broj voznje
-   * @return voznja
-   */
-  public Voznja getVoznjaJSON_rb(String rb) {
-    RestVoznje rk = new RestVoznje();
-    Voznja k = rk.getJSON_rb(rb);
-    return k;
-  }
-
-  /**
    * Vraća voznje u intervalu od do.
    *
    * @param odVremena početak intervala
@@ -120,7 +96,7 @@ public class RestKlijentSimulacije {
      */
     public RestVoznje() {
       client = ClientBuilder.newClient();
-      webTarget = client.target(BASE_URI).path("nwtis/v1/api/voznje");
+      webTarget = client.target(BASE_URI).path("nwtis/v1/api/simulacije");
     }
 
     /**
@@ -143,28 +119,6 @@ public class RestKlijentSimulacije {
       }
 
       return voznje;
-    }
-
-    /**
-     * Vraća kaznu.
-     *
-     * @param rb redni broj voznje
-     * @return voznja
-     * @throws ClientErrorException iznimka kod poziva klijenta
-     */
-    public Voznja getJSON_rb(String rb) throws ClientErrorException {
-      WebTarget resource = webTarget;
-      resource = resource.path(java.text.MessageFormat.format("{0}", new Object[] {rb}));
-      Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
-      Response restOdgovor = resource.request().get();
-      if (restOdgovor.getStatus() == 200) {
-        String odgovor = restOdgovor.readEntity(String.class);
-        var jb = JsonbBuilder.create();
-        var voznja = jb.fromJson(odgovor, Voznja.class);
-        return voznja;
-      }
-
-      return null;
     }
 
     /**
@@ -218,7 +172,7 @@ public class RestKlijentSimulacije {
     }
 
     /**
-     * Vraća voznje za vozilo u intervalu od do..
+     * Vraća voznje za vozilo u intervalu.
      *
      * @param id id vozila
      * @param odVremena početak intervala
@@ -247,7 +201,7 @@ public class RestKlijentSimulacije {
     }
 
     /**
-     * Dodaje voznja.
+     * Dodaje voznju.
      *
      * @param voznja voznja
      * @return true, ako je uspješno
