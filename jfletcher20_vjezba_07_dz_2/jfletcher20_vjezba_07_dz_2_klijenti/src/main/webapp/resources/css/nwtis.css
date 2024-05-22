@@ -233,6 +233,40 @@ form button:active, input[type="submit"]:active {
 	background-color: #000;
 }
 
+.button-red {
+ 	background-color: #e01b24;
+}
+
+.button-red:hover {
+	background-color: #f66151;
+}
+
+.button-red:active {
+	background-color: #a51d2d;
+}
+
+.button-green {
+	background-color: #33d17a;
+}
+
+.button-green:hover {
+	background-color: #8ff0a4;
+}
+
+.button-green:active {
+	background-color: #26a269;
+}
+
+.button-green:disabled {
+	background-color: #c5f0d4;
+	cursor: not-allowed;
+}
+
+.button-red:disabled {
+	background-color: #f0c5c8;
+	cursor: not-allowed;
+}
+
 fieldset {
 	border: none;
 	border-radius: 0.5rem;

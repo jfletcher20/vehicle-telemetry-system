@@ -19,8 +19,9 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 
 /**
- *
- * @author NWTiS
+ * Kontroler za MVC model.
+ * 
+ * @author Joshua Fletcher
  */
 @Controller
 @Path("kazne")

@@ -63,7 +63,7 @@ public class PosluziteljKazni {
    * Predložak za TEST naredbu.
    */
   private Pattern predlozakTest = Pattern.compile("^TEST$");
-  
+
   /**
    * Matcher za poklapanje uzorka.
    */
@@ -107,7 +107,8 @@ public class PosluziteljKazni {
             new OutputStreamWriter(mreznaUticnica.getOutputStream(), "UTF-8"), true);
         var redak = citac.readLine();
         mreznaUticnica.shutdownInput();
-        var obrada = obradaZahtjeva(redak);
+        // var obrada = obradaZahtjeva(redak); // TODO: verify that removing this line doesn't break
+        // anything
         pisac.println(obradaZahtjeva(redak));
         pisac.flush();
         mreznaUticnica.shutdownOutput();
@@ -161,9 +162,9 @@ public class PosluziteljKazni {
       System.out.println("Id: " + kazna.id() + " Vrijeme od: " + sdf.format(kazna.vrijemePocetak())
           + "  Vrijeme do: " + sdf.format(kazna.vrijemeKraj()) + " Brzina: " + kazna.brzina()
           + " GPS: " + kazna.gpsSirina() + ", " + kazna.gpsDuzina());
-      
+
       // TODO: poslati POST zahtjev RESTful web servisu za evidenciju kazni e-vozila
-      
+
       return "OK\n";
     }
     return null;

@@ -32,7 +32,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
   private Pattern predlozakRegistracijeRadara = Pattern.compile(//
       "^RADAR " //
           + "(?<id>\\d+) " //
-          + "(?<adresa>\\w+) " //
+          + "(?<adresa>\\([\\w.-]+)|(\\d+\\.\\d+\\.\\d+\\.\\d+)) " //
           + "(?<mreznaVrata>\\d+) " //
           + "(?<gpsSirina>\\d+[.]\\d+) " //
           + "(?<gpsDuzina>\\d+[.]\\d+) " //

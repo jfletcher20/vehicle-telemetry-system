@@ -1,0 +1,61 @@
+<fieldset>
+	<div class="row">
+		<label for="idRadara">ID Radara <input name="idRadara"
+			id="idRadara" type="number" pattern="[0-9]">
+		</label>
+	</div>
+	<div class="row" style="width: 43%">
+		<button id="provjeri-radar" class="button-green" style="margin-left: 0">Provjeri radar</button>
+		<button id="obrisi-radar" class="button-red">Obriši radar</button>
+	</div>
+	<div class="row">
+		<label for="odVremena">Od vremena <input name="odVremena"
+			min=0 type="number">
+		</label> <label for="doVremena">Do vremena <input name="doVremena"
+			min=0 type="number">
+		</label>
+	</div>
+</fieldset>
+<fieldset>
+	<div class="row">
+		<button id="resetiraj-radare" class="button-green" style="margin-left: 0;">Resetiraj</button>
+		<button id="obrisi-radare" class="button-red">Obriši sve</button>
+	</div>
+</fieldset>
+<input type="submit" value="Potvrda">
+<script>
+	const idRadara = document.getElementById('idRadara');
+	const provjeriRadar = document.getElementById('provjeri-radar');
+	const obrisiRadar = document.getElementById('obrisi-radar');
+	const resetRadar = document.getElementById('resetiraj-radare');
+	const obrisiRadare = document.getElementById('obrisi-radare');
+	
+	const forma = document.querySelector('forma-radari');
+	
+	idRadara.addEventListener('input', (e) => {
+		provjeriRadar.disabled = obrisiRadar.disabled = false;
+		if (idRadara.value === '') {
+			provjeriRadar.disabled = true;
+			obrisiRadar.disabled = true;
+		}
+	});
+	
+	provjeriRadar.disabled = obrisiRadar.disabled = true;
+	
+	provjeriRadar.addEventListener('click', (e) => {
+		e.preventDefault();
+	});
+	
+	obrisiRadar.addEventListener('click', (e) => {
+		e.preventDefault();
+	});
+	
+	resetRadar.addEventListener('click', (e) => {
+		e.preventDefault();
+	});
+	
+	obrisiRadare.addEventListener('click', (e) => {
+		e.preventDefault();
+	});
+
+</script>

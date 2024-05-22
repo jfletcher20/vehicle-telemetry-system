@@ -25,5 +25,4 @@ public record PodaciVozila(int id, int broj, long vrijeme, double brzina, double
     double struja, double visina, double gpsBrzina, int tempVozila, int postotakBaterija,
     double naponBaterija, int kapacitetBaterija, int tempBaterija, double preostaloKm,
     double ukupnoKm, double gpsSirina, double gpsDuzina) {
-
 }
