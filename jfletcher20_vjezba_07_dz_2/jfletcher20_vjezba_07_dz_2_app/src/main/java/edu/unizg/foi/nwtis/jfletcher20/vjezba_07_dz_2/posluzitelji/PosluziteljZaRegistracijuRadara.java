@@ -38,13 +38,13 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
           + "(?<gpsDuzina>\\d+[.]\\d+) " //
           + "(?<maksUdaljenost>-?\\d+?)$");
   /**
-   * Predložak za resetiranje radara
-   */
-  private Pattern predlozakResetiranjaRadara = Pattern.compile("^RADAR RESET$");
-  /**
    * Predložak za dohvaćanje svih radara
    */
   private Pattern predlozakDohvacanjaSvihRadara = Pattern.compile("^RADAR SVI$");
+  /**
+   * Predložak za resetiranje radara
+   */
+  private Pattern predlozakResetiranjaRadara = Pattern.compile("^RADAR RESET$");
   /**
    * Predložak za provjeru postojanja radara
    */
@@ -111,8 +111,12 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
   public String obradaZahtjeva(String zahtjev) {
     if (zahtjev == null)
       return "ERROR 10 Neispravna sintaksa komande.\n";
-    var odgovor = obradaZahtjevaRegistracijeRadara(zahtjev);
-    return odgovor != null ? odgovor : "ERROR 10 Neispravna sintaksa komande.\n";
+    try {
+      var odgovor = obradaZahtjevaRegistracijeRadara(zahtjev);
+      return odgovor != null ? odgovor : "ERROR 10 Neispravna sintaksa komande.\n";
+    } catch (Exception e) {
+      return "ERROR 10 Neispravna sintaksa komande (krivi parametar proslijeden).\n";
+    }
   }
 
   /**
@@ -185,7 +189,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
     centralniSustav.sviRadari.clear();
     return "OK\n";
   }
-  
+
   /**
    * Metoda za provjeru postojanja radara
    * 
@@ -196,9 +200,9 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
     if (centralniSustav.sviRadari.containsKey(id))
       return "OK\n";
     else // TODO: provjeriti je li ovo potrebno (u zadatku nije navedeno)
-      return "ERROR 19 Radar s ID-em " + id + " ne postoji.\n"; 
+      return "ERROR 12 Radar koji ima ID " + id + " ne postoji.\n";
   }
-  
+
   /**
    * Metoda za dohvaćanje svih radara
    * 
@@ -207,12 +211,13 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
   public String dohvatiSveRadare() {
     var odgovor = "OK {";
     for (var radar : centralniSustav.sviRadari.values())
-      odgovor += "[" + radar.id() + " " + radar.adresaRadara() + " " + radar.mreznaVrataRadara() + " "
-          + radar.gpsSirina() + " " + radar.gpsDuzina() + " " + radar.maksUdaljenost() + "], ";
-    return odgovor.contains("]") ? odgovor.substring(0, odgovor.length() - 2) + "}\n" :
-        odgovor + "}\n";
+      odgovor +=
+          "[" + radar.id() + " " + radar.adresaRadara() + " " + radar.mreznaVrataRadara() + " "
+              + radar.gpsSirina() + " " + radar.gpsDuzina() + " " + radar.maksUdaljenost() + "], ";
+    return odgovor.contains("]") ? odgovor.substring(0, odgovor.length() - 2) + "}\n"
+        : odgovor + "}\n";
   }
-  
+
   /**
    * Metoda za resetiranje radara
    * 
@@ -222,7 +227,8 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
     var brojRadara = centralniSustav.sviRadari.size();
     var brojObrisanihRadara = 0;
     for (var radar : centralniSustav.sviRadari.values()) {
-      if (!MrezneOperacije.posaljiZahtjevPosluzitelju(radar.adresaRadara(), radar.mreznaVrataRadara(), "RADAR " + radar.id()).equals("OK"))
+      if (!MrezneOperacije.posaljiZahtjevPosluzitelju(radar.adresaRadara(),
+          radar.mreznaVrataRadara(), "RADAR " + radar.id()).equals("OK"))
         centralniSustav.sviRadari.remove(radar.id());
       brojObrisanihRadara++;
     }

@@ -1,111 +1,32 @@
 <!-- 
 	Podaci koje trebaju biti u formi:
 	
-	
-	
-public class Voznja {
-
-  private int id, broj;
-  private long vrijeme;
-  private double brzina, snaga, struja, visina, gpsBrzina, naponBaterija;
-  private int tempVozila, postotakBaterija, kapacitetBaterija, tempBaterija;
-  private double preostaloKm, ukupnoKm, gpsSirina, gpsDuzina;
-
-
-
-	inputi koriste ovakav oblik:
-	<div class="row">
-		<label for="idRadara">ID Radara <input name="idRadara"
-			id="idRadara" type="number" pattern="[0-9]">
-		</label>
-		<label for="idRadara">ID Radara <input name="idRadara"
-			id="idRadara" type="number" pattern="[0-9]">
-		</label>
-	</div>
-	<div class="row">
-		<label for="idRadara">ID Radara <input name="idRadara"
-			id="idRadara" type="number" pattern="[0-9]">
-		</label>
-		<label for="idRadara">ID Radara <input name="idRadara"
-			id="idRadara" type="number" pattern="[0-9]">
-		</label>
-	</div>
-	gdje ima samo 2 po redu
- -->
+	String naziv_datoteke_s_podacima_vozila
+	int id_vozila
+	int trajanje_sek
+	int trajanje_pauza
+-->
 
 <fieldset>
 
 	<div class="row">
-		<label for="id">ID <input name="id" type="number"
-			pattern="[0-9]">
-		</label> <label for="broj">Broj <input name="broj" type="number"
-			pattern="[0-9]">
+		<label for="nazivDatoteke">Naziv dat. s podacima vozila <input
+			name="nazivDatoteke" id="nazivDatoteke" type="text" value="NWTiS_DZ1_VX.csv">
+		</label>
+		<label for="idVozila">ID Vozila <input name="idVozila"
+			id="idVozila" type="number" pattern="[0-9]">
 		</label>
 	</div>
 
 	<div class="row">
-		<label for="vrijeme">Vrijeme <input name="vrijeme"
-			type="number" pattern="[0-9]">
-		</label> <label for="brzina">Brzina <input name="brzina" type="number"
-			pattern="^\d+(\.\d+)?$">
+		<label for="trajanjeSek">Trajanje simulacije (sek) <input
+			name="trajanjeSek" min=0 type="number" pattern="[0-9]">
+		</label> <label for="trajanjePauza">Trajanje pauze (sek) <input
+			name="trajanjePauza" min=0 type="number" pattern="[0-9]">
 		</label>
 	</div>
 
-	<div class="row">
-		<label for="snaga">Snaga <input name="snaga" type="number"
-			pattern="^\d+(\.\d+)?$">
-		</label> <label for="struja">Struja <input name="struja" type="number"
-			pattern="^\d+(\.\d+)?$">
-		</label>
-
-	</div>
-
-	<div class="row">
-		<label for="visina">Visina <input name="visina" type="number"
-			pattern="^\d+(\.\d+)?$">
-		</label> <label for="gpsBrzina">GPS Brzina <input name="gpsBrzina"
-			type="number" pattern="^\d+(\.\d+)?$">
-		</label>
-	</div>
-
-	<div class="row">
-		<label for="naponBaterija">Napon Bat. <input
-			name="naponBaterija" type="number" pattern="[0-9]">
-		</label> <label for="tempVozila">Temp Vozila <input name="tempVozila"
-			type="number" pattern="^\d+(\.\d+)?$">
-		</label>
-	</div>
-
-	<div class="row">
-		<label for="postotakBaterija">% Baterije <input
-			name="postotakBaterija" type="number" pattern="[0-9]" min=0 max=100>
-		</label> <label for="kapacitetBaterija">Kapacitet Bat. <input
-			name="kapacitetBaterija" type="number" pattern="[0-9]">
-		</label>
-	</div>
-
-	<div class="row">
-		<label for="tempBaterija">Temp Bat. <input
-			name="tempBaterija" type="number" pattern="[0-9]">
-		</label> <label for="preostaloKm">Preostalo Km <input
-			name="preostaloKm" type="number" pattern="^\d+(\.\d+)?$">
-		</label>
-	</div>
-
-	<div class="row">
-		<label for="ukupnoKm">Ukupno Km <input name="ukupnoKm"
-			type="number" pattern="^\d+(\.\d+)?$">
-		</label> <label for="gpsSirina">GPS Sirina <input name="gpsSirina"
-			type="number" pattern="^\d+(\.\d+)?$">
-		</label>
-	</div>
-
-	<div class="row">
-		<label for="gpsDuzina">GPS Duzina <input name="gpsDuzina"
-			type="number" pattern="^\d+(\.\d+)?$">
-		</label>
-	</div>
 
 </fieldset>
 
-<input type="submit" value="Kreiraj">
+<input type="submit" value="Simuliraj">

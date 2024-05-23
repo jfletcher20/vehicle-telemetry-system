@@ -36,7 +36,7 @@
 					</tr><%
 				}%>
 				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= voznje.size() %> rezultat<%= mult %></td></tfoot>
-				<p><%= (String) request.getAttribute("values") != null ? (String) request.getAttribute("values") : "" %></p>
+				<p><%= (String) request.getAttribute("vrijednosti") != null ? (String) request.getAttribute("vrijednosti") : "" %></p>
 	        </table>
         </div>
     </body>

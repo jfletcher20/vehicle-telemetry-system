@@ -1,15 +1,9 @@
 <fieldset>
 	<div class="row margin-bottom-large">
-		<button id="resetiraj-radare" class="button-green" style="margin-left: 0;">Resetiraj</button>
+		<button id="resetiraj-radare" class="button-green"
+			style="margin-left: 0;">Resetiraj</button>
 		<p style="margin-left: auto">Upravljaj radarima.</p>
 		<button id="obrisi-radare" class="button-red">Obriši sve</button>
-	</div>
-	<div class="row">
-		<label for="odVremena">Od vremena <input name="odVremena"
-			min=0 type="number">
-		</label> <label for="doVremena">Do vremena <input name="doVremena"
-			min=0 type="number">
-		</label>
 	</div>
 	<div class="row">
 		<label for="idRadara">ID Radara <input name="idRadara"
@@ -21,13 +15,33 @@
 		<button id="obrisi-radar" class="button-red">Obriši radar</button>
 	</div>
 </fieldset>
+<input hidden type="checkbox" id="checkbox-provjeri" name="provjeri">
+<input hidden type="checkbox" id="checkbox-delete" name="delete">
+<input hidden type="checkbox" id="checkbox-reset" name="reset">
+<input hidden type="checkbox" id="checkbox-delete-sve" name="delete-sve">
 <input type="submit" value="Potvrda">
 <script>
+
+	/*
+	 * o GET–vraćasveradare
+	 * o GET/reset– pokreće postupak resetiranja svih poslužitelja slanjem komande poslužitelju PoslužiteljZaRegistraciju
+	 * o GET/{id}– vraća podatke za radar sa zadanim id
+	 * o GET/{id}/provjeri– pokreće provjeru radara sa zadanim id
+	 * o DELETE–brišepodatke za sve radare slanjem komande poslužitelju PoslužiteljZaRegistraciju
+	 * o DELETE/{id}– briše podatke za radar radar sa zadanim id slanjem komande poslužitelju PoslužiteljZaRegistraciju
+	 */
+
 	const idRadara = document.getElementById('idRadara');
 	const provjeriRadar = document.getElementById('provjeri-radar');
 	const obrisiRadar = document.getElementById('obrisi-radar');
 	const resetRadar = document.getElementById('resetiraj-radare');
 	const obrisiRadare = document.getElementById('obrisi-radare');
+	
+	const checkboxProvjeri = document.getElementById('checkbox-provjeri');
+	const checkboxDelete = document.getElementById('checkbox-delete');
+	
+	const checkboxReset = document.getElementById('checkbox-reset');
+	const checkboxDeleteSve = document.getElementById('checkbox-delete-sve');
 	
 	const forma = document.querySelector('forma-radari');
 	
@@ -42,19 +56,19 @@
 	provjeriRadar.disabled = obrisiRadar.disabled = true;
 	
 	provjeriRadar.addEventListener('click', (e) => {
-		e.preventDefault();
+		checkboxProvjeri.checked = true;
 	});
 	
 	obrisiRadar.addEventListener('click', (e) => {
-		e.preventDefault();
+		checkboxDelete.checked = true;
 	});
 	
 	resetRadar.addEventListener('click', (e) => {
-		e.preventDefault();
+		checkboxReset.checked = true;
 	});
 	
 	obrisiRadare.addEventListener('click', (e) => {
-		e.preventDefault();
+		checkboxDeleteSve.checked = true;
 	});
 
 </script>

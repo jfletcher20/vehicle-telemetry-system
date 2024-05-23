@@ -66,7 +66,7 @@ public class RestKlijentSimulacije {
   }
 
   /**
-   * Dodaje voznja.
+   * Dodaje voznju.
    *
    * @param voznja voznja
    * @return true, ako je uspješno
@@ -74,6 +74,21 @@ public class RestKlijentSimulacije {
   public boolean postVoznjaJSON(Voznja voznja) {
     RestVoznje rk = new RestVoznje();
     var odgovor = rk.postJSON(voznja);
+    return odgovor;
+  }
+  
+  /**
+   * Dodaje simulaciju voznje.
+   * 
+   * @param podaciVozila podaci vozila
+   * @param idVozila id vozila
+   * @param trajanjeSek trajanje sekunde unutar simulacije
+   * @param trajanjePauze trajanje pauze između simulacija podataka
+   * @return true, ako je uspješno
+   */
+  public boolean postVoznjaJSON(String podaciVozila, int idVozila, int trajanjeSek, int trajanjePauze) {
+    RestVoznje rk = new RestVoznje();
+    var odgovor = rk.postJSON(podaciVozila, idVozila, trajanjeSek, trajanjePauze);
     return odgovor;
   }
 
@@ -217,6 +232,38 @@ public class RestKlijentSimulacije {
 
       var odgovor =
           request.post(Entity.entity(voznja, MediaType.APPLICATION_JSON), String.class).toString();
+      if (odgovor.trim().length() > 0)
+        return true;
+
+      return true;
+
+    }
+
+    /**
+     * Dodaje simulaciju voznje.
+     *
+     * @param podaciVozila podaci vozila
+     * @param idVozila id vozila
+     * @param trajanjeSek trajanje sekunde unutar simulacije
+     * @param trajanjePauze trajanje pauze između simulacija podataka
+     * @return true, ako je uspješno
+     * @throws ClientErrorException iznimka kod poziva klijenta
+     */
+    public boolean postJSON(String podaciVozila, int idVozila, int trajanjeSek, int trajanjePauze)
+        throws ClientErrorException {
+
+      WebTarget resource = webTarget;
+      if (podaciVozila == null || trajanjeSek == 0 || trajanjePauze == 0
+          || podaciVozila.length() == 0 || idVozila < 0 || trajanjeSek < 0 || trajanjePauze < 0)
+        return false;
+
+      Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
+
+      var podaciZaSimulaciju = "{ \"idVozila\": " + idVozila + ", \"podaci\": " + podaciVozila
+          + ", \"trajanjeSek\": " + trajanjeSek + ", \"trajanjePauze\": " + trajanjePauze + " }";
+      
+      var odgovor =
+          request.post(Entity.entity(podaciZaSimulaciju, MediaType.APPLICATION_JSON), String.class).toString();
       if (odgovor.trim().length() > 0)
         return true;
 

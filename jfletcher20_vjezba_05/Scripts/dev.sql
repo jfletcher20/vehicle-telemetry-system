@@ -56,4 +56,5 @@ create table pracenevoznje (
 
 */
 
-SELECT * FROM voznje;
+/* CHECK ALL tables created BY USER */
+SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC';

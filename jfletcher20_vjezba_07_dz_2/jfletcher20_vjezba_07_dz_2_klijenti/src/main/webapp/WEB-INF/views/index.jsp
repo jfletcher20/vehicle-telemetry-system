@@ -31,6 +31,9 @@ String sadrzaj(String datoteka, ServletContext application) {
 			<nav id="page-nav">
 				<a class="current-tab" href="${pageContext.servletContext.contextPath}">Početna</a>
 				<a href="${pageContext.servletContext.contextPath}/mvc/kazne/ispisKazni">Ispis kazni</a>
+				<a href="${pageContext.servletContext.contextPath}/mvc/radari/ispisRadara">Ispis radara</a>
+				<a href="${pageContext.servletContext.contextPath}/mvc/vozila/ispisVozila">Ispis vozila</a>
+				<a href="${pageContext.servletContext.contextPath}/mvc/simulacije/ispisVoznji">Ispis simulacija</a>
 			</nav>
 			<h1>Pregled podataka</h1>
 			<h4>Sustav za telemetriju i praćenje e-vozila.</h4>
@@ -79,12 +82,6 @@ String sadrzaj(String datoteka, ServletContext application) {
 					<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
 	                <% out.println(sadrzaj("radari-forma", application)); %>
                 </form>
-                <h2>Dodavanje radara</h2>
-                <form id="forma-radari-post" method="post"
-                	action=${pageContext.servletContext.contextPath}/mvc/radari/postJSON"
-                	class="fixed-form">
-	                <% out.println(sadrzaj("radari-forma-post", application)); %>
-               	</form>
 			</div>
 			<div id="tab-vozila-content" class="tab" hidden>
 				<h2>Upravljanje vozilima</h2>
@@ -111,7 +108,7 @@ String sadrzaj(String datoteka, ServletContext application) {
 				</form>
 				<h2>Dodavanje voznji simulaciji</h2>
 				<form id="forma-simulacije-post" method="post"
-					action="${pageContext.servletContext.contextPath}/mvc/simulacije/dodajVoznju"
+					action="${pageContext.servletContext.contextPath}/mvc/simulacije/dodajSimulacijuVoznje"
 					class="fixed-form">
 					<% out.println(sadrzaj("simulacije-forma-post", application)); %>
 				</form>

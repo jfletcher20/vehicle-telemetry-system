@@ -11,6 +11,24 @@ import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.posluzitelji.CentralniSustav;
 
+/*
+ * PosluziteljZaVozila ima dodatne komande:
+ * ● VOZILO START id
+   * o npr.VOZILO START 1
+   * o Provjera da li ispravni podaci. Ako su ispravni, provjerava postoji li e-vozilo s id u
+   * kolekciji e-vozila čiji se podaci o vožnji šalju na RESTful web servis za praćenje odabranih
+   * e-vozila. Ako ne postoji, dodaje e-vozilo s id u kolekciju e-vozila čiji se podaci o vožnji šalju
+   * na RESTful webservis za praćenje odabranih e-vozila. Vraća OK.
+   * o Npr.OK
+ * ● VOZILO STOP id
+   * o npr.VOZILO STOP 1
+   * o Provjera da li ispravni podaci. Ako su ispravni, provjerava postoji li e-vozilo s id u
+   * kolekciji e-vozila čiji se podaci o vožnji šalju na RESTful web servis za praćenje odabranih
+   * e-vozila. Ako postoji, briše e-vozilo s id iz kolekcije e-vozila čiji se podaci o vožnji šalju na
+   * RESTful webservis za praćenje odabranih e-vozila. Vraća OK.
+   * o Npr.OK
+ */
+
 /**
  * Radnik za vozila.
  */
@@ -30,7 +48,14 @@ public class RadnikZaVozila implements Runnable {
    */
   private Pattern predlozakVozilo = Pattern.compile(
       "^VOZILO (?<id>-?\\d+) (?<broj>-?\\d+) (?<vrijeme>-?\\d+) (?<brzina>-?\\d+(?:\\.\\d+)?) (?<snaga>-?\\d+(?:\\.\\d+)?) (?<struja>-?\\d+(?:\\.\\d+)?) (?<visina>-?\\d+(?:\\.\\d+)?) (?<gpsBrzina>-?\\d+(?:\\.\\d+)?) (?<tempVozila>-?\\d+) (?<postotakBaterija>-?\\d+(?:\\.\\d+)?) (?<naponBaterija>-?\\d+(?:\\.\\d+)?) (?<kapacitetBaterija>-?\\d+(?:\\.\\d+)?) (?<tempBaterija>-?\\d+(?:\\.\\d+)?) (?<preostaloKm>-?\\d+(?:\\.\\d+)?) (?<ukupnoKm>-?\\d+(?:\\.\\d+)?) (?<gpsSirina>-?\\d+(?:\\.\\d+)?) (?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$");
-
+  /**
+   * Predložak za naredbu vozilo start.
+   */
+  private Pattern predlozakVoziloStart = Pattern.compile("^VOZILO START (?<id>-?\\d+)$");
+  /**
+   * Predložak za naredbu vozilo stop.
+   */
+  private Pattern predlozakVoziloStop = Pattern.compile("^VOZILO STOP (?<id>-?\\d+)$");
   /**
    * Matcher za provjeru poklapanja naredbi vozila.
    */
@@ -84,11 +109,63 @@ public class RadnikZaVozila implements Runnable {
     if (zahtjev == null || zahtjev.length() == 0)
       return "ERROR 20 Neispravna sintaksa komande " + zahtjev + "\n";
     zahtjev = zahtjev.trim();
-    var odgovor = obradaZahtjevaVozila(zahtjev);
+    var odgovor = ""; 
+    poklapanjeVozila = predlozakVoziloStart.matcher(zahtjev);
+    if (poklapanjeVozila.matches()) {
+      odgovor = obradaVozilaStart(zahtjev);
+    } else if ((poklapanjeVozila = predlozakVoziloStop.matcher(zahtjev)).matches()) {
+      odgovor = obradaVozilaStop(zahtjev);
+    } else {
+      odgovor = obradaZahtjevaVozila(zahtjev);
+    }
     return odgovor != null ? odgovor
         : "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
   }
-
+  
+  /**
+   * Metoda za obradu zahtjeva vozila start.
+   * 
+   * @param zahtjev Zahtjev za obradu
+   * @return Odgovor na zahtjev
+   */
+  public String obradaVozilaStart(String zahtjev) {
+    try {
+      poklapanjeVozila = predlozakVoziloStart.matcher(zahtjev);
+      if (poklapanjeVozila.matches()) {
+        var id = Parsiraj.pi(poklapanjeVozila.group("id"));
+        if (cs.svaVozila.containsKey(id))
+          return "ERROR 21 E-vozilo s ID " + id + " već postoji\n";
+        return "OK\n"; // TODO: finish by adding proper RESTful API callls
+      }
+      return null;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
+    }
+  }
+  
+  /**
+   * Metoda za obradu zahtjeva vozila stop.
+   * 
+   * @param zahtjev Zahtjev za obradu
+   * @return Odgovor na zahtjev
+   */
+  public String obradaVozilaStop(String zahtjev) {
+    try {
+      poklapanjeVozila = predlozakVoziloStop.matcher(zahtjev);
+      if (poklapanjeVozila.matches()) {
+        var id = Parsiraj.pi(poklapanjeVozila.group("id"));
+        if (!cs.svaVozila.containsKey(id))
+          return "ERROR 22 E-vozilo s ID " + id + " ne postoji\n";
+        return "OK\n"; // TOD: finish by adding proper RESTful API calls
+      }
+      return null;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
+    }
+  }
+    
   /**
    * Metoda za obradu zahtjeva vozila.
    * 

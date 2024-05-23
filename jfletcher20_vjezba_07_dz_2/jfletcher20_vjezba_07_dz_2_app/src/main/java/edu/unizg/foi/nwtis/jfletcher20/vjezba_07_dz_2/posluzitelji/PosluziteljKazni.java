@@ -127,6 +127,7 @@ public class PosluziteljKazni {
    */
   public String obradaZahtjeva(String zahtjev) {
     var odgovor = "";
+    try {
     if (zahtjev == null)
       odgovor = "ERROR 40 Neispravna sintaksa naredbe.\n";
     else if (predlozakKazna.matcher(zahtjev).matches())
@@ -138,6 +139,9 @@ public class PosluziteljKazni {
     else if (predlozakTest.matcher(zahtjev).matches())
       return "OK\n";
     return odgovor != null ? odgovor : "ERROR 40 Neispravna sintaksa naredbe.\n";
+  } catch (Exception e) {
+    return "ERROR 40 Neispravna sintaksa naredbe: " + e.getMessage() + "\n";
+  }
   }
 
   /**
@@ -193,7 +197,7 @@ public class PosluziteljKazni {
               + k.gpsDuzinaRadar() + "\n";
         }
       } catch (Exception e) {
-        return "ERROR 41 Nema kazne za vozilo " + id + " u zadanom vremenu.\n";
+        return "ERROR 41 Nema kazni za vozilo " + id + " u zadanom vremenu.\n";
       }
       return "ERROR 41 Nema kazne za vozilo " + id + " u zadanom vremenu.\n";
     }
