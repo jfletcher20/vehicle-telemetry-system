@@ -1,5 +1,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, java.util.Date, java.text.SimpleDateFormat,edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Kazna" %>
+
+<%!
+
+String sadrzaj(String datoteka, ServletContext application) {
+  String html = application.getRealPath("/resources/html/forms/" + datoteka + ".html");
+  try {
+      java.nio.file.Path path = java.nio.file.Paths.get(html);
+      String sadrzaj = new String(java.nio.file.Files.readAllBytes(path), "UTF-8");
+      return sadrzaj + "\n";
+  } catch (Exception e) {
+      return "Error u citanju datoteke: " + e.getMessage() + "\n";
+  }
+}
+
+%>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -13,12 +29,11 @@
 	<body>
 		<div class="card">
 			<nav id="page-nav">
-				<a class="current-tab" href="${pageContext.servletContext.contextPath}/mvc/kazne/pocetak">Početna
-					stranica</a>
-				<a href="${pageContext.servletContext.contextPath}/mvc/kazne/ispisKazni">Ispis
-					svih kazni</a>
+				<a class="current-tab" href="${pageContext.servletContext.contextPath}">Početna</a>
+				<a href="${pageContext.servletContext.contextPath}/mvc/kazne/ispisKazni">Ispis kazni</a>
 			</nav>
 			<h1>Pregled podataka</h1>
+			<h4>Sustav za telemetriju i praćenje e-vozila.</h4>
 			<div id="tab-kazne-content" class="tab">
 				<h2>Upravljanje kaznama</h2>
 				<p>Unosom validnog indeksa (rednog broja) kazne, unos ostalih vrijednosti će se onemogućiti jer je njih tada nepotrebno unijeti.</p>
@@ -59,62 +74,53 @@
 			<div id="tab-radari-content" class="tab" hidden>
 				<h2>Upravljanje radarima</h2>
 				<form id="forma-radari" method="post"
-					action="${pageContext.servletContext.contextPath}/mvc/kazne/pretrazivanjeKazni"
+					action="${pageContext.servletContext.contextPath}/mvc/radari/pretrazivanjeRadara"
 					class="fixed-form">
 					<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
-	                <%
-	                    String datoteka = application.getRealPath("/resources/html/forms/radar-forma.html");
-	                    try {
-	                        java.nio.file.Path path = java.nio.file.Paths.get(datoteka);
-	                        String sadrzaj = new String(java.nio.file.Files.readAllBytes(path), "UTF-8");
-	                        out.println(sadrzaj);
-	                    } catch (Exception e) {
-	                        out.println("Error u citanju datoteke: " + e.getMessage());
-	                    }
-	                %>
+	                <% out.println(sadrzaj("radari-forma", application)); %>
                 </form>
-			</div>
-			<div id="tab-simulacije-content" class="tab" hidden>
-				<h2>Upravljanje simulacijama</h2>
-				<form id="forma-kazne" method="post"
-					action="${pageContext.servletContext.contextPath}/mvc/kazne/pretrazivanjeKazni"
-					class="fixed-form">
-					<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
-	                <%
-	                    datoteka = application.getRealPath("/resources/html/forms/simulacije-forma.html");
-	                    try {
-	                        java.nio.file.Path path = java.nio.file.Paths.get(datoteka);
-	                        String sadrzaj = new String(java.nio.file.Files.readAllBytes(path), "UTF-8");
-	                        out.println(sadrzaj);
-	                    } catch (Exception e) {
-	                        out.println("Error u citanju datoteke: " + e.getMessage());
-	                    }
-	                %>
-				</form>
+                <h2>Dodavanje radara</h2>
+                <form id="forma-radari-post" method="post"
+                	action=${pageContext.servletContext.contextPath}/mvc/radari/postJSON"
+                	class="fixed-form">
+	                <% out.println(sadrzaj("radari-forma-post", application)); %>
+               	</form>
 			</div>
 			<div id="tab-vozila-content" class="tab" hidden>
 				<h2>Upravljanje vozilima</h2>
-				<form id="forma-kazne" method="post"
-					action="${pageContext.servletContext.contextPath}/mvc/kazne/pretrazivanjeKazni"
+				<form id="forma-vozila" method="post"
+					action="${pageContext.servletContext.contextPath}/mvc/vozila/pretrazivanjeVozila"
 					class="fixed-form">
 					<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
-	                <%
-	                    datoteka = application.getRealPath("/resources/html/forms/vozila-forma.html");
-	                    try {
-	                        java.nio.file.Path path = java.nio.file.Paths.get(datoteka);
-	                        String sadrzaj = new String(java.nio.file.Files.readAllBytes(path), "UTF-8");
-	                        out.println(sadrzaj);
-	                    } catch (Exception e) {
-	                        out.println("Error u citanju datoteke: " + e.getMessage());
-	                    }
-	                %>
+	                <% out.println(sadrzaj("vozila-forma", application)); %>
+				</form>
+				<h2>Dodavanje vozila</h2>
+				<form id="forma-vozila-post" method="post"
+					action="${pageContext.servletContext.contextPath}/mvc/vozila/postJSON"
+					class="fixed-form">
+	                <% out.println(sadrzaj("vozila-forma-post", application)); %>
+				</form>
+			</div>
+			<div id="tab-simulacije-content" class="tab" hidden>
+				<h2>Upravljanje simulacijama</h2>
+				<form id="forma-simulacije" method="post"
+					action="${pageContext.servletContext.contextPath}/mvc/simulacije/pretrazivanjeVoznji"
+					class="fixed-form">
+					<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
+	                <% out.println(sadrzaj("simulacije-forma", application)); %>
+				</form>
+				<h2>Dodavanje voznji simulaciji</h2>
+				<form id="forma-simulacije-post" method="post"
+					action="${pageContext.servletContext.contextPath}/mvc/simulacije/dodajVoznju"
+					class="fixed-form">
+					<% out.println(sadrzaj("simulacije-forma-post", application)); %>
 				</form>
 			</div>
 			<nav id="tab-nav">
 				<a class="current-tab tab-nav" id="tab-kazne">Kazne</a>
 				<a class="tab-nav" id="tab-radari">Radari</a>
-				<a class="tab-nav" id="tab-simulacije">Simulacije</a>
 				<a class="tab-nav" id="tab-vozila">Vozila</a>
+				<a class="tab-nav" id="tab-simulacije">Simulacije</a>
 			</nav>
 		</div>
 	</body>

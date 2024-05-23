@@ -19,14 +19,14 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 
 /**
- * Kontroler za MVC model.
+ * KazneKontroler za MVC model.
  * 
  * @author Joshua Fletcher
  */
 @Controller
 @Path("kazne")
 @RequestScoped
-public class Kontroler {
+public class KazneKontroler {
 
   @Inject
   private Models model;

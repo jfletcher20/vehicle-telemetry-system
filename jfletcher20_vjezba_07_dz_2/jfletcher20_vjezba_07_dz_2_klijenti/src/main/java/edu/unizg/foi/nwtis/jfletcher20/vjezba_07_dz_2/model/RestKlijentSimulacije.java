@@ -208,19 +208,20 @@ public class RestKlijentSimulacije {
      * @throws ClientErrorException iznimka kod poziva klijenta
      */
     public boolean postJSON(Voznja voznja) throws ClientErrorException {
+
       WebTarget resource = webTarget;
-      if (voznja == null) {
+      if (voznja == null)
         return false;
-      }
+
       Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
 
       var odgovor =
           request.post(Entity.entity(voznja, MediaType.APPLICATION_JSON), String.class).toString();
-      if (odgovor.trim().length() > 0) {
+      if (odgovor.trim().length() > 0)
         return true;
-      }
 
-      return false;
+      return true;
+
     }
 
     /**

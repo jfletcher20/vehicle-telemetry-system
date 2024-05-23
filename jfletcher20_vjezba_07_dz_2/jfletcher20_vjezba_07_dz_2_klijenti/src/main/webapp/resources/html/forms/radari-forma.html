@@ -1,12 +1,8 @@
 <fieldset>
-	<div class="row">
-		<label for="idRadara">ID Radara <input name="idRadara"
-			id="idRadara" type="number" pattern="[0-9]">
-		</label>
-	</div>
-	<div class="row" style="width: 43%">
-		<button id="provjeri-radar" class="button-green" style="margin-left: 0">Provjeri radar</button>
-		<button id="obrisi-radar" class="button-red">Obriši radar</button>
+	<div class="row margin-bottom-large">
+		<button id="resetiraj-radare" class="button-green" style="margin-left: 0;">Resetiraj</button>
+		<p style="margin-left: auto">Upravljaj radarima.</p>
+		<button id="obrisi-radare" class="button-red">Obriši sve</button>
 	</div>
 	<div class="row">
 		<label for="odVremena">Od vremena <input name="odVremena"
@@ -15,11 +11,14 @@
 			min=0 type="number">
 		</label>
 	</div>
-</fieldset>
-<fieldset>
 	<div class="row">
-		<button id="resetiraj-radare" class="button-green" style="margin-left: 0;">Resetiraj</button>
-		<button id="obrisi-radare" class="button-red">Obriši sve</button>
+		<label for="idRadara">ID Radara <input name="idRadara"
+			id="idRadara" type="number" pattern="[0-9]">
+		</label>
+	</div>
+	<div class="row" style="width: 43%">
+		<button id="provjeri-radar" class="button-green" style="margin-left: 0">Provjeri radar</button>
+		<button id="obrisi-radar" class="button-red">Obriši radar</button>
 	</div>
 </fieldset>
 <input type="submit" value="Potvrda">
