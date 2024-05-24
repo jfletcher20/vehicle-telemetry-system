@@ -115,7 +115,8 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
       var odgovor = obradaZahtjevaRegistracijeRadara(zahtjev);
       return odgovor != null ? odgovor : "ERROR 10 Neispravna sintaksa komande!\n";
     } catch (Exception e) {
-      return "ERROR 10 Neispravna sintaksa komande (krivi parametar proslijeden).\n";
+      return "ERROR 10 Neispravna sintaksa komande (krivi parametar proslijeden: " + zahtjev
+          + ").\n";
     }
   }
 
@@ -224,13 +225,14 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
    * @return Odgovor na zahtjev
    */
   public String resetirajRadare() {
-    var brojRadara = centralniSustav.sviRadari.size();
-    var brojObrisanihRadara = 0;
+    int brojRadara = centralniSustav.sviRadari.size();
+    int brojObrisanihRadara = 0;
     for (var radar : centralniSustav.sviRadari.values()) {
       if (!MrezneOperacije.posaljiZahtjevPosluzitelju(radar.adresaRadara(),
-          radar.mreznaVrataRadara(), "RADAR " + radar.id()).equals("OK"))
+          radar.mreznaVrataRadara(), "RADAR " + radar.id()).equals("OK")) {
         centralniSustav.sviRadari.remove(radar.id());
-      brojObrisanihRadara++;
+        brojObrisanihRadara++;
+      }
     }
     return "OK " + brojRadara + " " + brojObrisanihRadara + "\n";
   }

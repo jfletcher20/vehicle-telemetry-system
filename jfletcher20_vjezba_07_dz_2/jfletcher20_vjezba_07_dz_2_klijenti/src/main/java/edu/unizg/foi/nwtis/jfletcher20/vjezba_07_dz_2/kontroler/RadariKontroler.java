@@ -102,7 +102,7 @@ public class RadariKontroler {
     } else if (idRadara != null && !idRadara.isEmpty() && jeUkljuceno(provjeri)) {
       radari = r.getRadariJSON();
       info = "Provjera radara s ID " + idRadara + " "
-          + (r.getRadariJSON_radar_provjeri(idRadara) ? "uspjela" : "nije uspjela");
+          + (r.getRadariJSON_radar_provjeri(idRadara) ? "uspjelo" : "nije uspjelo");
     } else if (idRadara != null && !idRadara.isEmpty() && jeUkljuceno(delete)) {
       radari = r.getRadariJSON();
       info = "Brisanje radara s ID " + idRadara + " "
