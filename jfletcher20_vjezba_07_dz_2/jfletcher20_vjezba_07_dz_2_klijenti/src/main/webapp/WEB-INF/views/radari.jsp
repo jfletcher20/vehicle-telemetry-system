@@ -15,7 +15,7 @@
 			</nav>
 	        <h1>Pregled radara</h1>
 	        <table>
-		        <tr><th>R.br.<th>Radar</th><th>Maks udaljenost</th><th>Maks brzina</th><th>GPS širina</th><th>GPS dužina</th></tr>
+		        <tr><th>R.br.<th>Radar</th><th>Maks udaljenost</th><!-- <th>Maks brzina</th> --><th>GPS širina</th><th>GPS dužina</th></tr>
 				<%
 				int i = 0;
 				List<Radar> radari = (List<Radar>) request.getAttribute("radari");
@@ -26,7 +26,7 @@
 						<td class="desno"><%= i %></td>
 						<td><%= r.getId() %></td>
 						<td><%= r.getMaksUdaljenost() %></td>
-						<td><%= r.getMaksBrzina() %></td>
+						<!-- <td><%= ""/*r.getMaksBrzina()*/ %></td> -->
 						<td><%= r.getGpsSirina() %></td>
 						<td><%= r.getGpsDuzina() %></td>
 					</tr><%

@@ -1,5 +1,7 @@
 package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci;
 
+import java.net.InetAddress;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 
 /**
  * Zapis PodaciRadara.
@@ -20,53 +22,36 @@ package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci;
  */
 
 public class Radar {
-  
+
   private int id;
-  private String adresaRadara;
-  private int mreznaVrataRadara;
-  private int maksBrzina;
-  private int maksTrajanje;
-  private int maksUdaljenost;
   private String adresaRegistracije;
   private int mreznaVrataRegistracije;
-  private String adresaKazne;
-  private int mreznaVrataKazne;
-  private String postanskaAdresaRadara;
+  private int maksUdaljenost;
   private double gpsSirina;
   private double gpsDuzina;
 
-  /**
-   * Zapis PodaciRadara.
-   *
-   * @param id identifikator radara
-   * @param adresaRadara adresa poslužitelja radara (logička ili IP)
-   * @param mreznaVrataRadara mrežna vrata poslužitelja radara
-   * @param maksBrzina maksimalna dopuštena brzina
-   * @param maksTrajanje maksimalno trajanje maksBrzina
-   * @param maksUdaljenost maksimalna udaljenost do koje radar mjeri brzinu
-   * @param adresaRegistracije adresa poslužitelja za registraciju radara
-   * @param mreznaVrataRegistracije mrezna vrata poslužitelja za registraciju radara
-   * @param adresaKazne adresa poslužitelja za kazne
-   * @param mreznaVrataKazne mrezna vrata poslužitelja za kazne
-   * @param postanskaAdresaRadara poštanska adresa radara
-   * @param gpsSirina gps širina pozicije radara
-   * @param gpsDuzina gps dužina pozicije radara
+  /*
+   * 
+   * konstruktor treba inicijalizirati podatke ovako:
+   * 
+   * 
+    
+    var radar = new PodaciRadara(Parsiraj.i(poklapanjeRegistracijeRadara.group("id")),
+        poklapanjeRegistracijeRadara.group("adresa"),
+        Parsiraj.i(poklapanjeRegistracijeRadara.group("mreznaVrata")), -1, -1,
+        Parsiraj.i(poklapanjeRegistracijeRadara.group("maksUdaljenost")), null, -1, null, -1, null,
+        Parsiraj.d(poklapanjeRegistracijeRadara.group("gpsSirina")),
+        Parsiraj.d(poklapanjeRegistracijeRadara.group("gpsDuzina")));
+   * 
    */
-  public Radar(int id, String adresaRadara, int mreznaVrataRadara, int maksBrzina,
-               int maksTrajanje, int maksUdaljenost, String adresaRegistracije, int mreznaVrataRegistracije,
-               String adresaKazne, int mreznaVrataKazne, String postanskaAdresaRadara, double gpsSirina,
-               double gpsDuzina) {
+  
+  
+  public Radar(int id, String adresa, int mreznaVrata, double gpsSirina,
+      double gpsDuzina, int maksUdaljenost) {
     this.id = id;
-    this.adresaRadara = adresaRadara;
-    this.mreznaVrataRadara = mreznaVrataRadara;
-    this.maksBrzina = maksBrzina;
-    this.maksTrajanje = maksTrajanje;
+    this.adresaRegistracije = adresa;
+    this.mreznaVrataRegistracije = mreznaVrata;
     this.maksUdaljenost = maksUdaljenost;
-    this.adresaRegistracije = adresaRegistracije;
-    this.mreznaVrataRegistracije = mreznaVrataRegistracije;
-    this.adresaKazne = adresaKazne;
-    this.mreznaVrataKazne = mreznaVrataKazne;
-    this.postanskaAdresaRadara = postanskaAdresaRadara;
     this.gpsSirina = gpsSirina;
     this.gpsDuzina = gpsDuzina;
   }
@@ -94,78 +79,6 @@ public class Radar {
    */
   public void setId(int id) {
     this.id = id;
-  }
-
-  /**
-   * Dohvati adresu radara.
-   * 
-   * @return adresaRadara adresa poslužitelja radara
-   */
-  public String getAdresaRadara() {
-    return adresaRadara;
-  }
-
-  /**
-   * Postavi adresu radara.
-   * 
-   * @param adresaRadara adresa poslužitelja radara
-   */
-  public void setAdresaRadara(String adresaRadara) {
-    this.adresaRadara = adresaRadara;
-  }
-
-  /**
-   * Dohvati mrežna vrata radara.
-   * 
-   * @return mreznaVrataRadara mrežna vrata poslužitelja radara
-   */
-  public int getMreznaVrataRadara() {
-    return mreznaVrataRadara;
-  }
-
-  /**
-   * Postavi mrežna vrata radara.
-   * 
-   * @param mreznaVrataRadara mrežna vrata poslužitelja radara
-   */
-  public void setMreznaVrataRadara(int mreznaVrataRadara) {
-    this.mreznaVrataRadara = mreznaVrataRadara;
-  }
-
-  /**
-   * Dohvati maksimalnu dopuštenu brzinu.
-   * 
-   * @return maksBrzina maksimalna dopuštena brzina
-   */
-  public int getMaksBrzina() {
-    return maksBrzina;
-  }
-
-  /**
-   * Postavi maksimalnu dopuštenu brzinu.
-   * 
-   * @param maksBrzina maksimalna dopuštena brzina
-   */
-  public void setMaksBrzina(int maksBrzina) {
-    this.maksBrzina = maksBrzina;
-  }
-
-  /**
-   * Dohvati maksimalno trajanje.
-   * 
-   * @return maksTrajanje maksimalno trajanje maksBrzina
-   */
-  public int getMaksTrajanje() {
-    return maksTrajanje;
-  }
-
-  /**
-   * Postavi maksimalno trajanje.
-   * 
-   * @param maksTrajanje maksimalno trajanje maksBrzina
-   */
-  public void setMaksTrajanje(int maksTrajanje) {
-    this.maksTrajanje = maksTrajanje;
   }
 
   /**
@@ -220,60 +133,6 @@ public class Radar {
    */
   public void setMreznaVrataRegistracije(int mreznaVrataRegistracije) {
     this.mreznaVrataRegistracije = mreznaVrataRegistracije;
-  }
-
-  /**
-   * Dohvati adresu za kazne.
-   * 
-   * @return adresaKazne adresa poslužitelja za kazne
-   */
-  public String getAdresaKazne() {
-    return adresaKazne;
-  }
-
-  /**
-   * Postavi adresu za kazne.
-   * 
-   * @param adresaKazne adresa poslužitelja za kazne
-   */
-  public void setAdresaKazne(String adresaKazne) {
-    this.adresaKazne = adresaKazne;
-  }
-
-  /**
-   * Dohvati mrežna vrata za kazne.
-   * 
-   * @return mreznaVrataKazne mrežna vrata poslužitelja za kazne
-   */
-  public int getMreznaVrataKazne() {
-    return mreznaVrataKazne;
-  }
-
-  /**
-   * Postavi mrežna vrata za kazne.
-   * 
-   * @param mreznaVrataKazne mrežna vrata poslužitelja za kazne
-   */
-  public void setMreznaVrataKazne(int mreznaVrataKazne) {
-    this.mreznaVrataKazne = mreznaVrataKazne;
-  }
-
-  /**
-   * Dohvati poštansku adresu radara.
-   * 
-   * @return postanskaAdresaRadara poštanska adresa radara
-   */
-  public String getPostanskaAdresaRadara() {
-    return postanskaAdresaRadara;
-  }
-
-  /**
-   * Postavi poštansku adresu radara.
-   * 
-   * @param postanskaAdresaRadara poštanska adresa radara
-   */
-  public void setPostanskaAdresaRadara(String postanskaAdresaRadara) {
-    this.postanskaAdresaRadara = postanskaAdresaRadara;
   }
 
   /**

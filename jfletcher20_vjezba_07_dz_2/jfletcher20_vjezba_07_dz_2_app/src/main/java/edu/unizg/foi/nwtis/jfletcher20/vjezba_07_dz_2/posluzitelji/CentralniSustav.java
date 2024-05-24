@@ -99,10 +99,10 @@ public class CentralniSustav {
   public void preuzmiPostavke(String[] args)
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     Konfiguracija konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
-    mreznaVrataRadara = Parsiraj.pi(konfig.dajPostavku("mreznaVrataRadara"));
-    mreznaVrataVozila = Parsiraj.pi(konfig.dajPostavku("mreznaVrataVozila"));
-    mreznaVrataNadzora = Parsiraj.pi(konfig.dajPostavku("mreznaVrataNadzora"));
-    maksVozila = Parsiraj.pi(konfig.dajPostavku("maksVozila"));
+    mreznaVrataRadara = Parsiraj.i(konfig.dajPostavku("mreznaVrataRadara"));
+    mreznaVrataVozila = Parsiraj.i(konfig.dajPostavku("mreznaVrataVozila"));
+    mreznaVrataNadzora = Parsiraj.i(konfig.dajPostavku("mreznaVrataNadzora"));
+    maksVozila = Parsiraj.i(konfig.dajPostavku("maksVozila"));
   }
 
 }

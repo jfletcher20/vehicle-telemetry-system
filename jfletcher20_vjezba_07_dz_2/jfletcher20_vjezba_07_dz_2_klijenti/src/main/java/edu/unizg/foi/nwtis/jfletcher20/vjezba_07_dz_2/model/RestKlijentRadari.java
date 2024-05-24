@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Radar;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.client.Client;
@@ -43,7 +44,9 @@ public class RestKlijentRadari {
    */
   public List<Radar> getRadariJSON_radar(String id) {
     RestRadari rk = new RestRadari();
-    List<Radar> radare = rk.getJSON_radar(id);
+    var radar = rk.getJSON_radar(id);
+    List<Radar> radare = new ArrayList<Radar>();
+    radare.add(radar);
     return radare;
   }
 
@@ -149,15 +152,15 @@ public class RestKlijentRadari {
     }
 
     /**
-     * Vraća radare za vozilo.
+     * Vraća radare s identifikatorom.
      *
-     * @param id id vozila
-     * @return radare
+     * @param id id radara
+     * @return radar
      * @throws ClientErrorException iznimka kod poziva klijentaon
      */
-    public List<Radar> getJSON_radar(String id) throws ClientErrorException {
+    public Radar getJSON_radar(String id) throws ClientErrorException {
       WebTarget resource = webTarget;
-      List<Radar> radari = new ArrayList<Radar>();
+      Radar radar = new Radar();
 
       resource = resource.path(java.text.MessageFormat.format("{0}", new Object[] {id}));
       Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
@@ -166,10 +169,10 @@ public class RestKlijentRadari {
         String odgovor = restOdgovor.readEntity(String.class);
         var jb = JsonbBuilder.create();
         var pradare = jb.fromJson(odgovor, Radar[].class);
-        radari.addAll(Arrays.asList(pradare));
+        radar = pradare[0];
       }
 
-      return radari;
+      return radar;
     }
 
     /**
@@ -187,7 +190,7 @@ public class RestKlijentRadari {
       Response restOdgovor = resource.request().get();
       if (restOdgovor.getStatus() == 200) {
         String odgovor = restOdgovor.readEntity(String.class);
-        uspjeh = odgovor.equals("OK");
+        uspjeh = odgovor.contains("OK");
       }
 
       return uspjeh;
@@ -202,9 +205,15 @@ public class RestKlijentRadari {
      * @throws ClientErrorException iznimka kod poziva klijenta
      */
     public boolean delete_radar(String id) throws ClientErrorException {
+      
+      System.out.println("Brisem radar s ID-om: " + id);
+      
       WebTarget resource = webTarget;
       resource = resource.path(java.text.MessageFormat.format("{0}", new Object[] {id}));
       Response restOdgovor = resource.request().delete();
+      
+      System.out.println("Status: " + restOdgovor.readEntity(String.class));
+      
       return restOdgovor.getStatus() == 200;
     }
     

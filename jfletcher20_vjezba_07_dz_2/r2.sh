@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /home/NWTiS_1/jfletcher20/jfletcher20_vjezba_07_dz_2
 
-mvn clean package
+mvn clean install
 
 cd *klijenti
 

@@ -154,14 +154,14 @@ public class PosluziteljKazni {
     poklapanjeKazna = predlozakKazna.matcher(zahtjev);
     var statusKazna = poklapanjeKazna.matches();
     if (statusKazna) {
-      var kazna = new PodaciKazne(Parsiraj.pi(poklapanjeKazna.group("id")),
-          Parsiraj.pl(poklapanjeKazna.group("vrijemePocetak")),
-          Parsiraj.pl(poklapanjeKazna.group("vrijemeKraj")),
-          Parsiraj.pd(poklapanjeKazna.group("brzina")),
-          Parsiraj.pd(poklapanjeKazna.group("gpsSirina")),
-          Parsiraj.pd(poklapanjeKazna.group("gpsDuzina")),
-          Parsiraj.pd(poklapanjeKazna.group("gpsSirinaRadara")),
-          Parsiraj.pd(poklapanjeKazna.group("gpsDuzinaRadara")));
+      var kazna = new PodaciKazne(Parsiraj.i(poklapanjeKazna.group("id")),
+          Parsiraj.l(poklapanjeKazna.group("vrijemePocetak")),
+          Parsiraj.l(poklapanjeKazna.group("vrijemeKraj")),
+          Parsiraj.d(poklapanjeKazna.group("brzina")),
+          Parsiraj.d(poklapanjeKazna.group("gpsSirina")),
+          Parsiraj.d(poklapanjeKazna.group("gpsDuzina")),
+          Parsiraj.d(poklapanjeKazna.group("gpsSirinaRadara")),
+          Parsiraj.d(poklapanjeKazna.group("gpsDuzinaRadara")));
       sveKazne.add(kazna);
       System.out.println("Id: " + kazna.id() + " Vrijeme od: " + sdf.format(kazna.vrijemePocetak())
           + "  Vrijeme do: " + sdf.format(kazna.vrijemeKraj()) + " Brzina: " + kazna.brzina()
@@ -184,9 +184,9 @@ public class PosluziteljKazni {
     poklapanjeKazna = predlozakDohvatiKaznu.matcher(zahtjev);
     var statusKazna = poklapanjeKazna.matches();
     if (statusKazna) {
-      var id = Parsiraj.pi(poklapanjeKazna.group("id"));
-      var vrijemeOd = Parsiraj.pl(poklapanjeKazna.group("vrijemeOd"));
-      var vrijemeDo = Parsiraj.pl(poklapanjeKazna.group("vrijemeDo"));
+      var id = Parsiraj.i(poklapanjeKazna.group("id"));
+      var vrijemeOd = Parsiraj.l(poklapanjeKazna.group("vrijemeOd"));
+      var vrijemeDo = Parsiraj.l(poklapanjeKazna.group("vrijemeDo"));
       try {
         var kazna = sveKazne.stream().filter(
             k -> k.id() == id && k.vrijemePocetak() >= vrijemeOd && k.vrijemeKraj() <= vrijemeDo)
@@ -214,8 +214,8 @@ public class PosluziteljKazni {
     poklapanjeKazna = predlozakStatistika.matcher(zahtjev);
     var statusKazna = poklapanjeKazna.matches();
     if (statusKazna) {
-      var vrijemeOd = Parsiraj.pl(poklapanjeKazna.group("vrijemeOd"));
-      var vrijemeDo = Parsiraj.pl(poklapanjeKazna.group("vrijemeDo"));
+      var vrijemeOd = Parsiraj.l(poklapanjeKazna.group("vrijemeOd"));
+      var vrijemeDo = Parsiraj.l(poklapanjeKazna.group("vrijemeDo"));
       Stream<PodaciKazne> kazne = sveKazne.stream()
           .filter(k -> k.vrijemePocetak() >= vrijemeOd && k.vrijemeKraj() <= vrijemeDo);
       int[] uniqueIds = kazne.mapToInt(k -> k.id()).distinct().toArray();
@@ -242,6 +242,6 @@ public class PosluziteljKazni {
   public void preuzmiPostavke(String[] args)
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     Konfiguracija konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
-    mreznaVrata = Parsiraj.pi(konfig.dajPostavku("mreznaVrataKazne"));
+    mreznaVrata = Parsiraj.i(konfig.dajPostavku("mreznaVrataKazne"));
   }
 }

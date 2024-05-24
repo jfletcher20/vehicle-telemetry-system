@@ -29,8 +29,8 @@ public record BrzoVozilo(int id, int broj, long vrijeme, double brzina, double g
    */
   public BrzoVozilo(String id, int broj, String vrijeme, String brzina, String gpsSirina,
       String gpsDuzina, boolean status) {
-    this(Parsiraj.pi(id), broj, Parsiraj.pl(vrijeme), Parsiraj.pd(brzina), Parsiraj.pd(gpsSirina),
-        Parsiraj.pd(gpsDuzina), status);
+    this(Parsiraj.i(id), broj, Parsiraj.l(vrijeme), Parsiraj.d(brzina), Parsiraj.d(gpsSirina),
+        Parsiraj.d(gpsDuzina), status);
   }
 
   /**

@@ -32,7 +32,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
   private Pattern predlozakRegistracijeRadara = Pattern.compile(//
       "^RADAR " //
           + "(?<id>\\d+) " //
-          + "(?<adresa>\\([\\w.-]+)|(\\d+\\.\\d+\\.\\d+\\.\\d+)) " //
+          + "(?<adresa>[\\w.-]+) " //
           + "(?<mreznaVrata>\\d+) " //
           + "(?<gpsSirina>\\d+[.]\\d+) " //
           + "(?<gpsDuzina>\\d+[.]\\d+) " //
@@ -113,7 +113,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
       return "ERROR 10 Neispravna sintaksa komande.\n";
     try {
       var odgovor = obradaZahtjevaRegistracijeRadara(zahtjev);
-      return odgovor != null ? odgovor : "ERROR 10 Neispravna sintaksa komande.\n";
+      return odgovor != null ? odgovor : "ERROR 10 Neispravna sintaksa komande!\n";
     } catch (Exception e) {
       return "ERROR 10 Neispravna sintaksa komande (krivi parametar proslijeden).\n";
     }
@@ -153,12 +153,12 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
    * @return Odgovor na zahtjev
    */
   public String registrirajRadar() {
-    var radar = new PodaciRadara(Parsiraj.pi(poklapanjeRegistracijeRadara.group("id")),
+    var radar = new PodaciRadara(Parsiraj.i(poklapanjeRegistracijeRadara.group("id")),
         poklapanjeRegistracijeRadara.group("adresa"),
-        Parsiraj.pi(poklapanjeRegistracijeRadara.group("mreznaVrata")), -1, -1,
-        Parsiraj.pi(poklapanjeRegistracijeRadara.group("maksUdaljenost")), null, -1, null, -1, null,
-        Parsiraj.pd(poklapanjeRegistracijeRadara.group("gpsSirina")),
-        Parsiraj.pd(poklapanjeRegistracijeRadara.group("gpsDuzina")));
+        Parsiraj.i(poklapanjeRegistracijeRadara.group("mreznaVrata")), -1, -1,
+        Parsiraj.i(poklapanjeRegistracijeRadara.group("maksUdaljenost")), null, -1, null, -1, null,
+        Parsiraj.d(poklapanjeRegistracijeRadara.group("gpsSirina")),
+        Parsiraj.d(poklapanjeRegistracijeRadara.group("gpsDuzina")));
     if (centralniSustav.sviRadari.containsKey(radar.id())) {
       return "ERROR 11 Radar s ID-em " + radar.id() + " već postoji.\n";
     } else
@@ -172,7 +172,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
    * @return Odgovor na zahtjev
    */
   public String obrisiRadar() {
-    var id = Parsiraj.pi(poklapanjeRegistracijeRadara.group("id"));
+    var id = Parsiraj.i(poklapanjeRegistracijeRadara.group("id"));
     if (centralniSustav.sviRadari.containsKey(id)) {
       centralniSustav.sviRadari.remove(id);
       return "OK\n";
@@ -196,7 +196,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
    * @return Odgovor na zahtjev
    */
   public String provjeriPostojanjeRadar() {
-    var id = Parsiraj.pi(poklapanjeRegistracijeRadara.group("id"));
+    var id = Parsiraj.i(poklapanjeRegistracijeRadara.group("id"));
     if (centralniSustav.sviRadari.containsKey(id))
       return "OK\n";
     else // TODO: provjeriti je li ovo potrebno (u zadatku nije navedeno)
@@ -215,7 +215,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
           "[" + radar.id() + " " + radar.adresaRadara() + " " + radar.mreznaVrataRadara() + " "
               + radar.gpsSirina() + " " + radar.gpsDuzina() + " " + radar.maksUdaljenost() + "], ";
     return odgovor.contains("]") ? odgovor.substring(0, odgovor.length() - 2) + "}\n"
-        : odgovor + "}\n";
+        : odgovor + centralniSustav.sviRadari.size() + "}\n";
   }
 
   /**

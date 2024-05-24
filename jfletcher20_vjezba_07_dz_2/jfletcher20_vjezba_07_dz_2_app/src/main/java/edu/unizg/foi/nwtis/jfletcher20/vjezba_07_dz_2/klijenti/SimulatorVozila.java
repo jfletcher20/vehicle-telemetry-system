@@ -202,9 +202,9 @@ public class SimulatorVozila {
   public void preuzmiPostavke(String[] args) throws NeispravnaKonfiguracija, NumberFormatException {
     Konfiguracija konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(args[0]);
     adresaVozila = konfig.dajPostavku("adresaVozila");
-    mreznaVrataVozila = Parsiraj.pi(konfig.dajPostavku("mreznaVrataVozila"));
-    trajanjeSek = Parsiraj.pi(konfig.dajPostavku("trajanjeSek"));
-    trajanjePauze = Parsiraj.pi(konfig.dajPostavku("trajanjePauze"));
+    mreznaVrataVozila = Parsiraj.i(konfig.dajPostavku("mreznaVrataVozila"));
+    trajanjeSek = Parsiraj.i(konfig.dajPostavku("trajanjeSek"));
+    trajanjePauze = Parsiraj.i(konfig.dajPostavku("trajanjePauze"));
   }
 
   /**
@@ -224,7 +224,7 @@ public class SimulatorVozila {
   public void preuzmiPostavkeVozila(String[] args)
       throws NeispravnaKonfiguracija, NumberFormatException, UnknownHostException {
     podaciVozilaDatoteka = args[1];
-    idVozila = Parsiraj.pi(args[2]);
+    idVozila = Parsiraj.i(args[2]);
   }
 
   /**
@@ -240,11 +240,11 @@ public class SimulatorVozila {
       if (row == null)
         System.exit(0); // prekida program ako nema više redaka
       String[] data = row.split(",");
-      var p = new PodaciVozila(idVozila, brojRetka++, Parsiraj.pl(data[0]), Parsiraj.pd(data[1]),
-          Parsiraj.pd(data[2]), Parsiraj.pd(data[3]), Parsiraj.pd(data[4]), Parsiraj.pd(data[5]),
-          Parsiraj.pi(data[6]), Parsiraj.pi(data[7]), Parsiraj.pd(data[8]), Parsiraj.pi(data[9]),
-          Parsiraj.pi(data[10]), Parsiraj.pd(data[11]), Parsiraj.pd(data[12]),
-          Parsiraj.pd(data[13]), Parsiraj.pd(data[14]));
+      var p = new PodaciVozila(idVozila, brojRetka++, Parsiraj.l(data[0]), Parsiraj.d(data[1]),
+          Parsiraj.d(data[2]), Parsiraj.d(data[3]), Parsiraj.d(data[4]), Parsiraj.d(data[5]),
+          Parsiraj.i(data[6]), Parsiraj.i(data[7]), Parsiraj.d(data[8]), Parsiraj.i(data[9]),
+          Parsiraj.i(data[10]), Parsiraj.d(data[11]), Parsiraj.d(data[12]),
+          Parsiraj.d(data[13]), Parsiraj.d(data[14]));
       long razlika = 0;
       if (redPodaciVozila.dajBrojPodatakaVozila() > 0)
         razlika = razlikaVremena(p);

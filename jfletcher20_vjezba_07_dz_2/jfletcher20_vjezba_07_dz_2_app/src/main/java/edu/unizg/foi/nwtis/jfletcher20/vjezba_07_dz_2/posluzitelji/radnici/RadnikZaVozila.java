@@ -132,7 +132,7 @@ public class RadnikZaVozila implements Runnable {
     try {
       poklapanjeVozila = predlozakVoziloStart.matcher(zahtjev);
       if (poklapanjeVozila.matches()) {
-        var id = Parsiraj.pi(poklapanjeVozila.group("id"));
+        var id = Parsiraj.i(poklapanjeVozila.group("id"));
         if (cs.svaVozila.containsKey(id))
           return "ERROR 21 E-vozilo s ID " + id + " već postoji\n";
         return "OK\n"; // TODO: finish by adding proper RESTful API callls
@@ -154,7 +154,7 @@ public class RadnikZaVozila implements Runnable {
     try {
       poklapanjeVozila = predlozakVoziloStop.matcher(zahtjev);
       if (poklapanjeVozila.matches()) {
-        var id = Parsiraj.pi(poklapanjeVozila.group("id"));
+        var id = Parsiraj.i(poklapanjeVozila.group("id"));
         if (!cs.svaVozila.containsKey(id))
           return "ERROR 22 E-vozilo s ID " + id + " ne postoji\n";
         return "OK\n"; // TOD: finish by adding proper RESTful API calls
@@ -176,23 +176,23 @@ public class RadnikZaVozila implements Runnable {
     try {
       poklapanjeVozila = predlozakVozilo.matcher(zahtjev);
       if (poklapanjeVozila.matches()) {
-        var vozilo = new PodaciVozila(Parsiraj.pi(poklapanjeVozila.group("id")),
-            Parsiraj.pi(poklapanjeVozila.group("broj")),
-            Parsiraj.pl(poklapanjeVozila.group("vrijeme")),
-            Parsiraj.pd(poklapanjeVozila.group("brzina")),
-            Parsiraj.pd(poklapanjeVozila.group("snaga")),
-            Parsiraj.pd(poklapanjeVozila.group("struja")),
-            Parsiraj.pd(poklapanjeVozila.group("visina")),
-            Parsiraj.pd(poklapanjeVozila.group("gpsBrzina")),
-            Parsiraj.pi(poklapanjeVozila.group("tempVozila")),
-            Parsiraj.pi(poklapanjeVozila.group("postotakBaterija")),
-            Parsiraj.pd(poklapanjeVozila.group("naponBaterija")),
-            Parsiraj.pi(poklapanjeVozila.group("kapacitetBaterija")),
-            Parsiraj.pi(poklapanjeVozila.group("tempBaterija")),
-            Parsiraj.pd(poklapanjeVozila.group("preostaloKm")),
-            Parsiraj.pd(poklapanjeVozila.group("ukupnoKm")),
-            Parsiraj.pd(poklapanjeVozila.group("gpsSirina")),
-            Parsiraj.pd(poklapanjeVozila.group("gpsDuzina")));
+        var vozilo = new PodaciVozila(Parsiraj.i(poklapanjeVozila.group("id")),
+            Parsiraj.i(poklapanjeVozila.group("broj")),
+            Parsiraj.l(poklapanjeVozila.group("vrijeme")),
+            Parsiraj.d(poklapanjeVozila.group("brzina")),
+            Parsiraj.d(poklapanjeVozila.group("snaga")),
+            Parsiraj.d(poklapanjeVozila.group("struja")),
+            Parsiraj.d(poklapanjeVozila.group("visina")),
+            Parsiraj.d(poklapanjeVozila.group("gpsBrzina")),
+            Parsiraj.i(poklapanjeVozila.group("tempVozila")),
+            Parsiraj.i(poklapanjeVozila.group("postotakBaterija")),
+            Parsiraj.d(poklapanjeVozila.group("naponBaterija")),
+            Parsiraj.i(poklapanjeVozila.group("kapacitetBaterija")),
+            Parsiraj.i(poklapanjeVozila.group("tempBaterija")),
+            Parsiraj.d(poklapanjeVozila.group("preostaloKm")),
+            Parsiraj.d(poklapanjeVozila.group("ukupnoKm")),
+            Parsiraj.d(poklapanjeVozila.group("gpsSirina")),
+            Parsiraj.d(poklapanjeVozila.group("gpsDuzina")));
         for (PodaciRadara r : cs.sviRadari.values())
           provjeriVoziloUOkoliniRadara(vozilo, r);
         return "OK\n";

@@ -74,7 +74,7 @@ public class Klijent {
       vrijemeDo = Long.parseLong(args[2]);
     }
     adresaKazne = konfig.dajPostavku("adresaKazne");
-    mreznaVrataKazne = Parsiraj.pi(konfig.dajPostavku("mreznaVrataKazne"));
+    mreznaVrataKazne = Parsiraj.i(konfig.dajPostavku("mreznaVrataKazne"));
   }
 
   /**

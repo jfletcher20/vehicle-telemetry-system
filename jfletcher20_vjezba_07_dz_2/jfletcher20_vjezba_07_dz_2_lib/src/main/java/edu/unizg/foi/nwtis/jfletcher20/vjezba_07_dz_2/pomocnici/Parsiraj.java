@@ -11,7 +11,7 @@ public class Parsiraj {
    * @param s string
    * @return cijeli broj
    */
-  public static int pi(String s) {
+  public static int i(String s) {
     return Integer.parseInt(s);
   }
 
@@ -21,7 +21,7 @@ public class Parsiraj {
    * @param s string
    * @return decimalni broj
    */
-  public static double pd(String s) {
+  public static double d(String s) {
     return Double.parseDouble(s);
   }
 
@@ -31,7 +31,7 @@ public class Parsiraj {
    * @param s string
    * @return cijeli long broj
    */
-  public static long pl(String s) {
+  public static long l(String s) {
     return Long.parseLong(s);
   }
 
