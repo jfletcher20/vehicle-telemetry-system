@@ -97,22 +97,22 @@ public class RadariKontroler {
     List<Radar> radari;
     if (idRadara != null && !idRadara.isEmpty() && !(jeUkljuceno(provjeri) || jeUkljuceno(delete)
         || jeUkljuceno(reset) || jeUkljuceno(deleteSve))) {
-      radari = r.getRadariJSON_radar(idRadara);
       info = "Radari s ID " + idRadara;
+      radari = r.getRadariJSON_radar(idRadara);
     } else if (idRadara != null && !idRadara.isEmpty() && jeUkljuceno(provjeri)) {
-      radari = r.getRadariJSON();
       info = "Provjera radara s ID " + idRadara + " "
           + (r.getRadariJSON_radar_provjeri(idRadara) ? "uspjelo" : "nije uspjelo");
-    } else if (idRadara != null && !idRadara.isEmpty() && jeUkljuceno(delete)) {
       radari = r.getRadariJSON();
+    } else if (idRadara != null && !idRadara.isEmpty() && jeUkljuceno(delete)) {
       info = "Brisanje radara s ID " + idRadara + " "
           + (r.deleteRadari_radar(idRadara) ? "uspjelo" : "nije uspjelo");
+      radari = r.getRadariJSON();
     } else if (jeUkljuceno(reset)) {
-      radari = r.getRadariJSON();
       info = "Resetiranje svih radara " + (r.deleteRadari_radare() ? "uspjelo" : "nije uspjelo");
-    } else if (jeUkljuceno(deleteSve)) {
       radari = r.getRadariJSON();
+    } else if (jeUkljuceno(deleteSve)) {
       info = "Brisanje svih radara " + (r.deleteRadari_radare() ? "uspjelo" : "nije uspjelo");
+      radari = r.getRadariJSON();
     } else {
       info = "Prikaz svih radara";
       radari = r.getRadariJSON();

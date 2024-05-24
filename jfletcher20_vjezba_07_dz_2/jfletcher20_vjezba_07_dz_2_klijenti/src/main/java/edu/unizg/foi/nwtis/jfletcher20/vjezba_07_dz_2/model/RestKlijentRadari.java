@@ -212,8 +212,6 @@ public class RestKlijentRadari {
       resource = resource.path(java.text.MessageFormat.format("{0}", new Object[] {id}));
       Response restOdgovor = resource.request().delete();
       
-      System.out.println("Status: " + restOdgovor.readEntity(String.class));
-      
       return restOdgovor.getStatus() == 200;
     }
     

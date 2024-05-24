@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Radar;
 import jakarta.annotation.PostConstruct;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
@@ -65,6 +66,12 @@ public class RadariResurs extends SviResursi {
     }
   }
 
+  /**
+   * Dohvaća sve radare.
+   *
+   * @param tipOdgovora vrsta MIME odgovora
+   * @return lista radara
+   */
   @GET
   @Produces({MediaType.APPLICATION_JSON})
   public Response getJson(@HeaderParam("Accept") String tipOdgovora) {
@@ -94,8 +101,8 @@ public class RadariResurs extends SviResursi {
    * Dohvaća radar s tim ID.
    *
    * @param tipOdgovora vrsta MIME odgovora
-   * @param id vozila
-   * @return lista voznji
+   * @param id radara
+   * @return lista radara
    */
   @Path("/{id}")
   @GET
@@ -133,8 +140,8 @@ public class RadariResurs extends SviResursi {
    * Dohvaća radar s tim ID.
    *
    * @param tipOdgovora vrsta MIME odgovora
-   * @param id vozila
-   * @return lista voznji
+   * @param id radara
+   * @return je li uspješna provjera ili ne
    */
   @Path("/{id}/provjeri")
   @GET
@@ -149,7 +156,71 @@ public class RadariResurs extends SviResursi {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
           .entity("{\"odgovor\": \"" + odgovor + "\"}").build();
   }
-
+  
+  /**
+   * Briše radar s tim ID.
+   * 
+   * @param tipOdgovora vrsta MIME odgovora
+   * @param id radara
+   */
+   @Path("/{id}")
+   @DELETE
+   @Produces({MediaType.APPLICATION_JSON})
+   public Response deleteRadar(@HeaderParam("Accept") String tipOdgovora,
+       @PathParam("id") int id) {
+     var odgovor = MrezneOperacije
+         .posaljiZahtjevPosluzitelju(adresaRegistracije, mreznaVrataRegistracije, "RADAR OBRIŠI " + id)
+         .trim();
+     if (odgovor.contains("OK")) {
+       return Response.status(Response.Status.OK).entity("{\"odgovor\": \"" + odgovor + "\"}")
+           .build();
+     } else
+       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+           .entity("{\"odgovor\": \"" + odgovor + "\"}").build();
+   }
+   
+   /**
+    * Briše sve radare.
+    * 
+    * @param tipOdgovora vrsta MIME odgovora
+    * @return je li uspješno brisanje ili ne
+    */
+   @Path("/")
+   @DELETE
+   @Produces({MediaType.APPLICATION_JSON})
+   public Response deleteSveRadare(@HeaderParam("Accept") String tipOdgovora) {
+     var odgovor = MrezneOperacije.posaljiZahtjevPosluzitelju(adresaRegistracije,
+         mreznaVrataRegistracije, "RADAR OBRIŠI SVE").trim();
+     if (odgovor.contains("OK")) {
+       return Response.status(Response.Status.OK).entity("{\"odgovor\": \"" + odgovor + "\"}")
+           .build();
+     } else
+       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+           .entity("{\"odgovor\": \"" + odgovor + "\"}").build();
+   }
+   
+   /**
+    * Resetira sve radare.
+    * 
+    * @param tipOdgovora vrsta MIME odgovora
+    * @return je li uspješno resetiranje ili ne
+    */
+   
+   @Path("/reset")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public Response resetRadare(@HeaderParam("Accept") String tipOdgovora) {
+     var odgovor = MrezneOperacije
+         .posaljiZahtjevPosluzitelju(adresaRegistracije, mreznaVrataRegistracije, "RADAR RESET")
+         .trim();
+     if (odgovor.contains("OK")) {
+       return Response.status(Response.Status.OK).entity("{\"odgovor\": \"" + odgovor + "\"}")
+           .build();
+     } else
+       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+           .entity("{\"odgovor\": \"" + odgovor + "\"}").build();
+   }
+  
 
   /**
    * Dodaje novi radar. • RADAR id adresa mreznaVrata gpsSirina gpsDuzina maksUdaljenost
