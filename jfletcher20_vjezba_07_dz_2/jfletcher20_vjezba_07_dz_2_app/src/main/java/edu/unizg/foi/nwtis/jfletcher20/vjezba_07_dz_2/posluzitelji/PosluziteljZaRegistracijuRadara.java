@@ -81,7 +81,6 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
    */
   @Override
   public void run() {
-
     try (ServerSocket mreznaUticnicaPosluzitelja = new ServerSocket(this.mreznaVrata)) {
       while (true) {
         var mreznaUticnica = mreznaUticnicaPosluzitelja.accept();
@@ -97,7 +96,7 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
         mreznaUticnica.close();
       }
     } catch (NumberFormatException | IOException e) {
-      e.printStackTrace();
+      //e.printStackTrace();
     }
 
   }
@@ -228,8 +227,14 @@ public class PosluziteljZaRegistracijuRadara implements Runnable {
     int brojRadara = centralniSustav.sviRadari.size();
     int brojObrisanihRadara = 0;
     for (var radar : centralniSustav.sviRadari.values()) {
-      if (!MrezneOperacije.posaljiZahtjevPosluzitelju(radar.adresaRadara(),
-          radar.mreznaVrataRadara(), "RADAR " + radar.id()).equals("OK")) {
+      try {
+        var odgovor = MrezneOperacije.posaljiZahtjevPosluzitelju(radar.adresaRadara(),
+            radar.mreznaVrataRadara(), "RADAR " + radar.id());
+        if (!odgovor.contains("OK")) {
+          centralniSustav.sviRadari.remove(radar.id());
+          brojObrisanihRadara++;
+        }
+      } catch (Exception e) {
         centralniSustav.sviRadari.remove(radar.id());
         brojObrisanihRadara++;
       }

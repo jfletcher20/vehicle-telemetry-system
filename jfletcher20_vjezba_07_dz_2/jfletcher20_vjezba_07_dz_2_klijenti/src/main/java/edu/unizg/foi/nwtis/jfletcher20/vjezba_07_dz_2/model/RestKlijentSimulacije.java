@@ -259,11 +259,24 @@ public class RestKlijentSimulacije {
 
       Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
 
-      var podaciZaSimulaciju = "{ \"idVozila\": " + idVozila + ", \"podaci\": " + podaciVozila
-          + ", \"trajanjeSek\": " + trajanjeSek + ", \"trajanjePauze\": " + trajanjePauze + " }";
+      /*Thread.sleep((long) (simulator.citajCSV() * simulator.trajanjeSek / 1000.0));
+          result.get();
+          simulator.simulirajVoznju(kanalKlijenta);
+          Thread.sleep(simulator.trajanjePauze);*/
       
-      var odgovor =
-          request.post(Entity.entity(podaciZaSimulaciju, MediaType.APPLICATION_JSON), String.class).toString();
+      /*
+       * String vozilo = "";
+      while (true) {
+        // stop execution for trajanjeSek / 1000
+         String linija = citac.readLine();
+         int indexLinije = citac.getLineNumber();
+         vozilo = "VOZILO " + idVozila + " " + indexLinije + // add data from the file podaciVozila's current line to the vozilo string
+        var odgovor =
+            request.post(Entity.entity(podaciZaSimulaciju, MediaType.APPLICATION_JSON), String.class).toString();
+      }
+      */
+      
+      var odgovor = "ERROR 29 Nije implementirano\n";
       if (odgovor.trim().length() > 0)
         return true;
 

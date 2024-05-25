@@ -12,21 +12,15 @@ import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.posluzitelji.CentralniSustav;
 
 /*
- * PosluziteljZaVozila ima dodatne komande:
- * ● VOZILO START id
-   * o npr.VOZILO START 1
-   * o Provjera da li ispravni podaci. Ako su ispravni, provjerava postoji li e-vozilo s id u
-   * kolekciji e-vozila čiji se podaci o vožnji šalju na RESTful web servis za praćenje odabranih
-   * e-vozila. Ako ne postoji, dodaje e-vozilo s id u kolekciju e-vozila čiji se podaci o vožnji šalju
-   * na RESTful webservis za praćenje odabranih e-vozila. Vraća OK.
-   * o Npr.OK
- * ● VOZILO STOP id
-   * o npr.VOZILO STOP 1
-   * o Provjera da li ispravni podaci. Ako su ispravni, provjerava postoji li e-vozilo s id u
-   * kolekciji e-vozila čiji se podaci o vožnji šalju na RESTful web servis za praćenje odabranih
-   * e-vozila. Ako postoji, briše e-vozilo s id iz kolekcije e-vozila čiji se podaci o vožnji šalju na
-   * RESTful webservis za praćenje odabranih e-vozila. Vraća OK.
-   * o Npr.OK
+ * PosluziteljZaVozila ima dodatne komande: ● VOZILO START id o npr.VOZILO START 1 o Provjera da li
+ * ispravni podaci. Ako su ispravni, provjerava postoji li e-vozilo s id u kolekciji e-vozila čiji
+ * se podaci o vožnji šalju na RESTful web servis za praćenje odabranih e-vozila. Ako ne postoji,
+ * dodaje e-vozilo s id u kolekciju e-vozila čiji se podaci o vožnji šalju na RESTful webservis za
+ * praćenje odabranih e-vozila. Vraća OK. o Npr.OK ● VOZILO STOP id o npr.VOZILO STOP 1 o Provjera
+ * da li ispravni podaci. Ako su ispravni, provjerava postoji li e-vozilo s id u kolekciji e-vozila
+ * čiji se podaci o vožnji šalju na RESTful web servis za praćenje odabranih e-vozila. Ako postoji,
+ * briše e-vozilo s id iz kolekcije e-vozila čiji se podaci o vožnji šalju na RESTful webservis za
+ * praćenje odabranih e-vozila. Vraća OK. o Npr.OK
  */
 
 /**
@@ -46,8 +40,23 @@ public class RadnikZaVozila implements Runnable {
   /**
    * Predložak za naredbu s podacima o vozilu.
    */
-  private Pattern predlozakVozilo = Pattern.compile(
-      "^VOZILO (?<id>-?\\d+) (?<broj>-?\\d+) (?<vrijeme>-?\\d+) (?<brzina>-?\\d+(?:\\.\\d+)?) (?<snaga>-?\\d+(?:\\.\\d+)?) (?<struja>-?\\d+(?:\\.\\d+)?) (?<visina>-?\\d+(?:\\.\\d+)?) (?<gpsBrzina>-?\\d+(?:\\.\\d+)?) (?<tempVozila>-?\\d+) (?<postotakBaterija>-?\\d+(?:\\.\\d+)?) (?<naponBaterija>-?\\d+(?:\\.\\d+)?) (?<kapacitetBaterija>-?\\d+(?:\\.\\d+)?) (?<tempBaterija>-?\\d+(?:\\.\\d+)?) (?<preostaloKm>-?\\d+(?:\\.\\d+)?) (?<ukupnoKm>-?\\d+(?:\\.\\d+)?) (?<gpsSirina>-?\\d+(?:\\.\\d+)?) (?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$");
+  private Pattern predlozakVozilo = Pattern.compile("^VOZILO (?<id>-?\\d+) " //
+      + "(?<broj>-?\\d+) " //
+      + "(?<vrijeme>-?\\d+) " //
+      + "(?<brzina>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<snaga>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<struja>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<visina>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<gpsBrzina>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<tempVozila>-?\\d+) " //
+      + "(?<postotakBaterija>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<naponBaterija>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<kapacitetBaterija>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<tempBaterija>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<preostaloKm>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<ukupnoKm>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<gpsSirina>-?\\d+(?:\\.\\d+)?) " //
+      + "(?<gpsDuzina>-?\\d+(?:\\.\\d+)?)$");
   /**
    * Predložak za naredbu vozilo start.
    */
@@ -109,7 +118,7 @@ public class RadnikZaVozila implements Runnable {
     if (zahtjev == null || zahtjev.length() == 0)
       return "ERROR 20 Neispravna sintaksa komande " + zahtjev + "\n";
     zahtjev = zahtjev.trim();
-    var odgovor = ""; 
+    var odgovor = "";
     poklapanjeVozila = predlozakVoziloStart.matcher(zahtjev);
     if (poklapanjeVozila.matches()) {
       odgovor = obradaVozilaStart(zahtjev);
@@ -121,7 +130,7 @@ public class RadnikZaVozila implements Runnable {
     return odgovor != null ? odgovor
         : "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
   }
-  
+
   /**
    * Metoda za obradu zahtjeva vozila start.
    * 
@@ -143,7 +152,7 @@ public class RadnikZaVozila implements Runnable {
       return "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
     }
   }
-  
+
   /**
    * Metoda za obradu zahtjeva vozila stop.
    * 
@@ -165,7 +174,7 @@ public class RadnikZaVozila implements Runnable {
       return "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
     }
   }
-    
+
   /**
    * Metoda za obradu zahtjeva vozila.
    * 

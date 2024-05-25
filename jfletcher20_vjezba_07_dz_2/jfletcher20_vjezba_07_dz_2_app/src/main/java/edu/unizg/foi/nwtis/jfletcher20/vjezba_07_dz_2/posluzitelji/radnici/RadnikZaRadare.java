@@ -112,7 +112,6 @@ public class RadnikZaRadare implements Runnable {
    */
   private String obradaZahtjevaReset() {
     try {
-
       var provjeraSveOk = MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaRegistracije(),
           r.mreznaVrataRegistracije(), "RADAR " + r.id() + "\n");
       if (provjeraSveOk.contains("OK"))
@@ -182,10 +181,14 @@ public class RadnikZaRadare implements Runnable {
           String cmd = "VOZILO " + vozilo.id() + " " + poh.vrijeme() + " " + vozilo.vrijeme() + " "
               + vozilo.brzina() + " " + vozilo.gpsSirina() + " " + vozilo.gpsDuzina() + " "
               + r.gpsSirina() + " " + r.gpsDuzina() + "\n";
-          var resp = MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaKazne(),
-              r.mreznaVrataKazne(), cmd);
-          if (resp == null)
-            return "ERROR 31 Posluzitelj nije dostupan.\n";
+          try {
+            var resp = MrezneOperacije.posaljiZahtjevPosluzitelju(r.adresaKazne(),
+                r.mreznaVrataKazne(), cmd);
+            if (resp == null)
+              return "ERROR 34 Posluzitelj za kazne nije dostupan.\n";
+          } catch (Exception e) {
+            return "ERROR 34 PosluziteljKazni nije dostupan.\n";
+          }
           p.brzaVozila.put(vozilo.id(), vozilo.postaviStatus(false));
         } else if (r.maksTrajanje() * 1000 + 1 > razlikaVremena(vozilo, poh))
           return "OK\n";
