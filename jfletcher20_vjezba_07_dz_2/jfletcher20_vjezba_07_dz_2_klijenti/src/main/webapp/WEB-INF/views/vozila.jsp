@@ -19,14 +19,16 @@
 				<%
 				int i = 0;
 				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
-				List<Vozila> vozila = (List<Vozila>) request.getAttribute("vozila");
+				List<Voznja> voznje = (List<Voznja>) request.getAttribute("voznje");
 				String mult = voznje.size() != 1 ? "a" : "";
-				for(Vozila v: vozila) {
+				for(Voznja v: voznje) {
 					i++;
 					Date vrijeme = new Date(v.getVrijeme() * 1000);%>
 					<tr>
 						<td class="desno"><%= i %></td>
-						<td><%= v.getId() %></td>
+						<td><a href="${pageContext.servletContext.contextPath}/mvc/vozila/pocetna?idVozila=<%= v.getId() %>">
+							<%= v.getId() %>
+						</a></td>
 						<td><%= sdf.format(vrijeme) %></td>
 						<td><%= v.getBrzina() %></td>
 						<td><%= v.getUkupnoKm() %></td>
@@ -34,7 +36,7 @@
 						<td><%= v.getGpsDuzina() %></td>
 					</tr><%
 				}%>
-				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= vozila.size() %> rezultat<%= mult %></td></tfoot>
+				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= voznje.size() %> rezultat<%= mult %></td></tfoot>
 				<p><%= (String) request.getAttribute("vrijednosti") != null ? (String) request.getAttribute("vrijednosti") : "" %></p>
 	        </table>
         </div>

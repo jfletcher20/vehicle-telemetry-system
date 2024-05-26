@@ -4,10 +4,6 @@
  */
 package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciVozila;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PraceneVoznjeDAO;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Voznja;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
@@ -106,6 +102,44 @@ public class VozilaResurs extends SviResursi {
   }
 
   /**
+   * Započinje vožnju.
+   *
+   * @param tipOdgovora vrsta MIME odgovora
+   * @param id vozila
+   * @return uspjesno ili ne
+   */
+  @GET
+  @Path("/vozilo/{id}/start")
+  @Produces({MediaType.APPLICATION_JSON})
+  public Response getJsonSimulacijaVoznja(@HeaderParam("Accept") String tipOdgovora,
+      @PathParam("id") int id) {
+    
+    var odgovor = MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja,
+        mreznaVrataPosluzitelja, "VOZILO START " + id + "\n");
+    
+    return Response.status(Response.Status.OK).entity(odgovor).build();
+  }
+  
+  /**
+   * Zaustavlja vožnju.
+   * 
+   * @param tipOdgovora vrsta MIME odgovora
+   * @param id vozila
+   * @return uspjesno ili ne
+   */
+  @GET
+  @Path("/vozilo/{id}/stop")
+  @Produces({MediaType.APPLICATION_JSON})
+  public Response getJsonSimulacijaVoznjaStop(@HeaderParam("Accept") String tipOdgovora,
+      @PathParam("id") int id) {
+
+    var odgovor = MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja,
+        mreznaVrataPosluzitelja, "VOZILO STOP " + id + "\n");
+
+    return Response.status(Response.Status.OK).entity(odgovor).build();
+  }
+
+  /**
    * Dodaje novu voznju.
    *
    * @param tipOdgovora vrsta MIME odgovora
@@ -114,46 +148,13 @@ public class VozilaResurs extends SviResursi {
    */
   @POST
   @Produces({MediaType.APPLICATION_JSON})
-  public Response postDodajSimulaciju(@HeaderParam("Accept") String tipOdgovora,
-      Voznja novaVoznja) {
-    String r = "";
-    try {
-      r = posaljiZahtjevVoznje(novaVoznja);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(r).build();
-    }
+  public Response postDodajVoznju(@HeaderParam("Accept") String tipOdgovora, Voznja novaVoznja) {
     var odgovor = voznjeDAO.dodajVoznju(novaVoznja);
     if (odgovor)
-      return Response.status(Response.Status.OK).build();
+      return Response.status(Response.Status.OK).entity(odgovor).build();
     else
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
           .entity("Neuspješni upis voznje u bazu podataka.").build();
-  }
-
-
-  private String posaljiZahtjevVoznje(Voznja novaVoznja) {
-    try {
-      // voznje (id, broj, vrijeme, brzina, snaga, struja, visina, gpsBrzina, tempVozila,
-      // postotakBaterija, naponBaterija, kapacitetBaterija, tempBaterija, preostaloKm, ukupnoKm,
-      // gpsSirina, gpsDuzina) "
-      String r = MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja,
-          mreznaVrataPosluzitelja,
-          "VOZILO " + novaVoznja.getId() + " " + novaVoznja.getBroj() + " "
-              + novaVoznja.getVrijeme() + " " + novaVoznja.getBrzina() + " " + novaVoznja.getSnaga()
-              + " " + novaVoznja.getStruja() + " " + novaVoznja.getVisina() + " "
-              + novaVoznja.getGpsBrzina() + " " + novaVoznja.getTempVozila() + " "
-              + novaVoznja.getPostotakBaterija() + " " + novaVoznja.getNaponBaterija() + " "
-              + novaVoznja.getKapacitetBaterija() + " " + novaVoznja.getTempBaterija() + " "
-              + novaVoznja.getPreostaloKm() + " " + novaVoznja.getUkupnoKm() + " "
-              + novaVoznja.getGpsSirina() + " " + novaVoznja.getGpsDuzina() + "\n")
-          .trim();
-      if (r.contains("ERROR"))
-        throw new Exception("Neuspješno slanje voznje na server zbog: " + r);
-    } catch (Exception e) {
-      return "ERROR 29 " + e.getMessage() + "\n";
-    }
-    return "OK\n";
   }
 
 }

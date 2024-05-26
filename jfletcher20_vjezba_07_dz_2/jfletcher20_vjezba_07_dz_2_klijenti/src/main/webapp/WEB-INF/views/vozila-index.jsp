@@ -23,7 +23,6 @@ String sadrzaj(String datoteka, ServletContext application) {
 		<title>REST MVC</title>
 		<link rel="stylesheet"
 			href="${pageContext.servletContext.contextPath}/resources/css/nwtis.css">
-		<script src="${pageContext.servletContext.contextPath}/resources/scripts/forma.js"></script>
 		<script src="${pageContext.servletContext.contextPath}/resources/scripts/nav.js"></script>
 	</head>
 	<body>
@@ -52,7 +51,7 @@ String sadrzaj(String datoteka, ServletContext application) {
 								<input name="rb" id="rb" min=0 type="number" pattern="[0-9]">
 							</label>
 							<label for="idVozila">ID Vozila
-								<input name="idVozila" id="idVozila" type="number" pattern="[0-9]">
+								<input name="idVozila" type="number" pattern="[0-9]">
 							</label>
 						</div>
 						<div class="row">

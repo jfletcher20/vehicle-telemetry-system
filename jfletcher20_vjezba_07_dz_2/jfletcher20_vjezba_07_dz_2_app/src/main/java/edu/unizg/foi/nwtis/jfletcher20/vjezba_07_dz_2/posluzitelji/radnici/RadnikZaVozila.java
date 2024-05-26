@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciRadara;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciVozila;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.RedPodaciVozila;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.posluzitelji.CentralniSustav;
@@ -142,11 +143,10 @@ public class RadnikZaVozila implements Runnable {
       poklapanjeVozila = predlozakVoziloStart.matcher(zahtjev);
       if (poklapanjeVozila.matches()) {
         var id = Parsiraj.i(poklapanjeVozila.group("id"));
-        if (cs.svaVozila.containsKey(id))
-          return "ERROR 21 E-vozilo s ID " + id + " već postoji\n";
-        return "OK\n"; // TODO: finish by adding proper RESTful API callls
-      }
-      return null;
+        cs.svaVozila.putIfAbsent(id, new RedPodaciVozila(id));
+        return "OK\n";
+      } else
+        return null;
     } catch (Exception e) {
       e.printStackTrace();
       return "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
@@ -164,11 +164,10 @@ public class RadnikZaVozila implements Runnable {
       poklapanjeVozila = predlozakVoziloStop.matcher(zahtjev);
       if (poklapanjeVozila.matches()) {
         var id = Parsiraj.i(poklapanjeVozila.group("id"));
-        if (!cs.svaVozila.containsKey(id))
-          return "ERROR 22 E-vozilo s ID " + id + " ne postoji\n";
-        return "OK\n"; // TOD: finish by adding proper RESTful API calls
-      }
-      return null;
+        cs.svaVozila.remove(id);
+        return "OK\n";
+      } else
+        return null;
     } catch (Exception e) {
       e.printStackTrace();
       return "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";

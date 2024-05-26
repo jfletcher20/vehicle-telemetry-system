@@ -1,7 +1,7 @@
 <fieldset>
 	<div class="row">
 		<label for="idVozila">ID Vozila
-			<input name="idVozila" type="number" pattern="[0-9]">
+			<input name="idVozila" id="idVozila" type="number" pattern="[0-9]">
 		</label>
 	</div>
 	<div class="row">
@@ -18,4 +18,48 @@
 		<button id="stop" class="button-red">Završi praćenje</button>
 	</div>
 </fieldset>
+<input hidden type="checkbox" id="checkbox-start" name="start">
+<input hidden type="checkbox" id="checkbox-stop" name="stop">
 <input type="submit" value="Potvrda">
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+	
+	const idVozila = document.getElementById('idVozila');
+	const odVremena = document.getElementById('odVremena');
+	const doVremena = document.getElementById('doVremena');
+	
+	const start = document.getElementById('start');
+	const stop = document.getElementById('stop');
+	
+	const forma = document.querySelector('forma-vozila');
+	
+	const checkboxStart = document.getElementById('checkbox-start');
+	const checkboxStop = document.getElementById('checkbox-stop');
+	
+	const urlParams = new URLSearchParams(window.location.search);
+	const idVozilaParam = urlParams.get('idVozila');
+	if (idVozilaParam) idVozila.value = idVozilaParam;
+
+	idVozila.addEventListener('input', (e) => {
+		start.disabled = stop.disabled = false;
+		if (idVozila.value.trim() == '') {
+			start.disabled = true;
+			stop.disabled = true;
+		}
+	});
+
+	start.disabled = stop.disabled = idVozila.value.trim() == '';
+
+	start.addEventListener('click', (e) => {
+		checkboxStart.checked = true;
+	});
+	
+	stop.addEventListener('click', (e) => {
+		checkboxStop.checked = true;
+	});
+	
+	
+});
+
+</script>

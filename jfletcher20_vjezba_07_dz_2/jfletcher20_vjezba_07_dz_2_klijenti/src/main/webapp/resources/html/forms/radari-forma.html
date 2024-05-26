@@ -45,7 +45,6 @@
 	
 	const forma = document.querySelector('forma-radari');
 	
-	// check if the url has a query "idRadara" and if so, set the value of the input to that value
 	const urlParams = new URLSearchParams(window.location.search);
 	const idRadaraParam = urlParams.get('idRadara');
 	if (idRadaraParam) idRadara.value = idRadaraParam;

@@ -1,8 +1,5 @@
-package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.model;
+package rest;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +14,6 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import slusac.AppContextListener;
 
 /**
  * Klasa RestKlijentVoznje.
@@ -81,22 +77,12 @@ public class RestKlijentVozila {
     return odgovor;
   }
 
-  /**
-   * Pocijeli voznju.
-   * 
-   * @param idVozila id vozila
-   * @return true, ako je uspješno
-   */
   public boolean startVoznja(String idVozila) {
-    RestPraceneVoznje rk = new RestPraceneVoznje();
-    var odgovor = rk.startVozilo(idVozila);
-    return odgovor;
+    throw new UnsupportedOperationException("Not supported yet.");
   }
   
   public boolean stopVoznja(String idVozila) {
-    RestPraceneVoznje rk = new RestPraceneVoznje();
-    var odgovor = rk.stopVozilo(idVozila);
-    return odgovor;
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   /**
@@ -118,7 +104,7 @@ public class RestKlijentVozila {
      */
     public RestPraceneVoznje() {
       client = ClientBuilder.newClient();
-      webTarget = client.target(BASE_URI).path("nwtis/v1/api/vozila");
+      webTarget = client.target(BASE_URI).path("nwtis/v1/api/simulacije");
     }
 
     /**
@@ -166,34 +152,6 @@ public class RestKlijentVozila {
       }
 
       return voznje;
-    }
-    
-    /**
-     * Pokreće vozilo.
-     * 
-     * @param id id vozila
-     * @return true, ako je uspješno
-     */
-    public boolean startVozilo(String id) {
-      WebTarget resource = webTarget;
-      resource = resource.path(java.text.MessageFormat.format("start/{0}", new Object[] {id}));
-      Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
-      Response restOdgovor = resource.request().get();
-      return restOdgovor.getStatus() == 200;
-    }
-    
-    /**
-     * Zaustavlja vozilo.
-     * 
-     * @param id id vozila
-     * @return true, ako je uspješno
-     */
-    public boolean stopVozilo(String id) {
-      WebTarget resource = webTarget;
-      resource = resource.path(java.text.MessageFormat.format("stop/{0}", new Object[] {id}));
-      Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
-      Response restOdgovor = resource.request().get();
-      return restOdgovor.getStatus() == 200;
     }
 
     /**
