@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciVozila;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Simulacija;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Voznja;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.VoznjeDAO;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
@@ -32,12 +33,12 @@ import jakarta.ws.rs.core.Response;
  */
 @Path("nwtis/v1/api/simulacije")
 public class SimulacijeResurs extends SviResursi {
-  
+
   private String nazivKonfiguracije = "NWTiS_REST_R.txt";
 
   private String adresaPosluzitelja;
   private int mreznaVrataPosluzitelja;
-  
+
   private VoznjeDAO voznjeDAO = null;
 
   @PostConstruct
@@ -53,7 +54,7 @@ public class SimulacijeResurs extends SviResursi {
         adresaPosluzitelja = konfig.dajPostavku("adresaRegistracije");
         mreznaVrataPosluzitelja = Parsiraj.i(konfig.dajPostavku("mreznaVrataRegistracije"));
       } catch (NeispravnaKonfiguracija e) {
-      }                       
+      }
     }
     System.out.println("Pokrećem REST: " + this.getClass().getName());
     try {
@@ -104,7 +105,7 @@ public class SimulacijeResurs extends SviResursi {
       return Response.status(Response.Status.OK)
           .entity(voznjeDAO.dohvatiVoznjeVozila(id, odVremena, doVremena)).build();
   }
-  
+
   /**
    * Dodaje novu voznju.
    *
@@ -114,7 +115,8 @@ public class SimulacijeResurs extends SviResursi {
    */
   @POST
   @Produces({MediaType.APPLICATION_JSON})
-  public Response postDodajSimulaciju(@HeaderParam("Accept") String tipOdgovora, Voznja novaVoznja) {
+  public Response postDodajSimulaciju(@HeaderParam("Accept") String tipOdgovora,
+      Voznja novaVoznja) {
     String r = "";
     try {
       r = posaljiZahtjevVoznje(novaVoznja);
@@ -129,82 +131,46 @@ public class SimulacijeResurs extends SviResursi {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
           .entity("Neuspješni upis voznje u bazu podataka.").build();
   }
-  
+
+
   private String posaljiZahtjevVoznje(Voznja novaVoznja) {
     try {
-      // voznje (id, broj, vrijeme, brzina, snaga, struja, visina, gpsBrzina, tempVozila, postotakBaterija, naponBaterija, kapacitetBaterija, tempBaterija, preostaloKm, ukupnoKm, gpsSirina, gpsDuzina) "
-      String r = MrezneOperacije
-          .posaljiZahtjevPosluzitelju(adresaPosluzitelja, mreznaVrataPosluzitelja, "VOZILO "
-              + novaVoznja.getId() + " " + novaVoznja.getBroj() + " " + novaVoznja.getVrijeme() + " "
-              + novaVoznja.getBrzina() + " " + novaVoznja.getSnaga() + " " + novaVoznja.getStruja() + " "
-              + novaVoznja.getVisina() + " " + novaVoznja.getGpsBrzina() + " " + novaVoznja.getTempVozila() + " "
+      // voznje (id, broj, vrijeme, brzina, snaga, struja, visina, gpsBrzina, tempVozila,
+      // postotakBaterija, naponBaterija, kapacitetBaterija, tempBaterija, preostaloKm, ukupnoKm,
+      // gpsSirina, gpsDuzina) "
+      String r = MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja,
+          mreznaVrataPosluzitelja,
+          "VOZILO " + novaVoznja.getId() + " " + novaVoznja.getBroj() + " "
+              + novaVoznja.getVrijeme() + " " + novaVoznja.getBrzina() + " " + novaVoznja.getSnaga()
+              + " " + novaVoznja.getStruja() + " " + novaVoznja.getVisina() + " "
+              + novaVoznja.getGpsBrzina() + " " + novaVoznja.getTempVozila() + " "
               + novaVoznja.getPostotakBaterija() + " " + novaVoznja.getNaponBaterija() + " "
               + novaVoznja.getKapacitetBaterija() + " " + novaVoznja.getTempBaterija() + " "
-              + novaVoznja.getPreostaloKm() + " " + novaVoznja.getUkupnoKm() + " " + novaVoznja.getGpsSirina()
-              + " " + novaVoznja.getGpsDuzina() + "\n").trim();
-      if (r.contains("ERROR")) throw new Exception("Neuspješno slanje voznje na server zbog: " + r);
+              + novaVoznja.getPreostaloKm() + " " + novaVoznja.getUkupnoKm() + " "
+              + novaVoznja.getGpsSirina() + " " + novaVoznja.getGpsDuzina() + "\n")
+          .trim();
+      if (r.contains("ERROR"))
+        throw new Exception("Neuspješno slanje voznje na server zbog: " + r);
     } catch (Exception e) {
       return "ERROR 29 " + e.getMessage() + "\n";
     }
     return "OK\n";
   }
-  
-  /* this is the server-side -- this function should do something similar
-  public long citajCSV() {
-    try (BufferedReader reader = new BufferedReader(new FileReader(podaciVozilaDatoteka))) {
-      for (int i = 0; i < brojRetka; i++)
-        reader.readLine();
-      String row = reader.readLine();
-      if (row == null)
-        System.exit(0); // prekida program ako nema više redaka
-      String[] data = row.split(",");
-      var p = new PodaciVozila(idVozila, brojRetka++, Parsiraj.l(data[0]), Parsiraj.d(data[1]),
-          Parsiraj.d(data[2]), Parsiraj.d(data[3]), Parsiraj.d(data[4]), Parsiraj.d(data[5]),
-          Parsiraj.i(data[6]), Parsiraj.i(data[7]), Parsiraj.d(data[8]), Parsiraj.i(data[9]),
-          Parsiraj.i(data[10]), Parsiraj.d(data[11]), Parsiraj.d(data[12]),
-          Parsiraj.d(data[13]), Parsiraj.d(data[14]));
-      long razlika = 0;
-      if (redPodaciVozila.dajBrojPodatakaVozila() > 0)
-        razlika = razlikaVremena(p);
-      redPodaciVozila.dodajPodatakVozila(p);
-      return razlika;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return 0;
-    }
-  }*/
-  private long vrijemeZadnjeVoznje = 0;
-  private long razlikaVremena(Voznja p) {
-    long razlika = p.getVrijeme() - vrijemeZadnjeVoznje;
-    vrijemeZadnjeVoznje = p.getVrijeme();
-    return razlika;
-  }
-  private int brojRetka;
-  private long citajCSV(int idVozila, String podaciVozilaDatoteka) {
-    try (BufferedReader reader = new BufferedReader(new FileReader(podaciVozilaDatoteka))) {
-      for (int i = 0; i < brojRetka; i++)
-        reader.readLine();
-      String row = reader.readLine();
-      if (row == null)
-        return -1;
-      String[] data = row.split(",");
-      var p = new Voznja(idVozila, brojRetka++, Parsiraj.l(data[0]), Parsiraj.d(data[1]),
-          Parsiraj.d(data[2]), Parsiraj.d(data[3]), Parsiraj.d(data[4]), Parsiraj.d(data[5]),
-          Parsiraj.i(data[6]), Parsiraj.i(data[7]), Parsiraj.d(data[8]), Parsiraj.i(data[9]),
-          Parsiraj.i(data[10]), Parsiraj.d(data[11]), Parsiraj.d(data[12]), Parsiraj.d(data[13]),
-          Parsiraj.d(data[14]));
-      long razlika = 0;
-      if (brojRetka > 0)
-        razlika = razlikaVremena(p);
-      
-      voznjeDAO.dodajVoznju(p);
-      return razlika;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return 0;
-    }
-  }
-  
+
+  /*
+   * this is the server-side -- this function should do something similar public long citajCSV() {
+   * try (BufferedReader reader = new BufferedReader(new FileReader(podaciVozilaDatoteka))) { for
+   * (int i = 0; i < brojRetka; i++) reader.readLine(); String row = reader.readLine(); if (row ==
+   * null) System.exit(0); // prekida program ako nema više redaka String[] data = row.split(",");
+   * var p = new PodaciVozila(idVozila, brojRetka++, Parsiraj.l(data[0]), Parsiraj.d(data[1]),
+   * Parsiraj.d(data[2]), Parsiraj.d(data[3]), Parsiraj.d(data[4]), Parsiraj.d(data[5]),
+   * Parsiraj.i(data[6]), Parsiraj.i(data[7]), Parsiraj.d(data[8]), Parsiraj.i(data[9]),
+   * Parsiraj.i(data[10]), Parsiraj.d(data[11]), Parsiraj.d(data[12]), Parsiraj.d(data[13]),
+   * Parsiraj.d(data[14])); long razlika = 0; if (redPodaciVozila.dajBrojPodatakaVozila() > 0)
+   * razlika = razlikaVremena(p); redPodaciVozila.dodajPodatakVozila(p); return razlika; } catch
+   * (IOException e) { e.printStackTrace(); return 0; } }
+   */
+
   /**
    * Dodaje novu simulaciju voznji.
    * 
@@ -215,20 +181,52 @@ public class SimulacijeResurs extends SviResursi {
    * @param trajanjePauze trajanje pauze u simulaciji voznje
    * @return OK ako je voznja uspješno upisana ili INTERNAL_SERVER_ERROR ako nije
    */
-  
-//  @POST
-//  @Produces({MediaType.APPLICATION_JSON})
-//  public Response postJsonDodajVoznju(@HeaderParam("Accept") String tipOdgovora, String datoteka,
-//      int idVozila, int trajanjeSek, int trajanjePauze) {
-//    var odgovor = MrezneOperacije
-//        .posaljiZahtjevPosluzitelju(adresaPosluzitelja, mreznaVrataPosluzitelja,
-//            "VOZILO " + datoteka + " " + idVozila + " " + trajanjeSek + " " + trajanjePauze)
-//        .trim();
-//    if (odgovor)
-//      return Response.status(Response.Status.OK).build();
-//    else
+
+  @POST
+  @Produces({MediaType.APPLICATION_JSON})
+  public Response postJsonDodajVoznju(@HeaderParam("Accept") String tipOdgovora,
+      Simulacija simulacija) {
+
+    System.out.println("Simulacija: " + simulacija);
+
+//    String datoteka = simulacija.getPodaciVozila();
+    int idVozila = simulacija.getId();
+    int trajanjeSek = simulacija.getTrajanjeSek();
+    int trajanjePauze = simulacija.getTrajanjePauze();
+
+    int brojRetka = 1;
+    long vrijemeZadnjeVoznje = 0;
+    boolean odgovor = false;
+    int maxRetciCSVDatoteke = 0;
+    try {
 //      return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-//          .entity("Neuspješni upis kazne u bazu podataka.").build();
-//  }
-  
+//          .entity("Datoteka ima podatke " + maxRetciCSVDatoteke + " za varijable " + datoteka + ", "
+//              + idVozila + ", " + trajanjeSek + ", " + trajanjePauze + "\n")
+//          .build();
+    } catch (Exception e) {
+      e.printStackTrace();
+
+    }
+
+    try {
+//      Voznja novaVoznja = voznjaIzCSV(idVozila, datoteka, brojRetka);
+      // Thread
+      // .sleep((long) (razlikaVremena(novaVoznja, vrijemeZadnjeVoznje) * trajanjeSek / 1000.0));
+//      odgovor = voznjeDAO.dodajVoznju(novaVoznja);
+//      vrijemeZadnjeVoznje = novaVoznja.getVrijeme();
+      brojRetka++;
+      System.out.println("iteracija: " + brojRetka + " od " + maxRetciCSVDatoteke);
+      // Thread.sleep(trajanjePauze);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+          .entity("ERROR 29 kod simulacije: " + e.getMessage() + "\n").build();
+    }
+    if (odgovor)
+      return Response.status(Response.Status.OK).build();
+    else
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+          .entity("Neuspješni upis kazne u bazu podataka.").build();
+  }
+
 }

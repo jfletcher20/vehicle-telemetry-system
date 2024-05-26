@@ -111,6 +111,7 @@ public class SimulatorVozila {
       AsynchronousSocketChannel kanalKlijenta = AsynchronousSocketChannel.open();
       var adresa = new InetSocketAddress(simulator.adresaVozila, simulator.mreznaVrataVozila);
       Future<Void> result = kanalKlijenta.connect(adresa);
+      System.out.println("Adresa: " + simulator.adresaVozila + ", vrata: " + simulator.mreznaVrataVozila);
       while (true) {
         try {
           Thread.sleep((long) (simulator.citajCSV() * simulator.trajanjeSek / 1000.0));
@@ -135,13 +136,13 @@ public class SimulatorVozila {
     es.submit(() -> {
       try {
         var zahtjev = konstruirajZahtjev();
-        byte[] sadrzaj = new String(zahtjev).getBytes();
+        byte[] sadrzaj = new String(zahtjev.trim() + "\n").getBytes();
         ByteBuffer bb = ByteBuffer.wrap(sadrzaj);
         Future<Integer> pisac = kanalKlijenta.write(bb);
+        System.out.println(zahtjev);
         pisac.get();
         bb.clear();
       } catch (Exception e) {
-        e.printStackTrace();
       }
     });
   }

@@ -57,4 +57,4 @@ create table pracenevoznje (
 */
 
 /* CHECK ALL tables created BY USER */
-SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC';
+SELECT * FROM voznje  WHERE id = 231;

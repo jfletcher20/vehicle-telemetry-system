@@ -139,14 +139,16 @@ public class SimulacijeKontroler {
   @POST
   @Path("dodajSimulacijuVoznje")
   @View("simulacije.jsp")
-  public void postJSON(@FormParam("naziv_datoteke_s_podacima_vozila") String nazivDatoteke,
-      @FormParam("id_vozila") int idVozila, @FormParam("trajanje_sek") int trajanjeSek,
-      @FormParam("trajanje_pauza") int trajanjePauza) {
+  public void postJSON(@FormParam("nazivDatoteke") String nazivDatoteke,
+      @FormParam("idVozila") int idVozila, @FormParam("trajanjeSek") int trajanjeSek,
+      @FormParam("trajanjePauza") int trajanjePauza) {
 
     RestKlijentSimulacije s = new RestKlijentSimulacije();
     boolean odgovor = s.postVoznjaJSON(nazivDatoteke, idVozila, trajanjeSek, trajanjePauza);
+    
     model.put("vrijednosti",
         odgovor ? "Uspješno dodana simulacija vožnje!" : "Nije uspješno dodana simulacija vožnje!");
+    model.put("vrijednosti", model.get("vrijednosti") + " " + nazivDatoteke + " " + idVozila + " " + trajanjeSek + " " + trajanjePauza);
 
     List<Voznja> voznje = s.getVoznjeJSON_od_do(0, 0);
     model.put("voznje", voznje);
