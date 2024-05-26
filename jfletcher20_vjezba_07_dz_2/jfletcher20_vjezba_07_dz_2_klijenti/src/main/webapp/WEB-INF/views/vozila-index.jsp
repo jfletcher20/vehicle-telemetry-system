@@ -86,7 +86,7 @@ String sadrzaj(String datoteka, ServletContext application) {
 				</form>
 				<h2>Dodavanje vozila</h2>
 				<form id="forma-vozila-post" method="post"
-					action="${pageContext.servletContext.contextPath}/mvc/vozila/postJSON"
+					action="${pageContext.servletContext.contextPath}/mvc/vozila/dodajVozilo"
 					class="fixed-form">
 	                <% out.println(sadrzaj("vozila-forma-post", application)); %>
 				</form>

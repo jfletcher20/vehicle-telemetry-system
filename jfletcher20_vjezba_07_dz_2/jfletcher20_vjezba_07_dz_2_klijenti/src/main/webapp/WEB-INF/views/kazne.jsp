@@ -27,14 +27,15 @@
 				for(Kazna k: kazne) {
 					i++;
 					Date vrijeme = new Date(k.getVrijemeKraj() * 1000);%>
-					<tr>
-						<td class="desno"><%= i %></td>
-						<td><%= k.getId() %></td>
-						<td><%= sdf.format(vrijeme) %></td>
-						<td><%= k.getBrzina() %></td>
-						<td><%= k.getGpsSirina() %></td>
-						<td><%= k.getGpsDuzinaRadar() %></td>
-					</tr><%
+						<tr>
+							<td class="desno"><%= i %></td>
+							<td><a href="${pageContext.servletContext.contextPath}/mvc/kazne/<%= k.getId() %>/ispisKazni"><%= k.getId() %></a></td>
+							<td><%= sdf.format(vrijeme) %></td>
+							<td><%= k.getBrzina() %></td>
+							<td><%= k.getGpsSirina() %></td>
+							<td><%= k.getGpsDuzinaRadar() %></td>
+						</tr>
+					<%
 				}%>
 				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= kazne.size() %> rezultat<%= mult %></td></tfoot>
 				<p><%= (String) request.getAttribute("vrijednosti") != null ? (String) request.getAttribute("vrijednosti") : "" %></p>

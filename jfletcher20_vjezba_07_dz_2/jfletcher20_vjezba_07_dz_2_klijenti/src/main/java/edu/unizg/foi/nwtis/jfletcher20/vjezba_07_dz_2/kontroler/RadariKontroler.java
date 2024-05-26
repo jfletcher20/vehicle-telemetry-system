@@ -18,26 +18,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 
-/*
- * ● api/radari- pokriva područje rada poslužitelja PoslužiteljZaRegistraciju s kojim jednosmjerno
- * komunicira. Podatke sprema u memoriji.
- * 
- * o GET–vraćasveradare
- * 
- * o GET/reset– pokreće postupak resetiranja svih poslužitelja slanjem komande poslužitelju
- * PoslužiteljZaRegistraciju
- * 
- * o GET/{id}– vraća podatke za radar sa zadanim id
- * 
- * o GET/{id}/provjeri– pokreće provjeru radara sa zadanim id
- * 
- * o DELETE–brišepodatke za sve radare slanjem komande poslužitelju PoslužiteljZaRegistraciju
- * 
- * o DELETE/{id}– briše podatke za radar radar sa zadanim id slanjem komande poslužitelju
- * PoslužiteljZaRegistraciju
- * 
- */
-
 /**
  * RadariKontroler za MVC model.
  * 
@@ -67,28 +47,28 @@ public class RadariKontroler {
     model.put("radari", radari);
   }
 
-  /**
-   * Za pocetak
-   */
-  @GET
-  @Path("index")
-  @View("radari-index.jsp")
-  public void index() {
-    RestKlijentRadari s = new RestKlijentRadari();
-    List<Radar> radari = s.getRadariJSON();
-    model.put("radari", radari);
-  }
+//  /**
+//   * Za pocetak
+//   */
+//  @GET
+//  @Path("index")
+//  @View("radari-index.jsp")
+//  public void index() {
+//    RestKlijentRadari s = new RestKlijentRadari();
+//    List<Radar> radari = s.getRadariJSON();
+//    model.put("radari", radari);
+//  }
 
-  /**
-   * Za pocetak
-   */
-  @GET
-  @View("radari-index.jsp")
-  public void prazno() {
-    RestKlijentRadari s = new RestKlijentRadari();
-    List<Radar> radari = s.getRadariJSON();
-    model.put("radari", radari);
-  }
+//  /**
+//   * Za pocetak
+//   */
+//  @GET
+//  @View("radari-index.jsp")
+//  public void prazno() {
+//    RestKlijentRadari s = new RestKlijentRadari();
+//    List<Radar> radari = s.getRadariJSON();
+//    model.put("radari", radari);
+//  }
 
   /**
    * Za ispis radara

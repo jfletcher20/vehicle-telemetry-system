@@ -27,7 +27,7 @@
 					i++;%>
 					<tr>
 						<td class="desno"><%= i %></td>
-						<td><%= r.getId() %></td>
+						<td><a href="${pageContext.servletContext.contextPath}/mvc/radari/pocetna?idRadara=<%= r.getId() %>"><%= r.getId() %></a></td>
 						<td><%= r.getMaksUdaljenost() %></td>
 						<!-- <td><%= ""/*r.getMaksBrzina()*/ %></td> -->
 						<td><%= r.getGpsSirina() %></td>

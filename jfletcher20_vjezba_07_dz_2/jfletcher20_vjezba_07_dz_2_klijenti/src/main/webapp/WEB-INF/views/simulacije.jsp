@@ -29,7 +29,7 @@
 					Date vrijeme = new Date(v.getVrijeme() * 1000);%>
 					<tr>
 						<td class="desno"><%= i %></td>
-						<td><%= v.getId() %></td>
+						<td><a href="${pageContext.servletContext.contextPath}/mvc/simulacije/<%= v.getId() %>/ispisVoznji"><%= v.getId() %></a></td>
 						<td><%= sdf.format(vrijeme) %></td>
 						<td><%= v.getBrzina() %></td>
 						<td><%= v.getUkupnoKm() %></td>

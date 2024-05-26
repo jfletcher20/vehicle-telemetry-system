@@ -17,6 +17,7 @@ import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 
 /**
  * KazneKontroler za MVC model.
@@ -59,28 +60,28 @@ public class KazneKontroler {
     model.put("kazne", kazne);
   }
   
-  /**
-   * Za pocetak
-   */
-  @GET
-  @Path("index")
-  @View("kazne-index.jsp")
-  public void index() {
-    RestKlijentKazne k = new RestKlijentKazne();
-    List<Kazna> kazne = k.getKazneJSON();
-    model.put("kazne", kazne);
-  }
+//  /**
+//   * Za pocetak
+//   */
+//  @GET
+//  @Path("index")
+//  @View("kazne-index.jsp")
+//  public void index() {
+//    RestKlijentKazne k = new RestKlijentKazne();
+//    List<Kazna> kazne = k.getKazneJSON();
+//    model.put("kazne", kazne);
+//  }
   
-  /**
-   * Za pocetak
-   */
-  @GET
-  @View("kazne-index.jsp")
-  public void prazno() {
-    RestKlijentKazne k = new RestKlijentKazne();
-    List<Kazna> kazne = k.getKazneJSON();
-    model.put("kazne", kazne);
-  }
+//  /**
+//   * Za pocetak
+//   */
+//  @GET
+//  @View("kazne-index.jsp")
+//  public void prazno() {
+//    RestKlijentKazne k = new RestKlijentKazne();
+//    List<Kazna> kazne = k.getKazneJSON();
+//    model.put("kazne", kazne);
+//  }
 
   /**
    * Za ispis kazni
@@ -91,6 +92,19 @@ public class KazneKontroler {
   public void json() {
     RestKlijentKazne k = new RestKlijentKazne();
     List<Kazna> kazne = k.getKazneJSON();
+    model.put("kazne", kazne);
+  }
+  
+  /**
+   * Za ispis kazni vozila prema identifikatoru vozila
+   * @param idVozila
+   */
+  @GET
+  @Path("{id}/ispisKazni")
+  @View("kazne.jsp")
+  public void json_id(@PathParam("id") String idVozila) {
+    RestKlijentKazne k = new RestKlijentKazne();
+    List<Kazna> kazne = k.getKazneJSON_vozilo(idVozila);
     model.put("kazne", kazne);
   }
 

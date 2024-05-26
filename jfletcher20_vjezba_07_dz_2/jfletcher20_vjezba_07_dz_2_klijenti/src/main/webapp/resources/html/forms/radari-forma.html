@@ -45,15 +45,20 @@
 	
 	const forma = document.querySelector('forma-radari');
 	
+	// check if the url has a query "idRadara" and if so, set the value of the input to that value
+	const urlParams = new URLSearchParams(window.location.search);
+	const idRadaraParam = urlParams.get('idRadara');
+	if (idRadaraParam) idRadara.value = idRadaraParam;
+	
 	idRadara.addEventListener('input', (e) => {
 		provjeriRadar.disabled = obrisiRadar.disabled = false;
-		if (idRadara.value === '') {
+		if (idRadara.value.trim() == '') {
 			provjeriRadar.disabled = true;
 			obrisiRadar.disabled = true;
 		}
 	});
 	
-	provjeriRadar.disabled = obrisiRadar.disabled = true;
+	provjeriRadar.disabled = obrisiRadar.disabled = idRadara.value.trim() == '';
 	
 	provjeriRadar.addEventListener('click', (e) => {
 		checkboxProvjeri.checked = true;

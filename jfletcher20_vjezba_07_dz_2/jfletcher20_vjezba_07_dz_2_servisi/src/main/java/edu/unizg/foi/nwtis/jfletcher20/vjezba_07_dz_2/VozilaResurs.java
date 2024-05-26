@@ -4,8 +4,12 @@
  */
 package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciVozila;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PraceneVoznjeDAO;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Voznja;
-import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.VoznjeDAO;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import edu.unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
@@ -26,15 +30,15 @@ import jakarta.ws.rs.core.Response;
  *
  * @author Joshua Lee Fletcher
  */
-@Path("nwtis/v1/api/simulacije")
-public class SimulacijeResurs extends SviResursi {
+@Path("nwtis/v1/api/vozila")
+public class VozilaResurs extends SviResursi {
 
-  private String nazivKonfiguracije = "NWTiS_REST_S.txt";
+  private String nazivKonfiguracije = "NWTiS_REST_V.txt";
 
   private String adresaPosluzitelja;
   private int mreznaVrataPosluzitelja;
 
-  private VoznjeDAO voznjeDAO = null;
+  private PraceneVoznjeDAO voznjeDAO = null;
 
   @PostConstruct
   private void pripremiKorisnikDAO() {
@@ -54,7 +58,7 @@ public class SimulacijeResurs extends SviResursi {
     System.out.println("Pokrećem REST: " + this.getClass().getName());
     try {
       var vezaBP = this.vezaBazaPodataka.getVezaBazaPodataka();
-      this.voznjeDAO = new VoznjeDAO(vezaBP);
+      this.voznjeDAO = new PraceneVoznjeDAO(vezaBP);
     } catch (Exception e) {
       e.printStackTrace();
       return;

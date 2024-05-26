@@ -22,12 +22,12 @@ import slusac.AppContextListener;
 /**
  * Klasa RestKlijentVoznje.
  */
-public class RestKlijentSimulacije {
+public class RestKlijentVozila {
 
   /**
    * Konstruktor klase.
    */
-  public RestKlijentSimulacije() {}
+  public RestKlijentVozila() {}
 
   /**
    * Vraća voznje u intervalu od do.
@@ -37,7 +37,7 @@ public class RestKlijentSimulacije {
    * @return voznje
    */
   public List<Voznja> getVoznjeJSON_od_do(long odVremena, long doVremena) {
-    RestVoznje rk = new RestVoznje();
+    RestPraceneVoznje rk = new RestPraceneVoznje();
     List<Voznja> voznje = rk.getJSON_od_do(odVremena, doVremena);
 
     return voznje;
@@ -50,7 +50,7 @@ public class RestKlijentSimulacije {
    * @return voznje
    */
   public List<Voznja> getVoznjeJSON_vozilo(String id) {
-    RestVoznje rk = new RestVoznje();
+    RestPraceneVoznje rk = new RestPraceneVoznje();
     List<Voznja> voznje = rk.getJSON_vozilo(id);
     return voznje;
   }
@@ -64,7 +64,7 @@ public class RestKlijentSimulacije {
    * @return voznje
    */
   public List<Voznja> getVoznjeJSON_vozilo_od_do(String id, long odVremena, long doVremena) {
-    RestVoznje rk = new RestVoznje();
+    RestPraceneVoznje rk = new RestPraceneVoznje();
     List<Voznja> voznje = rk.getJSON_vozilo_od_do(id, odVremena, doVremena);
 
     return voznje;
@@ -77,7 +77,7 @@ public class RestKlijentSimulacije {
    * @return true, ako je uspješno
    */
   public boolean postVoznjaJSON(Voznja voznja) {
-    RestVoznje rk = new RestVoznje();
+    RestPraceneVoznje rk = new RestPraceneVoznje();
     var odgovor = rk.postJSON(voznja);
     return odgovor;
   }
@@ -93,15 +93,15 @@ public class RestKlijentSimulacije {
    */
   public boolean postVoznjaJSON(String nazivDatoteke, int idVozila, int trajanjeSek,
       int trajanjePauze) {
-    RestVoznje rk = new RestVoznje();
+    RestPraceneVoznje rk = new RestPraceneVoznje();
     var odgovor = rk.postJSON(nazivDatoteke, idVozila, trajanjeSek, trajanjePauze);
     return odgovor;
   }
 
   /**
-   * Klasa RestVoznje.
+   * Klasa RestPraceneVoznje.
    */
-  static class RestVoznje {
+  static class RestPraceneVoznje {
 
     /** web target. */
     private final WebTarget webTarget;
@@ -115,7 +115,7 @@ public class RestKlijentSimulacije {
     /**
      * Konstruktor klase.
      */
-    public RestVoznje() {
+    public RestPraceneVoznje() {
       client = ClientBuilder.newClient();
       webTarget = client.target(BASE_URI).path("nwtis/v1/api/simulacije");
     }
@@ -325,6 +325,22 @@ public class RestKlijentSimulacije {
     public void close() {
       client.close();
     }
+
+//    /**
+//     * Ispis.
+//     * 
+//     * @param p podaci
+//     * @param brojRetka broj retka
+//     */
+//    private void ispis(Voznja p) {
+//      System.out.println("Komanda: VOZILO " + p.getId() + " " + p.getBroj() + " " + p.getVrijeme()
+//          + " " + p.getBrzina() + " " + p.getSnaga() + " " + p.getStruja() + " " + p.getVisina()
+//          + " " + p.getGpsBrzina() + " " + p.getTempVozila() + " " + p.getPostotakBaterija() + " "
+//          + p.getNaponBaterija() + " " + p.getKapacitetBaterija() + " " + p.getTempBaterija() + " "
+//          + p.getPreostaloKm() + " " + p.getUkupnoKm() + " " + p.getGpsSirina() + " "
+//          + p.getGpsDuzina());
+//    }
+
 
     /**
      * Pretvara podatke u voznju.
