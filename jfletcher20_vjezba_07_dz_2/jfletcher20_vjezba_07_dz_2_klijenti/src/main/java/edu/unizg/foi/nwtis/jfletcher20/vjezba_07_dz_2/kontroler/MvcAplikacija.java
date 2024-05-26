@@ -22,8 +22,11 @@ public class MvcAplikacija extends Application {
   @Inject
   private BindingResult bindingResult;
 
+  /**
+   * Za pocetak
+   */
   @GET
-  @Path("pocetak")
+//  @Path("pocetak")
   @View("index.jsp")
   public void pocetak() {
     RestKlijentKazne k = new RestKlijentKazne();

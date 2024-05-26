@@ -11,7 +11,10 @@
     	<div class="card">
 			<nav id="page-nav">
 				<a href="${pageContext.servletContext.contextPath}">Početna</a>
+				<a href="${pageContext.servletContext.contextPath}/mvc/kazne/ispisKazni">Ispis kazni</a>
 				<a class="current-tab" href="${pageContext.servletContext.contextPath}/mvc/radari/ispisRadara">Ispis radara</a>
+				<a href="${pageContext.servletContext.contextPath}/mvc/vozila/ispisVozila">Ispis vozila</a>
+				<a href="${pageContext.servletContext.contextPath}/mvc/simulacije/ispisVoznji">Ispis simulacija</a>
 			</nav>
 	        <h1>Pregled radara</h1>
 	        <table>

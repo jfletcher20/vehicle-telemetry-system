@@ -55,6 +55,44 @@ public class RadariKontroler {
   @Inject
   private BindingResult bindingResult;
 
+  /**
+   * Za pocetak
+   */
+  @GET
+  @Path("pocetna")
+  @View("radari-index.jsp")
+  public void pocetna() {
+    RestKlijentRadari s = new RestKlijentRadari();
+    List<Radar> radari = s.getRadariJSON();
+    model.put("radari", radari);
+  }
+
+  /**
+   * Za pocetak
+   */
+  @GET
+  @Path("index")
+  @View("radari-index.jsp")
+  public void index() {
+    RestKlijentRadari s = new RestKlijentRadari();
+    List<Radar> radari = s.getRadariJSON();
+    model.put("radari", radari);
+  }
+
+  /**
+   * Za pocetak
+   */
+  @GET
+  @View("radari-index.jsp")
+  public void prazno() {
+    RestKlijentRadari s = new RestKlijentRadari();
+    List<Radar> radari = s.getRadariJSON();
+    model.put("radari", radari);
+  }
+
+  /**
+   * Za ispis radara
+   */
   @GET
   @Path("ispisRadara")
   @View("radari.jsp")
@@ -64,36 +102,31 @@ public class RadariKontroler {
     model.put("radari", radari);
   }
 
+  /**
+   * Provjerava je li varijabla ukljucena.
+   * @param var varijabla
+   * @return true ako je ukljucena, inace false
+   */
   private boolean jeUkljuceno(String var) {
     return var != null && !var.isEmpty() && var.equals("on");
   }
 
-  /*
-   * the form contents:
-   * 
-   * <fieldset> <div class="row margin-bottom-large"> <button id="resetiraj-radare"
-   * class="button-green" style="margin-left: 0;">Resetiraj</button> <p
-   * style="margin-left: auto">Upravljaj radarima.</p> <button id="obrisi-radare"
-   * class="button-red">Obriši sve</button> </div> <div class="row"> <label for="idRadara">ID Radara
-   * <input name="idRadara" id="idRadara" type="number" pattern="[0-9]"> </label> </div> <div
-   * class="row" style="width: 43%"> <button id="provjeri-radar" class="button-green"
-   * style="margin-left: 0">Provjeri radar</button> <button id="obrisi-radar"
-   * class="button-red">Obriši radar</button> </div> </fieldset> <input hidden type="checkbox"
-   * id="checkbox-provjeri" name="provjeri"> <input hidden type="checkbox" id="checkbox-delete"
-   * name="delete"> <input type="submit" value="Potvrda">
-   * 
+  /**
+   * Za pretrazivanje radara
+   * @param idRadara ID radara
+   * @param provjeri provjeri varijabla 
+   * @param delete delete varijabla
+   * @param reset reset varijabla
+   * @param deleteSve delete sve varijabla
    */
-
   @POST
   @Path("pretrazivanjeRadara")
   @View("radari.jsp")
   public void json_pi(@FormParam("idRadara") String idRadara,
       @FormParam("provjeri") String provjeri, @FormParam("delete") String delete,
       @FormParam("reset") String reset, @FormParam("delete-sve") String deleteSve) {
-
     RestKlijentRadari r = new RestKlijentRadari();
     String info = "";
-
     List<Radar> radari;
     if (idRadara != null && !idRadara.isEmpty() && !(jeUkljuceno(provjeri) || jeUkljuceno(delete)
         || jeUkljuceno(reset) || jeUkljuceno(deleteSve))) {
@@ -117,10 +150,8 @@ public class RadariKontroler {
       info = "Prikaz svih radara";
       radari = r.getRadariJSON();
     }
-
     model.put("radari", radari);
     model.put("vrijednosti", info);
-    
   }
 
 }

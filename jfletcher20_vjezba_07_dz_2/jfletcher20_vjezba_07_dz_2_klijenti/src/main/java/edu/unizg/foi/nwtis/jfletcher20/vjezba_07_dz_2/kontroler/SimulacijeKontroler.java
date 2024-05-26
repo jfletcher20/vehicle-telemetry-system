@@ -4,6 +4,7 @@
  */
 package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.kontroler;
 
+import java.io.File;
 import java.util.List;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.model.RestKlijentSimulacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Voznja;
@@ -17,6 +18,7 @@ import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import slusac.AppContextListener;
 
 /**
  * VoznjeKontroler za MVC model.
@@ -35,6 +37,41 @@ public class SimulacijeKontroler {
   @Inject
   private BindingResult bindingResult;
   
+  /**
+   * Za pocetak
+   */
+  @GET
+  @Path("index")
+  @View("simulacije-index.jsp")
+  public void index() {
+    RestKlijentSimulacije s = new RestKlijentSimulacije();
+    List<Voznja> voznje = s.getVoznjeJSON_od_do(0, 0);
+    model.put("voznje", voznje);
+  }
+  
+  /**
+   * Za pocetak
+   */
+  @GET
+  @Path("pocetna")
+  @View("simulacije-index.jsp")
+  public void pocetna() {
+    RestKlijentSimulacije s = new RestKlijentSimulacije();
+    List<Voznja> voznje = s.getVoznjeJSON_od_do(0, 0);
+    model.put("voznje", voznje);
+  }
+  
+  /**
+   * Za pocetak
+   */
+  @GET
+  @View("simulacije-index.jsp")
+  public void prazno() {
+    RestKlijentSimulacije s = new RestKlijentSimulacije();
+    List<Voznja> voznje = s.getVoznjeJSON_od_do(0, 0);
+    model.put("voznje", voznje);
+  }
+
   /**
    * Za ispis voznji
    */
@@ -69,36 +106,35 @@ public class SimulacijeKontroler {
       info = "Voznje za vozilo s ID " + idVozila;
     } else if (idVozila != null && !idVozila.isEmpty() && (odVremena >= 0 && doVremena >= 0)) {
       voznje = s.getVoznjeJSON_vozilo_od_do(idVozila, odVremena, doVremena);
-      info =
-          "Voznje za vozilo s ID " + idVozila + " od " + odVremena + " do " + doVremena;
+      info = "Voznje za vozilo s ID " + idVozila + " od " + odVremena + " do " + doVremena;
     } else {
       info = "Voznje od " + odVremena + " do " + doVremena;
       voznje = s.getVoznjeJSON_od_do(odVremena, doVremena);
     }
-
     model.put("voznje", voznje);
     model.put("vrijednosti", info);
   }
 
   /**
    * Za dodavanje voznje
-   * @param id
-   * @param broj
-   * @param vrijeme
-   * @param brzina
-   * @param snaga
-   * @param struja
-   * @param visina
-   * @param gpsBrzina
-   * @param tempVozila
-   * @param postotakBaterija
-   * @param naponBaterija
-   * @param kapacitetBaterija
-   * @param tempBaterija
-   * @param preostaloKm
-   * @param ukupnoKm
-   * @param gpsSirina
-   * @param gpsDuzina
+   * 
+   * @param id vozila iz forme
+   * @param broj retka "u datoteci" iz forme
+   * @param vrijeme vozila iz forme
+   * @param brzina vozila iz forme
+   * @param snaga vozila iz forme
+   * @param struja vozila iz forme
+   * @param visina vozila iz forme
+   * @param gpsBrzina vozila iz forme
+   * @param tempVozila vozila iz forme
+   * @param postotakBaterija vozila iz forme
+   * @param naponBaterija vozila iz forme
+   * @param kapacitetBaterija vozila iz forme
+   * @param tempBaterija vozila iz forme
+   * @param preostaloKm vozila iz forme
+   * @param ukupnoKm vozila iz forme
+   * @param gpsSirina vozila iz forme
+   * @param gpsDuzina vozila iz forme
    */
 
   @POST
@@ -114,18 +150,14 @@ public class SimulacijeKontroler {
       @FormParam("tempBaterija") int tempBaterija, @FormParam("preostaloKm") double preostaloKm,
       @FormParam("ukupnoKm") double ukupnoKm, @FormParam("gpsSirina") double gpsSirina,
       @FormParam("gpsDuzina") double gpsDuzina) {
-
     RestKlijentSimulacije s = new RestKlijentSimulacije();
     Voznja voznja = new Voznja(id, broj, vrijeme, brzina, snaga, struja, visina, gpsBrzina,
         tempVozila, postotakBaterija, naponBaterija, kapacitetBaterija, tempBaterija, preostaloKm,
         ukupnoKm, gpsSirina, gpsDuzina);
-
     boolean odgovor = s.postVoznjaJSON(voznja);
     model.put("vrijednosti", odgovor ? "Uspješno dodana vožnja!" : "Nije uspješno dodana vožnja!");
-
     List<Voznja> voznje = s.getVoznjeJSON_od_do(0, 0);
     model.put("voznje", voznje);
-
   }
 
   /**
@@ -142,15 +174,22 @@ public class SimulacijeKontroler {
   public void postJSON(@FormParam("nazivDatoteke") String nazivDatoteke,
       @FormParam("idVozila") int idVozila, @FormParam("trajanjeSek") int trajanjeSek,
       @FormParam("trajanjePauza") int trajanjePauza) {
-
     RestKlijentSimulacije s = new RestKlijentSimulacije();
-    s.postVoznjaJSON(nazivDatoteke, idVozila, trajanjeSek, trajanjePauza);
-    
-    var odgovor = true;
+    boolean odgovor = true;
+    if (nazivDatoteke == null || nazivDatoteke.isEmpty())
+      odgovor = false;
+    File file = new File(AppContextListener.getAppPath() + nazivDatoteke);
+    if (!file.exists()) {
+      odgovor = false;
+      model.put("vrijednosti", "Datoteka ne postoji! ");
+    } else {
+      model.put("vrijednosti", "");
+      s.postVoznjaJSON(nazivDatoteke, idVozila, trajanjeSek, trajanjePauza);
+    }
     model.put("vrijednosti",
-        odgovor ? "Uspješno dodana simulacija vožnje!" : "Nije uspješno dodana simulacija vožnje!");
-    model.put("vrijednosti", model.get("vrijednosti") + " " + nazivDatoteke + " " + idVozila + " " + trajanjeSek + " " + trajanjePauza);
-
+        odgovor ? model.get("vrijednosti") + "Uspješno dodana simulacija vožnje " : model.get("vrijednosti") + "Nije uspješno dodana simulacija vožnje ");
+    model.put("vrijednosti", model.get("vrijednosti") + " " + nazivDatoteke + " " + idVozila + " "
+        + trajanjeSek + " " + trajanjePauza);
     List<Voznja> voznje = s.getVoznjeJSON_od_do(0, 0);
     model.put("voznje", voznje);
 

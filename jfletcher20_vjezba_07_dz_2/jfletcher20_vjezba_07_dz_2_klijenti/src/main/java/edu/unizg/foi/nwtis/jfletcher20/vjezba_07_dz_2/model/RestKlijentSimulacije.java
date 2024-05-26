@@ -249,6 +249,12 @@ public class RestKlijentSimulacije {
 
     }
 
+    /**
+     * Izracunava razliku vremena.
+     * @param p podaci voznje za usporedbu
+     * @param vrijemeZadnjeVoznje
+     * @return razlika vremena
+     */
     private long razlikaVremena(Voznja p, long vrijemeZadnjeVoznje) {
       if (vrijemeZadnjeVoznje < 0)
         vrijemeZadnjeVoznje = 0;
@@ -256,25 +262,6 @@ public class RestKlijentSimulacije {
       if (razlika >= p.getVrijeme())
         razlika = 0;
       return razlika;
-    }
-
-    private Voznja voznjaIzCSV(int idVozila, String podaciVozilaDatoteka, int brojRetka) {
-      try (BufferedReader reader = new BufferedReader(new FileReader(podaciVozilaDatoteka))) {
-        for (int i = 0; i < brojRetka; i++)
-          reader.readLine();
-        String row = reader.readLine();
-        if (row == null)
-          return null;
-        String[] data = row.split(",");
-        return new Voznja(idVozila, brojRetka, Parsiraj.l(data[0]), Parsiraj.d(data[1]),
-            Parsiraj.d(data[2]), Parsiraj.d(data[3]), Parsiraj.d(data[4]), Parsiraj.d(data[5]),
-            Parsiraj.i(data[6]), Parsiraj.i(data[7]), Parsiraj.d(data[8]), Parsiraj.i(data[9]),
-            Parsiraj.i(data[10]), Parsiraj.d(data[11]), Parsiraj.d(data[12]), Parsiraj.d(data[13]),
-            Parsiraj.d(data[14]));
-      } catch (IOException e) {
-        e.printStackTrace();
-        return null;
-      }
     }
 
     /**

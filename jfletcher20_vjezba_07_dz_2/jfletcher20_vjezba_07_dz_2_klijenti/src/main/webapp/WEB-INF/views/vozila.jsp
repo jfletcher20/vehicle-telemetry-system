@@ -11,20 +11,17 @@
     	<div class="card">
 			<nav id="page-nav">
 				<a href="${pageContext.servletContext.contextPath}">Početna</a>
-				<a href="${pageContext.servletContext.contextPath}/mvc/kazne/ispisKazni">Ispis kazni</a>
-				<a href="${pageContext.servletContext.contextPath}/mvc/radari/ispisRadara">Ispis radara</a>
-				<a href="${pageContext.servletContext.contextPath}/mvc/vozila/ispisVozila">Ispis vozila</a>
-				<a class="current-tab" href="${pageContext.servletContext.contextPath}/mvc/simulacije/ispisVoznji">Ispis simulacija</a>
+				<a class="current-tab" href="${pageContext.servletContext.contextPath}/mvc/vozila/ispisVozila">Ispis vozila</a>
 			</nav>
-	        <h1>Pregled simulacija voznji</h1>
+	        <h1>Pregled vozila</h1>
 	        <table>
 		        <tr><th>R.br.<th>ID</th><th>Vrijeme</th><th>Brzina</th><th>Uk. km</th><th>GDP širina</th><th>GPS dužina</th></tr>
 				<%
 				int i = 0;
 				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
-				List<Voznja> voznje = (List<Voznja>) request.getAttribute("voznje");
+				List<Vozila> vozila = (List<Vozila>) request.getAttribute("vozila");
 				String mult = voznje.size() != 1 ? "a" : "";
-				for(Voznja v: voznje) {
+				for(Vozila v: vozila) {
 					i++;
 					Date vrijeme = new Date(v.getVrijeme() * 1000);%>
 					<tr>
@@ -37,7 +34,7 @@
 						<td><%= v.getGpsDuzina() %></td>
 					</tr><%
 				}%>
-				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= voznje.size() %> rezultat<%= mult %></td></tfoot>
+				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= vozila.size() %> rezultat<%= mult %></td></tfoot>
 				<p><%= (String) request.getAttribute("vrijednosti") != null ? (String) request.getAttribute("vrijednosti") : "" %></p>
 	        </table>
         </div>

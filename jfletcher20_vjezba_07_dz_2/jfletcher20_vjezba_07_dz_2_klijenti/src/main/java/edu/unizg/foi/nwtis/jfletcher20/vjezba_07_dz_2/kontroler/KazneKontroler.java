@@ -48,6 +48,41 @@ public class KazneKontroler {
   }
 
   /**
+   * Za pocetak
+   */
+  @GET
+  @Path("pocetna")
+  @View("kazne-index.jsp")
+  public void pocetna() {
+    RestKlijentKazne k = new RestKlijentKazne();
+    List<Kazna> kazne = k.getKazneJSON();
+    model.put("kazne", kazne);
+  }
+  
+  /**
+   * Za pocetak
+   */
+  @GET
+  @Path("index")
+  @View("kazne-index.jsp")
+  public void index() {
+    RestKlijentKazne k = new RestKlijentKazne();
+    List<Kazna> kazne = k.getKazneJSON();
+    model.put("kazne", kazne);
+  }
+  
+  /**
+   * Za pocetak
+   */
+  @GET
+  @View("kazne-index.jsp")
+  public void prazno() {
+    RestKlijentKazne k = new RestKlijentKazne();
+    List<Kazna> kazne = k.getKazneJSON();
+    model.put("kazne", kazne);
+  }
+
+  /**
    * Za ispis kazni
    */
   @GET
@@ -87,10 +122,8 @@ public class KazneKontroler {
       info = "Kazne od " + odVremena + " do " + doVremena;
       kazne = k.getKazneJSON_od_do(odVremena, doVremena);
     }
-    
     model.put("kazne", kazne);
     model.put("vrijednosti",  info);
-
   }
 
 }

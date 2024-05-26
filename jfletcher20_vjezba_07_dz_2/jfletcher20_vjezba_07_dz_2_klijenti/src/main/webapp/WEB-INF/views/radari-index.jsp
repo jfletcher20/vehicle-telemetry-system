@@ -37,7 +37,7 @@ String sadrzaj(String datoteka, ServletContext application) {
 			</nav>
 			<h1>MVC</h1>
 			<h4>Sustav za telemetriju i praćenje e-vozila.</h4>
-			<div id="tab-kazne-content" class="tab">
+			<div id="tab-kazne-content" class="tab" hidden>
 				<h2>Upravljanje kaznama</h2>
 				<p>Unosom validnog indeksa (rednog broja) kazne, unos ostalih vrijednosti će se onemogućiti jer je njih tada nepotrebno unijeti.</p>
 				<p>Unosom validne vrijednosti u nekom od preostalih polja, unos indeksa kazne će se onemogućiti jer je tada besmisleno unijeti indeks kazne.</p>
@@ -47,16 +47,9 @@ String sadrzaj(String datoteka, ServletContext application) {
 					class="fixed-form">
 					<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
 					<fieldset>
-						<%
-						List<Kazna> kazne = (List<Kazna>) request.getAttribute("kazne");
-						kazne.sort((a, b) -> a.getVrijemeKraj() > b.getVrijemeKraj() ? 1 : a.getVrijemeKraj() == b.getVrijemeKraj() ? 0 : -1);
-						long odVremena = kazne.size() > 0 ? kazne.get(0).getVrijemeKraj() : 0;
-						long doVremena = kazne.size() > 0 ? kazne.get(kazne.size() - 1).getVrijemeKraj() : 0;
-						int redniBrojMax = kazne.size() - 1;
-						%>
 						<div class="row">
 							<label for="rb">Indeks kazne
-								<input name="rb" id="rb" min=0 max=<%= redniBrojMax %> type="number" pattern="[0-9]">
+								<input name="rb" id="rb" min=0 type="number" pattern="[0-9]">
 							</label>
 							<label for="idVozila">ID Vozila
 								<input name="idVozila" id="idVozila" type="number" pattern="[0-9]">
@@ -64,17 +57,17 @@ String sadrzaj(String datoteka, ServletContext application) {
 						</div>
 						<div class="row">
 							<label for="odVremena">Od vremena
-								<input name="odVremena"	id="odVremena" min=0 type="number" value=<%= odVremena %> pattern="[0-9]">
+								<input name="odVremena"	id="odVremena" min=0 type="number" pattern="[0-9]">
 							</label>
 							<label for="doVremena">Do vremena
-								<input name="doVremena" id="doVremena"  min=0 type="number" value=<%= doVremena %> pattern="[0-9]">
+								<input name="doVremena" id="doVremena"  min=0 type="number" pattern="[0-9]">
 							</label>
 						</div>
 					</fieldset>
 					<input type="submit" value="Dohvati kazne">
 				</form>
 			</div>
-			<div id="tab-radari-content" class="tab" hidden>
+			<div id="tab-radari-content" class="tab">
 				<h2>Upravljanje radarima</h2>
 				<form id="forma-radari" method="post"
 					action="${pageContext.servletContext.contextPath}/mvc/radari/pretrazivanjeRadara"
@@ -114,8 +107,8 @@ String sadrzaj(String datoteka, ServletContext application) {
 				</form>
 			</div>
 			<nav id="tab-nav">
-				<a class="current-tab tab-nav" id="tab-kazne" href="${pageContext.servletContext.contextPath}/mvc/kazne/pocetna">Kazne</a>
-				<a class="tab-nav" id="tab-radari" href="${pageContext.servletContext.contextPath}/mvc/radari/pocetna">Radari</a>
+				<a class="tab-nav" id="tab-kazne" href="${pageContext.servletContext.contextPath}/mvc/kazne/pocetna">Kazne</a>
+				<a class="current-tab tab-nav" id="tab-radari" href="${pageContext.servletContext.contextPath}/mvc/radari/pocetna">Radari</a>
 				<a class="tab-nav" id="tab-vozila" href="${pageContext.servletContext.contextPath}/mvc/vozila/pocetna">Vozila</a>
 				<a class="tab-nav" id="tab-simulacije" href="${pageContext.servletContext.contextPath}/mvc/simulacije/pocetna">Simulacije</a>
 			</nav>
