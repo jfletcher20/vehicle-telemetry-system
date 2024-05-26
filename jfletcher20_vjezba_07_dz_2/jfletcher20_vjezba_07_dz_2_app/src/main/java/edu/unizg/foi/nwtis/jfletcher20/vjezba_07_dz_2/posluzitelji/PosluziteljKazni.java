@@ -18,6 +18,7 @@ import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import edu.unizg.foi.nwtis.konfiguracije.Konfiguracija;
 import edu.unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import edu.unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
+import rest.RestKlijentKazne;
 
 /**
  * Klasa poslužitelj kazni.
@@ -126,6 +127,7 @@ public class PosluziteljKazni {
    * @return Odgovor na zahtjev.
    */
   public String obradaZahtjeva(String zahtjev) {
+    System.out.println("Obrada zahtjeva: " + zahtjev);
     var odgovor = "";
     try {
     if (zahtjev == null)
@@ -151,6 +153,7 @@ public class PosluziteljKazni {
    * @return Odgovor na zahtjev za kaznu.
    */
   public String obradaZahtjevaKazna(String zahtjev) {
+    System.out.println("Obrada zahtjeva kazne!");
     poklapanjeKazna = predlozakKazna.matcher(zahtjev);
     var statusKazna = poklapanjeKazna.matches();
     if (statusKazna) {
@@ -166,9 +169,7 @@ public class PosluziteljKazni {
       System.out.println("Id: " + kazna.id() + " Vrijeme od: " + sdf.format(kazna.vrijemePocetak())
           + "  Vrijeme do: " + sdf.format(kazna.vrijemeKraj()) + " Brzina: " + kazna.brzina()
           + " GPS: " + kazna.gpsSirina() + ", " + kazna.gpsDuzina());
-
-      // TODO: poslati POST zahtjev RESTful web servisu za evidenciju kazni e-vozila
-
+      if(!new RestKlijentKazne().postKaznaJSON(kazna)) return "ERROR 42 POST za kaznu nije uspjelo.\n";
       return "OK\n";
     }
     return null;

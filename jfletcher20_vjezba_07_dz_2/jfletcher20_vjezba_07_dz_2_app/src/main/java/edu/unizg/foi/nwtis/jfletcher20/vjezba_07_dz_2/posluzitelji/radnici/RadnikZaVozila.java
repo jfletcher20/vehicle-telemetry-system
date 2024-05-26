@@ -11,6 +11,7 @@ import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.RedPodaciVozila;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.posluzitelji.CentralniSustav;
+import rest.RestKlijentVozila;
 
 /*
  * PosluziteljZaVozila ima dodatne komande: ● VOZILO START id o npr.VOZILO START 1 o Provjera da li
@@ -95,9 +96,11 @@ public class RadnikZaVozila implements Runnable {
             Future<Integer> citac = kanalKlijenta.read(bb);
             citac.get();
             String r = new String(bb.array()).trim();
+            System.out.println("Primljeni podaci: " + r);
             if (r.length() > 0)
               obradaZahtjeva(r);
             bb.clear();
+            kanalKlijenta.close();
           } else
             break;
         }
@@ -116,6 +119,7 @@ public class RadnikZaVozila implements Runnable {
    * @return Odgovor na zahtjev
    */
   public String obradaZahtjeva(String zahtjev) {
+    System.out.println("Primljen je zahtjev! Zahtjev je " + zahtjev);
     if (zahtjev == null || zahtjev.length() == 0)
       return "ERROR 20 Neispravna sintaksa komande " + zahtjev + "\n";
     zahtjev = zahtjev.trim();
@@ -142,6 +146,7 @@ public class RadnikZaVozila implements Runnable {
     try {
       poklapanjeVozila = predlozakVoziloStart.matcher(zahtjev);
       if (poklapanjeVozila.matches()) {
+        System.out.println("Vozilo start");
         var id = Parsiraj.i(poklapanjeVozila.group("id"));
         cs.svaVozila.putIfAbsent(id, new RedPodaciVozila(id));
         return "OK\n";
@@ -162,6 +167,7 @@ public class RadnikZaVozila implements Runnable {
   public String obradaVozilaStop(String zahtjev) {
     try {
       poklapanjeVozila = predlozakVoziloStop.matcher(zahtjev);
+      System.out.println("Vozilo stop probanje");
       if (poklapanjeVozila.matches()) {
         var id = Parsiraj.i(poklapanjeVozila.group("id"));
         cs.svaVozila.remove(id);
@@ -182,9 +188,8 @@ public class RadnikZaVozila implements Runnable {
    */
   public String obradaZahtjevaVozila(String zahtjev) {
     try {
-      poklapanjeVozila = predlozakVozilo.matcher(zahtjev);
-      if (poklapanjeVozila.matches()) {
-        var vozilo = new PodaciVozila(Parsiraj.i(poklapanjeVozila.group("id")),
+      if ((poklapanjeVozila = predlozakVozilo.matcher(zahtjev)).matches()) {
+        PodaciVozila vozilo = new PodaciVozila(Parsiraj.i(poklapanjeVozila.group("id")),
             Parsiraj.i(poklapanjeVozila.group("broj")),
             Parsiraj.l(poklapanjeVozila.group("vrijeme")),
             Parsiraj.d(poklapanjeVozila.group("brzina")),
@@ -201,13 +206,17 @@ public class RadnikZaVozila implements Runnable {
             Parsiraj.d(poklapanjeVozila.group("ukupnoKm")),
             Parsiraj.d(poklapanjeVozila.group("gpsSirina")),
             Parsiraj.d(poklapanjeVozila.group("gpsDuzina")));
+        if (cs.svaVozila.containsKey(vozilo.id())) {
+          cs.svaVozila.get(vozilo.id()).dodajPodatakVozila(vozilo);
+          var rs = new RestKlijentVozila();
+          if(!rs.postVoznjaJSON(vozilo)) return "ERROR 21 POST nije uspješan.\n";
+        }
         for (PodaciRadara r : cs.sviRadari.values())
           provjeriVoziloUOkoliniRadara(vozilo, r);
         return "OK\n";
       }
       return null;
     } catch (Exception e) {
-      e.printStackTrace();
       return "ERROR 29 Nije moguće obraditi zahtjev " + zahtjev.length() + ": " + zahtjev + "\n";
     }
   }

@@ -57,4 +57,4 @@ create table pracenevoznje (
 */
 
 /* CHECK ALL tables created BY USER */
-SELECT * FROM pracenevoznje;
+SELECT * FROM PUBLIC.pracenevoznje;

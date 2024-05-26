@@ -176,7 +176,8 @@ public class RestKlijentVozila {
      */
     public boolean startVozilo(String id) {
       WebTarget resource = webTarget;
-      resource = resource.path(java.text.MessageFormat.format("start/{0}", new Object[] {id}));
+      resource = resource.path(java.text.MessageFormat.format("vozilo/{0}/start", new Object[] {id}));
+      System.out.println("Start vozila se salje na: " + resource.getUri());
       Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
       Response restOdgovor = resource.request().get();
       return restOdgovor.getStatus() == 200;
@@ -190,7 +191,7 @@ public class RestKlijentVozila {
      */
     public boolean stopVozilo(String id) {
       WebTarget resource = webTarget;
-      resource = resource.path(java.text.MessageFormat.format("stop/{0}", new Object[] {id}));
+      resource = resource.path(java.text.MessageFormat.format("vozilo/{0}/stop", new Object[] {id}));
       Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
       Response restOdgovor = resource.request().get();
       return restOdgovor.getStatus() == 200;

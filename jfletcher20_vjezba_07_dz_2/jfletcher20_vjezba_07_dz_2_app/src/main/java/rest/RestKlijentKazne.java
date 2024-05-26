@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Kazna;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciKazne;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.client.Client;
@@ -90,7 +91,7 @@ public class RestKlijentKazne {
   }
 
   /**
-   * Dodaje kazna.
+   * Dodaje kaznu.
    *
    * @param kazna kazna
    * @return true, ako je uspješno
@@ -98,6 +99,23 @@ public class RestKlijentKazne {
   public boolean postKaznaJSON(Kazna kazna) {
     RestKazne rk = new RestKazne();
     var odgovor = rk.postJSON(kazna);
+    return odgovor;
+  }
+
+  /**
+   * Dodaje kaznu.
+   *
+   * @param kazna kazna
+   * @return true, ako je uspješno
+   */
+  public boolean postKaznaJSON(PodaciKazne kazna) {
+    System.out.println("Pozvano postKaznaJSON s PodaciKazne");
+    Kazna kazna2 = new Kazna(
+        kazna.id(), kazna.vrijemePocetak(), kazna.vrijemeKraj(), kazna.brzina(),
+        kazna.gpsSirina(), kazna.gpsDuzina(), kazna.gpsSirinaRadar(),
+        kazna.gpsDuzinaRadar());
+    RestKazne rk = new RestKazne();
+    var odgovor = rk.postJSON(kazna2);
     return odgovor;
   }
 

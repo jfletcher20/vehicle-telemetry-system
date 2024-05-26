@@ -3,6 +3,7 @@ package rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciVozila;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Voznja;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import jakarta.json.bind.JsonbBuilder;
@@ -77,14 +78,22 @@ public class RestKlijentVozila {
     return odgovor;
   }
 
-  public boolean startVoznja(String idVozila) {
-    throw new UnsupportedOperationException("Not supported yet.");
+  /**
+   * Dodaje voznju.
+   *
+   * @param voznja voznja
+   * @return true, ako je uspješno
+   */
+  public boolean postVoznjaJSON(PodaciVozila voznja) {
+    Voznja voznja2 = new Voznja(voznja.id(), voznja.broj(), voznja.vrijeme(), voznja.brzina(),
+        voznja.snaga(), voznja.struja(), voznja.visina(), voznja.gpsBrzina(), voznja.tempVozila(),
+        voznja.postotakBaterija(), voznja.naponBaterija(), voznja.kapacitetBaterija(),
+        voznja.tempBaterija(), voznja.preostaloKm(), voznja.ukupnoKm(), voznja.gpsSirina(),
+        voznja.gpsDuzina());
+    RestPraceneVoznje rk = new RestPraceneVoznje();
+    var odgovor = rk.postJSON(voznja2);
+    return odgovor;
   }
-  
-  public boolean stopVoznja(String idVozila) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
   /**
    * Klasa RestPraceneVoznje.
    */
@@ -104,7 +113,7 @@ public class RestKlijentVozila {
      */
     public RestPraceneVoznje() {
       client = ClientBuilder.newClient();
-      webTarget = client.target(BASE_URI).path("nwtis/v1/api/simulacije");
+      webTarget = client.target(BASE_URI).path("nwtis/v1/api/vozila");
     }
 
     /**
@@ -238,37 +247,19 @@ public class RestKlijentVozila {
       client.close();
     }
 
-//    /**
-//     * Ispis.
-//     * 
-//     * @param p podaci
-//     * @param brojRetka broj retka
-//     */
-//    private void ispis(Voznja p) {
-//      System.out.println("Komanda: VOZILO " + p.getId() + " " + p.getBroj() + " " + p.getVrijeme()
-//          + " " + p.getBrzina() + " " + p.getSnaga() + " " + p.getStruja() + " " + p.getVisina()
-//          + " " + p.getGpsBrzina() + " " + p.getTempVozila() + " " + p.getPostotakBaterija() + " "
-//          + p.getNaponBaterija() + " " + p.getKapacitetBaterija() + " " + p.getTempBaterija() + " "
-//          + p.getPreostaloKm() + " " + p.getUkupnoKm() + " " + p.getGpsSirina() + " "
-//          + p.getGpsDuzina());
-//    }
-
-
-    /**
-     * Pretvara podatke u voznju.
-     * 
-     * @param podaci podaci
-     * @param idVozila id vozila
-     * @param brojRetka broj retka
-     * @return voznja
-     */
-    private Voznja podaciUVoznju(String[] podaci, int idVozila, int brojRetka) {
-      return new Voznja(idVozila, brojRetka, Parsiraj.l(podaci[0]), Parsiraj.d(podaci[1]),
-          Parsiraj.d(podaci[2]), Parsiraj.d(podaci[3]), Parsiraj.d(podaci[4]),
-          Parsiraj.d(podaci[5]), Parsiraj.i(podaci[6]), Parsiraj.i(podaci[7]),
-          Parsiraj.d(podaci[8]), Parsiraj.i(podaci[9]), Parsiraj.i(podaci[10]),
-          Parsiraj.d(podaci[11]), Parsiraj.d(podaci[12]), Parsiraj.d(podaci[13]),
-          Parsiraj.d(podaci[14]));
-    }
+    // /**
+    // * Ispis.
+    // *
+    // * @param p podaci
+    // * @param brojRetka broj retka
+    // */
+    // private void ispis(Voznja p) {
+    // System.out.println("Komanda: VOZILO " + p.getId() + " " + p.getBroj() + " " + p.getVrijeme()
+    // + " " + p.getBrzina() + " " + p.getSnaga() + " " + p.getStruja() + " " + p.getVisina()
+    // + " " + p.getGpsBrzina() + " " + p.getTempVozila() + " " + p.getPostotakBaterija() + " "
+    // + p.getNaponBaterija() + " " + p.getKapacitetBaterija() + " " + p.getTempBaterija() + " "
+    // + p.getPreostaloKm() + " " + p.getUkupnoKm() + " " + p.getGpsSirina() + " "
+    // + p.getGpsDuzina());
+    // }
   }
 }

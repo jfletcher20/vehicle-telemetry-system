@@ -113,13 +113,13 @@ public class VozilaResurs extends SviResursi {
   @Produces({MediaType.APPLICATION_JSON})
   public Response getJsonSimulacijaVoznja(@HeaderParam("Accept") String tipOdgovora,
       @PathParam("id") int id) {
-    
-    var odgovor = MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja,
-        mreznaVrataPosluzitelja, "VOZILO START " + id + "\n");
-    
+
+    var odgovor =
+        MrezneOperacije.posaljiZahtjevPosluzitelju("localhost", 8001, "VOZILO START " + id + "\n");
+
     return Response.status(Response.Status.OK).entity(odgovor).build();
   }
-  
+
   /**
    * Zaustavlja vožnju.
    * 

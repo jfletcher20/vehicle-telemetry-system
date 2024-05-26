@@ -4,6 +4,8 @@
  */
 package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Voznja;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.VoznjeDAO;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
@@ -112,12 +114,11 @@ public class SimulacijeResurs extends SviResursi {
   @Produces({MediaType.APPLICATION_JSON})
   public Response postDodajSimulaciju(@HeaderParam("Accept") String tipOdgovora,
       Voznja novaVoznja) {
-    String r = "";
     try {
-      r = posaljiZahtjevVoznje(novaVoznja);
+      posaljiZahtjevVoznje(novaVoznja);
     } catch (Exception e) {
       e.printStackTrace();
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(r).build();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     var odgovor = voznjeDAO.dodajVoznju(novaVoznja);
     if (odgovor)
@@ -133,7 +134,7 @@ public class SimulacijeResurs extends SviResursi {
       // voznje (id, broj, vrijeme, brzina, snaga, struja, visina, gpsBrzina, tempVozila,
       // postotakBaterija, naponBaterija, kapacitetBaterija, tempBaterija, preostaloKm, ukupnoKm,
       // gpsSirina, gpsDuzina) "
-      String r = MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja,
+      MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja,
           mreznaVrataPosluzitelja,
           "VOZILO " + novaVoznja.getId() + " " + novaVoznja.getBroj() + " "
               + novaVoznja.getVrijeme() + " " + novaVoznja.getBrzina() + " " + novaVoznja.getSnaga()
@@ -144,8 +145,6 @@ public class SimulacijeResurs extends SviResursi {
               + novaVoznja.getPreostaloKm() + " " + novaVoznja.getUkupnoKm() + " "
               + novaVoznja.getGpsSirina() + " " + novaVoznja.getGpsDuzina() + "\n")
           .trim();
-      if (r.contains("ERROR"))
-        throw new Exception("Neuspješno slanje voznje na server zbog: " + r);
     } catch (Exception e) {
       return "ERROR 29 " + e.getMessage() + "\n";
     }
