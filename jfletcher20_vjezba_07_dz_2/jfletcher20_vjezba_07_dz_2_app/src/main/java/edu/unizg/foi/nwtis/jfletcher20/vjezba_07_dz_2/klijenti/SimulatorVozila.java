@@ -234,7 +234,13 @@ public class SimulatorVozila {
    * @return razlika vremena između trenutnog i prethodnog vozila
    */
   public long citajCSV() {
-    try (BufferedReader reader = new BufferedReader(new FileReader(podaciVozilaDatoteka))) {
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(podaciVozilaDatoteka));
+      if (reader.readLine().split(",")[0].matches("\\d+")) {
+        brojRetka = 0;
+        reader.close();
+        reader = new BufferedReader(new FileReader(podaciVozilaDatoteka));
+      }
       for (int i = 0; i < brojRetka; i++)
         reader.readLine();
       String row = reader.readLine();

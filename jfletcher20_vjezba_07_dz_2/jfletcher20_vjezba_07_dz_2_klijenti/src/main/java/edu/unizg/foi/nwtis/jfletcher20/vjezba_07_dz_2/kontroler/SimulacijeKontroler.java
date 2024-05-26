@@ -144,8 +144,9 @@ public class SimulacijeKontroler {
       @FormParam("trajanjePauza") int trajanjePauza) {
 
     RestKlijentSimulacije s = new RestKlijentSimulacije();
-    boolean odgovor = s.postVoznjaJSON(nazivDatoteke, idVozila, trajanjeSek, trajanjePauza);
+    s.postVoznjaJSON(nazivDatoteke, idVozila, trajanjeSek, trajanjePauza);
     
+    var odgovor = true;
     model.put("vrijednosti",
         odgovor ? "Uspješno dodana simulacija vožnje!" : "Nije uspješno dodana simulacija vožnje!");
     model.put("vrijednosti", model.get("vrijednosti") + " " + nazivDatoteke + " " + idVozila + " " + trajanjeSek + " " + trajanjePauza);

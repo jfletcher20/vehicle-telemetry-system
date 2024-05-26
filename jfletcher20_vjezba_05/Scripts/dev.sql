@@ -57,4 +57,4 @@ create table pracenevoznje (
 */
 
 /* CHECK ALL tables created BY USER */
-SELECT * FROM voznje  WHERE id = 231;
+SELECT * FROM voznje  WHERE id = 88;

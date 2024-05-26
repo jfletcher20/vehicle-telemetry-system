@@ -278,6 +278,22 @@ public class RestKlijentSimulacije {
     }
 
     /**
+     * Priceka razliku.
+     * 
+     * @param razlika razlika
+     * @param p podaci
+     * @return razlika
+     * @throws InterruptedException
+     */
+    private long pricekaj(long razlika, Voznja p, int trajanjeSek, long zadnjeVrijeme)
+        throws InterruptedException {
+      if ((long) (razlika * trajanjeSek / 1000.0) > 0)
+        Thread.sleep((long) (razlika * trajanjeSek / 1000.0));
+      razlika = razlikaVremena(p, zadnjeVrijeme);
+      return razlika;
+    }
+
+    /**
      * Dodaje simulaciju voznje.
      *
      * @param nazivDatoteke podaci vozila
@@ -289,39 +305,27 @@ public class RestKlijentSimulacije {
      */
     public boolean postJSON(String nazivDatoteke, int idVozila, int trajanjeSek, int trajanjePauze)
         throws ClientErrorException {
-      WebTarget resource = webTarget;
       if (nazivDatoteke == null || trajanjeSek == 0 || trajanjePauze == 0
           || nazivDatoteke.length() == 0 || idVozila < 0 || trajanjeSek < 0 || trajanjePauze < 0)
         return false;
-      Invocation.Builder request = resource.request(MediaType.APPLICATION_JSON);
+      Invocation.Builder request = webTarget.request(MediaType.APPLICATION_JSON);
       int brojRetka = 1;
-      String odgovor = "";
+      String row = "";
       long razlika = 0, zadnjeVrijeme = 0;
       try {
         File file = new File(AppContextListener.getAppPath() + nazivDatoteke);
         BufferedReader reader = new BufferedReader(new FileReader(file));
-        boolean isLong = reader.readLine().split(",")[0].matches("-?\\d+");
-        if (isLong) {
+        if (reader.readLine().split(",")[0].matches("-?\\d+")) {
           brojRetka = 0;
           reader.close();
           reader = new BufferedReader(new FileReader(file));
         }
-        while (true) {
-          String row = reader.readLine();
-          if (row == null)
-            break;
+        while ((row = reader.readLine()) != null) {
           var data = row.split(",");
           Voznja p = podaciUVoznju(data, idVozila, brojRetka);
-          System.out.println("vrijeme pauziranja ce biti: "
-              + "razlika: " + razlika + " jer su vremena: " + p.getVrijeme() + " i " + zadnjeVrijeme
-              + "" + (long) (razlika * trajanjeSek / 1000.0));
-          if ((long) (razlika * trajanjeSek / 1000.0) > 0)
-            Thread.sleep((long) (razlika * trajanjeSek / 1000.0));
-          razlika = razlikaVremena(p, zadnjeVrijeme);
+          razlika = pricekaj(razlika, p, trajanjeSek, zadnjeVrijeme);
           zadnjeVrijeme = p.getVrijeme();
-          odgovor =
-              request.post(Entity.entity(p, MediaType.APPLICATION_JSON), String.class).toString();
-          ispis(p, brojRetka);
+          request.post(Entity.entity(p, MediaType.APPLICATION_JSON), String.class);
           Thread.sleep(trajanjePauze);
         }
         reader.close();
@@ -329,8 +333,6 @@ public class RestKlijentSimulacije {
         e.printStackTrace();
         return false;
       }
-      if (odgovor.trim().length() > 0)
-        return true;
       return true;
     }
 
