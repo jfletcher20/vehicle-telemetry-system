@@ -1,4 +1,4 @@
-package slusac;
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.slusac;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -13,8 +13,8 @@ public class AppContextListener implements ServletContextListener {
 
   @Override
   public void contextInitialized(ServletContextEvent sce) {
-    this.sce = sce.getServletContext();
-    appPath = this.sce.getRealPath("/WEB-INF") + java.io.File.separator;
+    AppContextListener.sce = sce.getServletContext();
+    appPath = AppContextListener.sce.getRealPath("/WEB-INF") + java.io.File.separator;
     System.out.println("App path: " + appPath);
     // print all files within appPath
     java.io.File folder = new java.io.File(appPath);

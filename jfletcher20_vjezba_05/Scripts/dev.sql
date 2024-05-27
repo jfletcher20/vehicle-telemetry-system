@@ -57,4 +57,4 @@ create table pracenevoznje (
 */
 
 /* CHECK ALL tables created BY USER */
-SELECT COUNT(*) FROM PUBLIC.kazne;
+SELECT * FROM PUBLIC.kazne WHERE rb=3;

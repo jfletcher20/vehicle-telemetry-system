@@ -15,10 +15,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.PodaciKazne;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.rest.RestKlijentKazne;
 import edu.unizg.foi.nwtis.konfiguracije.Konfiguracija;
 import edu.unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
 import edu.unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
-import rest.RestKlijentKazne;
 
 /**
  * Klasa poslužitelj kazni.

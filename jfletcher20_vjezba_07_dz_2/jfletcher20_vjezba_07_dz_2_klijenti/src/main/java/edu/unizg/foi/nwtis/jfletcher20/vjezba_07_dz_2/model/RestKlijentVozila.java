@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Voznja;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.slusac.AppContextListener;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.client.Client;
@@ -17,7 +18,6 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import slusac.AppContextListener;
 
 /**
  * Klasa RestKlijentVoznje.

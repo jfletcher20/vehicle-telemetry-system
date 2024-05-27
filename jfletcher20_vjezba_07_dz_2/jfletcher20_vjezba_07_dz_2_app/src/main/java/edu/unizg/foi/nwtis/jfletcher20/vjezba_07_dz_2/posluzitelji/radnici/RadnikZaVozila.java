@@ -11,7 +11,7 @@ import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.RedPodaciVozila;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.posluzitelji.CentralniSustav;
-import rest.RestKlijentVozila;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.rest.RestKlijentVozila;
 
 /*
  * PosluziteljZaVozila ima dodatne komande: ● VOZILO START id o npr.VOZILO START 1 o Provjera da li

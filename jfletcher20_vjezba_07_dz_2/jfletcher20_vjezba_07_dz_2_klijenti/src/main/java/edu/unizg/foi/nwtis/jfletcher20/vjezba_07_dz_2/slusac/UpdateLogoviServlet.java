@@ -1,3 +1,4 @@
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.slusac;
 //package slusac;
 //
 //import java.io.IOException;

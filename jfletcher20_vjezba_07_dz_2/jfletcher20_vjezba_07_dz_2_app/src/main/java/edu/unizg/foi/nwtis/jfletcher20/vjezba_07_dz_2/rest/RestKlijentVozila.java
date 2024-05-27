@@ -1,4 +1,4 @@
-package rest;
+package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +106,7 @@ public class RestKlijentVozila {
     private final Client client;
 
     /** knstanta BASE_URI. */
-    private static final String BASE_URI = "http://localhost:9080/";
+    private static final String BASE_URI = "http://20.24.5.5:8080/";
 
     /**
      * Konstruktor klase.

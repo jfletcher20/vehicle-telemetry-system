@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.List;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.model.RestKlijentSimulacije;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Voznja;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.slusac.AppContextListener;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.mvc.Controller;
@@ -19,7 +20,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import slusac.AppContextListener;
 
 /**
  * VoznjeKontroler za MVC model.
