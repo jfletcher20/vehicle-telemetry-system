@@ -1,0 +1,72 @@
+version: '3.8'
+
+networks:
+  nwtis:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 20.24.5.0/24
+          
+volumes:
+   mjestoHsql:
+      external: true
+   mjestoH2:
+      external: true
+
+services:
+   hsql:
+      image: nwtis_hsql_i
+      container_name: nwtis_hsql_c
+      build:
+        context: .
+        dockerfile: ./Dockerfile.hsql
+      volumes:
+      -  type: volume
+         source: mjestoHsql
+         target: /opt/data
+         volume:
+            nocopy: true
+      networks:
+        nwtis:
+          ipv4_address: 20.24.5.3
+
+   h2:
+      image: nwtis_h2_i
+      container_name: nwtis_h2_c
+      build:
+        context: .
+        dockerfile: ./Dockerfile.h2
+      volumes:
+      -  type: volume
+         source: mjestoH2
+         target: /opt/database
+         volume:
+            nocopy: true
+      networks:
+        nwtis:
+          ipv4_address: 20.24.5.4
+
+   servisi:
+      image: nwtis_servisi_i
+      container_name: nwtis_servisi_c
+      build:
+        context: .
+        dockerfile: ./Dockerfile.servisi
+      ports:
+      - 9080:8080
+      networks:
+        nwtis:
+          ipv4_address: 20.24.5.5
+
+   app:
+      image: nwtis_app_i
+      container_name: nwtis_app_c
+      build:
+         context: .
+         dockerfile: ./Dockerfile.app
+      networks:
+        nwtis:
+          ipv4_address: 20.24.5.2
+      depends_on:
+      - servisi
+
