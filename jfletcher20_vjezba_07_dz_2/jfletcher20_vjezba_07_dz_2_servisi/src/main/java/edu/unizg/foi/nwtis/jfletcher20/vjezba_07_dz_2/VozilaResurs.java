@@ -115,7 +115,7 @@ public class VozilaResurs extends SviResursi {
       @PathParam("id") int id) {
 
     var odgovor =
-        MrezneOperacije.posaljiZahtjevPosluzitelju("localhost", 8001, "VOZILO START " + id + "\n");
+        MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja, mreznaVrataPosluzitelja, "VOZILO START " + id + "\n");
 
     return Response.status(Response.Status.OK).entity(odgovor).build();
   }

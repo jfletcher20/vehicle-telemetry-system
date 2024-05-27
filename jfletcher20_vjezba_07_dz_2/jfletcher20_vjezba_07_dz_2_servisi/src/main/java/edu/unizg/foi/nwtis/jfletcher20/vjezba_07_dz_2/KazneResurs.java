@@ -7,6 +7,9 @@ package edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.Kazna;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.podaci.KaznaDAO;
 import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.MrezneOperacije;
+import edu.unizg.foi.nwtis.jfletcher20.vjezba_07_dz_2.pomocnici.Parsiraj;
+import edu.unizg.foi.nwtis.konfiguracije.KonfiguracijaApstraktna;
+import edu.unizg.foi.nwtis.konfiguracije.NeispravnaKonfiguracija;
 import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HEAD;
@@ -28,9 +31,27 @@ import jakarta.ws.rs.core.Response;
 public class KazneResurs extends SviResursi {
   private KaznaDAO kaznaDAO = null;
 
+  private String nazivKonfiguracije = "NWTiS_REST_K.txt";
+
+  private String adresaPosluzitelja;
+  private int mreznaVrataPosluzitelja;
+
   @PostConstruct
   private void pripremiKorisnikDAO() {
     System.out.println("Pokrećem REST: " + this.getClass().getName());
+    int i = 10;
+    while (i-- > 0) {
+      try {
+        String prefix = "";
+        for (int j = 0; j < i; j++)
+          prefix += "../";
+        var konfig = KonfiguracijaApstraktna.preuzmiKonfiguraciju(prefix + nazivKonfiguracije);
+        System.out.println("Konfiguracija ucitana na adresi: " + prefix + nazivKonfiguracije);
+        adresaPosluzitelja = konfig.dajPostavku("adresaKazne");
+        mreznaVrataPosluzitelja = Parsiraj.i(konfig.dajPostavku("mreznaVrataKazne"));
+      } catch (NeispravnaKonfiguracija e) {
+      }
+    }
     try {
       var vezaBP = this.vezaBazaPodataka.getVezaBazaPodataka();
       this.kaznaDAO = new KaznaDAO(vezaBP);
@@ -134,7 +155,7 @@ public class KazneResurs extends SviResursi {
     var poruka = new StringBuilder();
     poruka.append("TEST").append("\n");
 
-    var odgovor = MrezneOperacije.posaljiZahtjevPosluzitelju("localhost", 8020, poruka.toString());
+    var odgovor = MrezneOperacije.posaljiZahtjevPosluzitelju(adresaPosluzitelja, mreznaVrataPosluzitelja, poruka.toString());
 
     if (odgovor != null) {
       return true;

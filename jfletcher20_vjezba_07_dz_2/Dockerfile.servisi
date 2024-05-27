@@ -1,0 +1,10 @@
+FROM amd64/eclipse-temurin:21 AS builder
+
+EXPOSE 8080
+
+RUN mkdir -p servisi
+
+WORKDIR /servisi
+COPY jfletcher20_vjezba_07_dz_2_servisi /servisi
+
+CMD ["java", "-jar", "target/jfletcher20_vjezba_07_dz_2_servisi-1.0.0-jar-with-dependencies.jar"]
