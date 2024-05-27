@@ -6,6 +6,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Pregled radara</title>
 	<link rel="stylesheet" href="${pageContext.servletContext.contextPath}/resources/css/nwtis.css">
+    <script>
+	    function toggleDetalji(id) {
+	        var detalji = document.getElementById(id);
+	        detalji.hidden = !detalji.hidden;
+	    }
+	</script>
     </head>
     <body>
     	<div class="card">
@@ -32,8 +38,19 @@
 						<!-- <td><%= ""/*r.getMaksBrzina()*/ %></td> -->
 						<td><%= r.getGpsSirina() %></td>
 						<td><%= r.getGpsDuzina() %></td>
-					</tr><%
-				}%>
+			            <td>
+			                <button onclick="toggleDetalji('detalji<%= i %>')">Svi podaci</button>
+			            </td>
+			        </tr>
+			        <tr id="detalji<%= i %>" hidden>
+			            <td colspan="8">
+			                <table>
+			                    <tr><td>Adresa registracije:</td><td><%= r.getAdresaRegistracije() %></td></tr>
+			                    <tr><td>Mrežna vrata registracije:</td><td><%= r.getMreznaVrataRegistracije() %></td></tr>
+			                </table>
+			            </td>
+			        </tr><%
+			    }%>
 				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= radari.size() %> rezultat<%= mult %></td></tfoot>
 				<p><%= (String) request.getAttribute("vrijednosti") != null ? (String) request.getAttribute("vrijednosti") : "" %></p>
 	        </table>

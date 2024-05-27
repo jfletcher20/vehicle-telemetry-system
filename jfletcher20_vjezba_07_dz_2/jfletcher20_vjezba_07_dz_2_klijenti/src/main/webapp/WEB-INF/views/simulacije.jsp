@@ -6,6 +6,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Pregled simulacija</title>
 	<link rel="stylesheet" href="${pageContext.servletContext.contextPath}/resources/css/nwtis.css">
+    <script>
+	    function toggleDetalji(id) {
+	        var detalji = document.getElementById(id);
+	        detalji.hidden = !detalji.hidden;
+	    }
+	</script>
     </head>
     <body>
     	<div class="card">
@@ -18,7 +24,16 @@
 			</nav>
 	        <h1>Pregled simulacija voznji</h1>
 	        <table>
-		        <tr><th>R.br.<th>ID</th><th>Vrijeme</th><th>Brzina</th><th>Uk. km</th><th>GDP širina</th><th>GPS dužina</th></tr>
+			    <tr>
+			        <th>R.br.</th>
+			        <th>ID</th>
+			        <th>Vrijeme</th>
+			        <th>Brzina</th>
+			        <th>Uk. km</th>
+			        <th>GPS širina</th>
+			        <th>GPS dužina</th>
+			        <th>Ekstra</th>
+			    </tr>
 				<%
 				int i = 0;
 				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
@@ -30,13 +45,34 @@
 					<tr>
 						<td class="desno"><%= i %></td>
 						<td><a href="${pageContext.servletContext.contextPath}/mvc/simulacije/<%= v.getId() %>/ispisVoznji"><%= v.getId() %></a></td>
-						<td><%= sdf.format(vrijeme) %></td>
-						<td><%= v.getBrzina() %></td>
-						<td><%= v.getUkupnoKm() %></td>
-						<td><%= v.getGpsSirina() %></td>
-						<td><%= v.getGpsDuzina() %></td>
-					</tr><%
-				}%>
+						<td style="font-size: 10px;"><%= sdf.format(vrijeme) %></td>
+			            <td><%= v.getBrzina() %></td>
+			            <td><%= v.getUkupnoKm() %></td>
+			            <td><%= v.getGpsSirina() %></td>
+			            <td><%= v.getGpsDuzina() %></td>
+			            <td>
+			                <button onclick="toggleDetalji('detalji<%= i %>')">Svi podaci</button>
+			            </td>
+			        </tr>
+			        <tr id="detalji<%= i %>" hidden>
+			            <td colspan="8">
+			                <table>
+			                    <tr><td>Snaga:</td><td><%= v.getSnaga() %></td></tr>
+			                    <tr><td>Struja:</td><td><%= v.getStruja() %></td></tr>
+			                    <tr><td>Visina:</td><td><%= v.getVisina() %></td></tr>
+			                    <tr><td>GPS Brzina:</td><td><%= v.getGpsBrzina() %></td></tr>
+			                    <tr><td>Napon Baterija:</td><td><%= v.getNaponBaterija() %></td></tr>
+			                    <tr><td>Temp Vozila:</td><td><%= v.getTempVozila() %></td></tr>
+			                    <tr><td>Postotak Baterija:</td><td><%= v.getPostotakBaterija() %></td></tr>
+			                    <tr><td>Kapacitet Baterija:</td><td><%= v.getKapacitetBaterija() %></td></tr>
+			                    <tr><td>Temp Baterija:</td><td><%= v.getTempBaterija() %></td></tr>
+			                    <tr><td>Preostalo Km:</td><td><%= v.getPreostaloKm() %></td></tr>
+			                </table>
+			            </td>
+			        </tr>
+			    <%
+			    }
+			    %>
 				<tfoot><td></td><td></td><td style="text-align: center">Prikazano: <%= voznje.size() %> rezultat<%= mult %></td></tfoot>
 				<p><%= (String) request.getAttribute("vrijednosti") != null ? (String) request.getAttribute("vrijednosti") : "" %></p>
 	        </table>
