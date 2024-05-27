@@ -29,12 +29,49 @@ String sadrzaj(String datoteka, ServletContext application) {
 	<body>
 		<div class="card">
 			<nav id="page-nav">
-				<a class="current-tab" href="${pageContext.servletContext.contextPath}">Početna</a>
+				<a class="current-tab" href="${pageContext.servletContext.contextPath}/mvc/simulacije/pocetna">🏠 Kontroler simulacija</a>
 				<a href="${pageContext.servletContext.contextPath}/mvc/kazne/ispisKazni">Ispis kazni</a>
 				<a href="${pageContext.servletContext.contextPath}/mvc/radari/ispisRadara">Ispis radara</a>
 				<a href="${pageContext.servletContext.contextPath}/mvc/vozila/ispisVozila">Ispis vozila</a>
 				<a href="${pageContext.servletContext.contextPath}/mvc/simulacije/ispisVoznji">Ispis simulacija</a>
 			</nav>
+			
+		    <!-- live log simulacija tijekom izvođenja - iz nekog razloga uspori cijeli server jako pa sam ugasio
+		    <div id="log"></div>
+		    <script type="text/javascript">
+		        function connect() {
+		            var eventSource = new EventSource(document.getElementsByClassName("current-tab")[0].href + "/progress");
+		
+		            eventSource.onmessage = function(event) {
+		                var log = document.getElementById("log");
+		                var newMessage = document.createElement("div");
+		                newMessage.textContent = event.data;
+		                log.appendChild(newMessage);
+		            };
+		
+		            eventSource.onerror = function(event) {
+		                console.error("EventSource failed:", event);
+		                eventSource.close();
+		                // Optionally, you can attempt to reconnect after a delay
+		                setTimeout(connect, 5000);
+		            };
+		        }
+		
+		        window.onload = connect;
+		        
+		        /* potrebno je onda ovo dodati u web.xml:
+			    	<servlet>
+				        <servlet-name>UpdateLogoviServlet</servlet-name>
+				        <servlet-class>slusac.UpdateLogoviServlet</servlet-class>
+				    </servlet>
+				
+				    <servlet-mapping>
+				        <servlet-name>UpdateLogoviServlet</servlet-name>
+				        <url-pattern>/progress</url-pattern>
+				    </servlet-mapping>
+			    */
+		    </script>-->
+		    
 			<h1>MVC</h1>
 			<h4>Sustav za telemetriju i praćenje e-vozila.</h4>
 			<div id="tab-kazne-content" class="tab" hidden>

@@ -18,6 +18,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import slusac.AppContextListener;
+//import slusac.ObjaviteljDogadaja;
 
 /**
  * Klasa RestKlijentVoznje.
@@ -309,6 +310,7 @@ public class RestKlijentSimulacije {
           razlika = pricekaj(razlika, p, trajanjeSek, zadnjeVrijeme);
           zadnjeVrijeme = p.getVrijeme();
           request.post(Entity.entity(p, MediaType.APPLICATION_JSON), String.class);
+//          ObjaviteljDogadaja.broadcast("Simuliranje: " + row);
           Thread.sleep(trajanjePauze);
         }
         reader.close();

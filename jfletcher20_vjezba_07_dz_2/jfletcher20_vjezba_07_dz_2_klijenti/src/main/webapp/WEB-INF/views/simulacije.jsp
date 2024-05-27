@@ -10,7 +10,7 @@
     <body>
     	<div class="card">
 			<nav id="page-nav">
-				<a href="${pageContext.servletContext.contextPath}">Početna</a>
+				<a href="${pageContext.servletContext.contextPath}/mvc/simulacije/pocetna">🏠 Kontroler simulacija</a>
 				<a href="${pageContext.servletContext.contextPath}/mvc/kazne/ispisKazni">Ispis kazni</a>
 				<a href="${pageContext.servletContext.contextPath}/mvc/radari/ispisRadara">Ispis radara</a>
 				<a href="${pageContext.servletContext.contextPath}/mvc/vozila/ispisVozila">Ispis vozila</a>
