@@ -64,6 +64,22 @@
 				"closeIdleConnection": true,
 				"auth-model": "native"
 			}
+		},
+		"hsqldb_server-18fc3fc47fc-6c5218fd81ce7a0b": {
+			"provider": "generic",
+			"driver": "hsqldb_server",
+			"name": "admin 1",
+			"save-password": true,
+			"configuration": {
+				"host": "localhost",
+				"port": "9001",
+				"database": "nwtis_2",
+				"url": "jdbc:hsqldb:hsql://localhost:9001/nwtis_2",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native"
+			}
 		}
 	},
 	"connection-types": {

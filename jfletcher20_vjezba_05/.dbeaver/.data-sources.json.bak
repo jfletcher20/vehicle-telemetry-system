@@ -7,10 +7,10 @@
 			"name": "admin",
 			"save-password": true,
 			"configuration": {
-				"host": "localhost",
+				"host": "20.24.5.3",
 				"port": "9001",
 				"database": "nwtis_2",
-				"url": "jdbc:hsqldb:hsql://localhost:9001/nwtis_2",
+				"url": "jdbc:hsqldb:hsql://20.24.5.3:9001/nwtis_2",
 				"configurationType": "MANUAL",
 				"type": "dev",
 				"closeIdleConnection": true,
