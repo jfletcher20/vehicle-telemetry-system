@@ -1,2 +1,0 @@
-mvc clean package
-mvn cargo:redeploy -P ServerEE-local

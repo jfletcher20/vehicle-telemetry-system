@@ -1,0 +1,27 @@
+server:
+    port: 7070
+javax:
+    sql:
+        DataSource:
+            nwtis:
+                dataSourceClassName: org.hsqldb.jdbc.JDBCDataSource
+                dataSource:
+                    url: jdbc:hsqldb:hsql://localhost:9001/nwtis_2
+                    user: nwtis_2
+                    password: nwtis#2
+            h2:
+                dataSourceClassName: org.h2.jdbcx.JdbcDataSource
+                dataSource:
+                    url: jdbc:h2:tcp://localhost:9092/nwtis_2;MODE=LEGACY 
+                    user: SA
+                    password: ""
+            hsqldb:
+                dataSourceClassName: org.hsqldb.jdbc.JDBCDataSource
+                dataSource:
+                    url: jdbc:hsqldb:hsql://localhost:9001/nwtis_2
+                    user: nwtis_
+                    password: nwtis#2
+app:
+    kazne:
+         adresa: 20.24.5.1
+         mreznaVrata: 8020

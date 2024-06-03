@@ -1,1 +1,1 @@
-{"resources":{"korisnici_H2.sql":{"default-datasource":"hsqldb_server-18fc3ff3e15-60e7769be372e1d3"}}}
+{"resources":{"korisnici_H2.sql":{"default-datasource":"hsqldb_server-18fc3ff3e15-60e7769be372e1d3","default-catalog":"PUBLIC"},"korisnici_HSQLDB.sql":{"default-datasource":"hsqldb_server-18fc3ff3e15-60e7769be372e1d3","default-catalog":"PUBLIC"},"korisnici_podaci.sql":{"default-datasource":"hsqldb_server-18fc3ff3e15-60e7769be372e1d3","default-catalog":"PUBLIC"}}}
