@@ -1,16 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
 		<artifactId>jfletcher20_vjezba_08_dz_3</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<version>1.1.0</version>
-	<artifactId>jfletcher20_vjezba_08_dz_3_klijenti</artifactId>
-	<name>jfletcher20_vjezba_08_dz_3_klijenti</name>
+	<artifactId>jfletcher20_vjezba_08_dz_3_nadzor</artifactId>
 	<packaging>war</packaging>
+	<name>jfletcher20_vjezba_08_dz_3_nadzor</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>21</maven.compiler.source>
@@ -28,7 +27,7 @@
 		<ServerEE.domainDir>${ServerEE.home}/glassfish/domains</ServerEE.domainDir>
 		<ServerEE.containerName>${ServerEE.payara.containerName}</ServerEE.containerName>
 	</properties>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -40,28 +39,13 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>jakarta.platform</groupId>
 			<artifactId>jakarta.jakartaee-api</artifactId>
 			<version>10.0.0</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>jakarta.mvc</groupId>
-			<artifactId>jakarta.mvc-api</artifactId>
-			<version>2.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.krazo</groupId>
-			<artifactId>krazo-core</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.krazo</groupId>
-			<artifactId>krazo-jersey</artifactId>
-			<version>3.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -74,7 +58,7 @@
 			<version>1.1.0</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -94,7 +78,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -157,14 +141,14 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		
+
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>ServerEE-local</id>
 			<build>
-				
+
 				<plugins>
 					<plugin>
 						<groupId>org.codehaus.cargo</groupId>
@@ -189,7 +173,7 @@
 						</executions>
 					</plugin>
 				</plugins>
-				
+
 				<pluginManagement>
 					<plugins>
 						<plugin>
@@ -212,9 +196,8 @@
 						</plugin>
 					</plugins>
 				</pluginManagement>
-				
+
 			</build>
 		</profile>
 	</profiles>
-	
 </project>

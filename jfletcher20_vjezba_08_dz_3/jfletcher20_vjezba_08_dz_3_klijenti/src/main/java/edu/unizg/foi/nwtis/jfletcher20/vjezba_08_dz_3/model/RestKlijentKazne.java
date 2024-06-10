@@ -112,9 +112,10 @@ public class RestKlijentKazne {
     /** client. */
     private final Client client;
 
-    /** knstanta BASE_URI. */
-    private static final String BASE_URI = "http://localhost:9080/";
-
+    /** knstanta BASE_URI. */ // TODO: TODO: ask noa
+//    private static final String BASE_URI = "http://localhost:8080/jfletcher20_vjezba_08_dz_3_servisi/";
+    private static final String BASE_URI = "http://localhost:7070";
+    
     /**
      * Konstruktor klase.
      */

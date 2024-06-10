@@ -8,9 +8,22 @@
 		<version>1.0.0</version>
 	</parent>
 	<version>1.1.0</version>
+	<packaging>war</packaging>
 	<artifactId>jfletcher20_vjezba_08_dz_3_servisi</artifactId>
 	<name>jfletcher20_vjezba_08_dz_3_servisi</name>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-bom</artifactId>
+				<version>${version.org.jboss.resteasy}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<properties>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
@@ -24,25 +37,34 @@
 		<hsqldb.version>2.7.2</hsqldb.version>
 		<h2.version>2.2.224</h2.version>
 		<version.org.jboss.resteasy>6.2.8.Final</version.org.jboss.resteasy>
-	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.resteasy</groupId>
-				<artifactId>resteasy-bom</artifactId>
-				<version>${version.org.jboss.resteasy}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+		<servlet.port>8080</servlet.port>
+		<ServerEE.adminPort>4848</ServerEE.adminPort>
+		<ServerEE.username>admin</ServerEE.username>
+		<ServerEE.password></ServerEE.password>
+		<ServerEE.hostname>localhost</ServerEE.hostname>
+		<ServerEE.domainName>domain1</ServerEE.domainName>
+
+		<ServerEE.payara.home>/opt/payara6-full/</ServerEE.payara.home>
+		<ServerEE.payara.Web.home>/opt/payara6-web/</ServerEE.payara.Web.home>
+		<ServerEE.payara.containerName>payara</ServerEE.payara.containerName>
+
+		<ServerEE.home>${ServerEE.payara.home}</ServerEE.home>
+		<ServerEE.domainDir>${ServerEE.home}/glassfish/domains</ServerEE.domainDir>
+		<ServerEE.containerName>${ServerEE.payara.containerName}</ServerEE.containerName>
+	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
-			<artifactId>jfletcher20_vjezba_08_dz_3_lib_konfig</artifactId>
-			<version>1.5.0</version>
+			<groupId>jakarta.platform</groupId>
+			<artifactId>jakarta.jakartaee-web-api</artifactId>
+			<version>10.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-binding</artifactId>
+			<version>3.1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
@@ -51,22 +73,8 @@
 		</dependency>
 		<dependency>
 			<groupId>edu.unizg.foi.nwtis.jfletcher20</groupId>
-			<artifactId>jfletcher20_vjezba_08_dz_3_lib_rest</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>jakarta.ws.rs</groupId>
-			<artifactId>jakarta.ws.rs-api</artifactId>
-			<version>3.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-undertow-cdi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-binding</artifactId>
-			<version>3.1.6</version>
+			<artifactId>jfletcher20_vjezba_08_dz_3_jpa</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -86,67 +94,139 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.9.0</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven.dependency}</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<?m2e ignore?>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/libs
-							</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven.assembly}</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>
-								edu.unizg.foi.nwtis.jfletcher20.vjezba_08_dz_3.Main</mainClass>
-						</manifest>
-					</archive>
+					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven.jar}</version>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.3.1</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>libs/</classpathPrefix>
-							<mainClass>
-								edu.unizg.foi.nwtis.jfletcher20.vjezba_08_dz_3.Main</mainClass>
-						</manifest>
-					</archive>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.cargo</groupId>
+					<artifactId>cargo-maven3-plugin</artifactId>
+					<version>1.10.13</version>
+					<configuration>
+						<skip>${skipTests}</skip>
+						<container>
+							<containerId>${ServerEE.containerName}</containerId>
+						</container>
+						<configuration>
+							<properties>
+								<cargo.remote.username>${ServerEE.username}</cargo.remote.username>
+								<cargo.remote.password>${ServerEE.password}</cargo.remote.password>
+								<cargo.glassfish.admin.port>
+									${ServerEE.adminPort}</cargo.glassfish.admin.port>
+								<cargo.hostname>${ServerEE.hostname}</cargo.hostname>
+							</properties>
+						</configuration>
+					</configuration>
+					<executions>
+						<execution>
+							<id>start-ServerEE</id>
+							<goals>
+								<goal>start</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>deploy</id>
+							<goals>
+								<goal>redeploy</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>undeploy</id>
+							<goals>
+								<goal>undeploy</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>stop-ServerEE</id>
+							<goals>
+								<goal>stop</goal>
+							</goals>
+
+						</execution>
+					</executions>
+
+					<dependencies>
+						<dependency>
+							<groupId>org.glassfish.main.deployment</groupId>
+							<artifactId>deployment-client</artifactId>
+							<version>5.1.0</version>
+						</dependency>
+						<dependency>
+							<groupId>jakarta.xml.bind</groupId>
+							<artifactId>jakarta.xml.bind-api</artifactId>
+							<version>4.0.2</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>ServerEE-local</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven3-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>start-ServerEE</id>
+								<phase>pre-integration-test</phase>
+							</execution>
+							<execution>
+								<id>deploy</id>
+								<phase>pre-integration-test</phase>
+							</execution>
+							<execution>
+								<id>undeploy</id>
+								<phase>post-integration-test</phase>
+							</execution>
+							<execution>
+								<id>stop-ServerEE</id>
+								<phase>post-integration-test</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.codehaus.cargo</groupId>
+							<artifactId>cargo-maven3-plugin</artifactId>
+							<configuration>
+								<container>
+									<type>installed</type>
+									<home>${ServerEE.home}</home>
+								</container>
+								<configuration>
+									<type>existing</type>
+									<home>${ServerEE.domainDir}</home>
+									<properties>
+										<cargo.glassfish.domain.name>
+											${ServerEE.domainName}</cargo.glassfish.domain.name>
+									</properties>
+								</configuration>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
+
 
 </project>

@@ -37,7 +37,11 @@ public class Kontroler {
   @GET
   @Path("pocetak")
   @View("index.jsp")
-  public void pocetak() {}
+  public void pocetak() {
+    RestKlijentKazne k = new RestKlijentKazne();
+    List<Kazna> kazne = k.getKazneJSON();
+    model.put("kazne", new Kazna());
+  }
 
   @GET
   @Path("ispisKazni")

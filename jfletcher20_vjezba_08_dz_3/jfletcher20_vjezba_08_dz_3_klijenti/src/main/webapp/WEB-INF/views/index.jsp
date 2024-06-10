@@ -22,18 +22,11 @@
 			class="fixed-form">
 			<input type="hidden" name="${mvc.csrf.name}" value="${mvc.csrf.token}">
 			<fieldset>
-			<%
-			List<Kazna> kazne = (List<Kazna>) request.getAttribute("kazne");
-			kazne.sort((a, b) -> a.getVrijemeKraj() > b.getVrijemeKraj() ? 1 : a.getVrijemeKraj() == b.getVrijemeKraj() ? 0 : -1);
-			var odVremena = kazne.size() > 0 ? kazne.get(0).getVrijemeKraj() : 0;
-			var doVremena = kazne.size() > 0 ? kazne.get(kazne.size() - 1).getVrijemeKraj() : 0;
-			%>
-			<p>stufaskldfjsadfsadlkj</p>
 			<label for="odVremena">Od vremena
-				<input name="odVremena"	min=0 type="number" value="<%= odVremena %>">
+				<input name="odVremena"	min=0 type="number" >
 			</label>
 			<label for="doVremena">Do vremena
-				<input name="doVremena" min=0 type="number" value="<%= doVremena %>">
+				<input name="doVremena" min=0 type="number" >
 			</label>
 			</fieldset>
 			<input type="submit" value="Dohvati kazne">

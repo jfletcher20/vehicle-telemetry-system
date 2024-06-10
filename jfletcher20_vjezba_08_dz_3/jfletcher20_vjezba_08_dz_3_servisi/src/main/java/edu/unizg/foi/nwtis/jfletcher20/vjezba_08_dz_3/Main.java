@@ -11,17 +11,5 @@ import jakarta.ws.rs.core.Application;
 @ApplicationPath("")
 public class Main extends Application {
 
-  public static void main(String[] args) throws Exception {
-    Application app = new Main();
-    SeBootstrap.Configuration config =
-        SeBootstrap.Configuration.builder().rootPath("").port(9080).build();
-
-    SeBootstrap.start(app, config).thenAccept(instance -> {
-      instance.stopOnShutdown(stopResult -> stopResult.unwrap(Object.class));
-      System.out.printf("\nREST servis na adresi: %s\n", instance.configuration().baseUri());
-    });
-
-    Thread.currentThread().join();
-  }
 }
 

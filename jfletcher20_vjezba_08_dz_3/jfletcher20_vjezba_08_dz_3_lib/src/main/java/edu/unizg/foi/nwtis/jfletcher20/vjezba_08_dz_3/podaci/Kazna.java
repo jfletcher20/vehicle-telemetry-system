@@ -1,7 +1,10 @@
 package edu.unizg.foi.nwtis.jfletcher20.vjezba_08_dz_3.podaci;
 
-public class Kazna {
+import java.io.Serializable;
+
+public class Kazna implements Serializable {
   
+  private static final long serialVersionUID = -6130742431018181852L;
   private int id;
   private long vrijemePocetak, vrijemeKraj;
   private double brzina, gpsSirina, gpsDuzina;
